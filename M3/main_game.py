@@ -1,11 +1,29 @@
 import mapas
 import mysql.connector
+import os
+import diccionarios
+import eventos
+
+
+
+
+def LimpiarPantalla():
+    if os.name == "posix":
+        os.system("clear")
+    elif os.name == "ce" or os.name == "nt" or os.name == "dos":
+        os.system("cls")
+
+
 
 # Dividir el mapa en líneas
 lineas = mapas.hyrule_map.strip().split('\n')
 
 # Crear una lista de listas
 matriz = []
+prompt = []
+
+#Variable que almacena las acciones.
+
 
 # Procesar cada línea y agregarla a la matriz como una lista de caracteres
 for linea in lineas:
@@ -13,36 +31,17 @@ for linea in lineas:
     matriz.append(fila)
 
 
-def interactable_events():
-    # Definir la distancia máxima para considerar que el jugador está cerca
-    max_distance = 1
-    # Obtener el contenido de la casilla actual
-    current_tile = matriz[current_pos[0]][current_pos[1]][0]
-    # Variable de control para verificar si se ha abierto el cofre
-    chest_opened = False
-
-    # Verificamos si el jugador está cerca de un cofre y escribe "open"
-    if current_tile == "X":
-        for i in range(current_pos[0] - max_distance, current_pos[0] + max_distance + 1):
-            for j in range(current_pos[1] - max_distance, current_pos[1] + max_distance + 1):
-                try:
-                    # Verificar si la casilla contiene un cofre y si el jugador escribe "open"
-                    if matriz[i][j][0] == "T" and command.lower() == "open" and not chest_opened:
-                        print("Chest opened!")
-                        chest_opened = True
-                except IndexError:
-                    pass
-
-
-print(matriz[8][11])
 
 current_pos = [8, 11]
+command = ""
+
+
+print(mapas.hyrule_map)
 
 while True:
+
+
     current_pos_original = current_pos.copy()
-
-    interactable_events()
-
 
 
 #movimiento basico
@@ -51,6 +50,8 @@ while True:
     x = current_pos[1]
     # pedir input
     command = input("Give an Order:")
+
+
 
     if "go left" in command:
         command.replace(" ", "")
@@ -71,6 +72,8 @@ while True:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             y += int(command[command.find(" ", 3) + 1:])
+
+
 
     #posicion actual del jugador
     matriz[current_pos[0]][current_pos[1]] = [" "]
@@ -101,6 +104,10 @@ while True:
         current_pos = current_pos_original
         matriz[current_pos[0]][current_pos[1]] = ["X"]
 
+    eventos.interactable_events(matriz,current_pos,prompt,command,diccionarios.main_dict_hyrule)
+
+
+    LimpiarPantalla()
 
 
         # Desempaquetar la matriz e imprimir el mapa original
@@ -112,3 +119,19 @@ while True:
                 print(matriz[i][j][0])
 
     print(current_pos)
+
+
+
+
+# Imprimimos las últimas 8 líneas de la lista prompt
+    for line in prompt[-8:]:
+        print(line)
+    if len(prompt) > 8:
+        prompt.remove(prompt[0])
+
+    #Sumamos una accion
+
+    diccionarios.player_dict["action_count"] += 1
+
+
+

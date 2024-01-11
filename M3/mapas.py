@@ -47,9 +47,6 @@ death_mountain_map = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
 
-
-print(hyrule_map)
-
 #Ancho mapa:57
 #Ancho inventario:19
 
