@@ -6,6 +6,7 @@ import os
 #1:Arboles
 #2:Cofres (1 es espada, 2 es escudo)
 #3:Santuarios
+#4:Enemigos
 
 #Arboles: Primera Posicion
 
@@ -28,7 +29,15 @@ dades = {}
 #sword = 2
 #wood shield = 3
 #shield = 4
-player_dict = {'weapons_equipped': [], 'weapons_inventory': [], 'hearts': 3 , 'action_count': 0 ,}
+
+#IDS de objetos
+#Meat = 1
+#Fish = 2
+
+
+#REVISAR WEAPONS INVENTORY, puede ser innecesario
+player_dict = {'weapons_equipped': [{1:{"uses_og":5,"uses_left":5}}], 'weapons_inventory': [], 'hearts': 3 , 'action_count': 0, 'food_inventory': [] }
+
 
 #composicion diccionarios:
 #primera clave: ID General (Unica),
@@ -49,6 +58,11 @@ main_dict_hyrule = {
     4: {2: {"chest_1": [1,[9,48], {"isopen": False}]}},
     5: {3: {"sanctuary_0": [[6,44],[9,45],[9,45],{"isopen": True}]}},
     6: {3: {"sanctuary_1": [[9,31],[9,32],[9,33],{"isopen": False}]}},
+    7: {4: {"enemy_1": [[9,21],[9,22],{"isdead": False,"current_hearts" : 1 }]}},
+    8: {4: {"enemy_2": [[5,36],[5,37],{"isdead": False,"current_hearts" : 9 }]}},
+    9: {1: {"fox_1": [1,[9,53]]}},
+
+
 
 }
 

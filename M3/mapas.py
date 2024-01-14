@@ -1,4 +1,5 @@
 import random
+import diccionarios
 #MAPAS
 
 
@@ -50,3 +51,44 @@ death_mountain_map = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * *
 #Ancho mapa:57
 #Ancho inventario:19
 
+
+# eventos pre-partida
+
+def update_map_pre_start(matriz):
+    # Iterar sobre el diccionario
+
+    #HYRULE
+    for key, value in diccionarios.main_dict_hyrule.items():
+        for subkey, subvalue in value.items():
+            for subsubkey, subsubvalue in subvalue.items():
+                if "enemy" in subsubkey:
+                    # Cogemos las coordenadas y el número de vidas
+                    coordenadas = subsubvalue[1]
+                    vidas = str(subsubvalue[2]["current_hearts"])
+
+                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str
+                    matriz[coordenadas[0]][coordenadas[1]] = [vidas]
+    #RESTO DE MAPAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def actualizar_mapa(matriz):
+
+    # Desempaquetar la matriz e imprimir el mapa original
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            if j != 78:
+                print(matriz[i][j][0], end="")
+            else:
+                print(matriz[i][j][0])

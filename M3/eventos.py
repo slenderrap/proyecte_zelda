@@ -2,6 +2,138 @@ import diccionarios
 import random
 
 
+#mover jugador a water
+def move_to_water(matriz, current_position):
+    x, y = current_position
+    water_position = None
+
+    # Buscar la posición de la casilla con "~"
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][j] == ["~"]:
+                water_position = (i, j)
+                break
+
+    # Verificar si se encontró una posición con "~"
+    if water_position:
+        # Buscar la posición vacía más cercana
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                new_x, new_y = water_position[0] + i, water_position[1] + j
+                if 0 <= new_x < len(matriz) and 0 <= new_y < len(matriz[new_x]) and matriz[new_x][new_y] == [" "]:
+                    return (new_x, new_y)
+
+        # Si no se encuentra una posición vacía, devolver la posición original
+        print("No se encontró ninguna posición vacía cercana a '~'")
+        return (x, y)
+    else:
+        print("No se encontró ninguna casilla con '~'")
+        return (x, y)
+
+
+
+
+
+
+
+
+
+
+
+#Variable movimiento npcs
+def move_enemy(current_pos,matriz,main_dict,object_id,npc_id, npc_name,prompt):
+    current_positions = main_dict[object_id][npc_id][npc_name][:2]
+    old_pos = current_positions.copy()
+
+    #Derecha = 1
+    #Izquierda = 2
+    #Arriba = 3
+    #Abajo = 4
+
+    directions = ["derecha", "arriba", "izquierda", "abajo"]
+    #print(random.shuffle(directions))
+    random.shuffle(directions)
+
+
+
+    new_positions = current_pos.copy()
+    for direction in directions:
+        positions_occupied = False
+        # Calcula las nuevas coordenadas según la dirección
+
+        if direction == "arriba":
+            new_positions[0][0] -= 1
+            new_positions[1][0] -= 1
+            old_pos = [[new_positions[0][0]+1,new_positions[0][1]],[new_positions[1][0]+1,new_positions[1][1]]]
+
+        elif direction == "abajo":
+            new_positions[0][0] += 1
+            new_positions[1][0] += 1
+            old_pos = [[new_positions[0][0]-1,new_positions[0][1]],[new_positions[1][0]-1,new_positions[1][1]]]
+
+        elif direction == "izquierda":
+            new_positions[0][1] -= 2
+            new_positions[1][1] -= 2
+            old_pos = [[new_positions[0][0],new_positions[0][1]+2],[new_positions[1][0],new_positions[1][1]+2]]
+
+        elif direction == "derecha":
+            new_positions[0][1] += 2
+            new_positions[1][1] += 2
+            old_pos = [[new_positions[0][0],new_positions[0][1]-2],[new_positions[1][0],new_positions[1][1]-2]]
+
+
+
+
+        new_positions = [new_positions[0],new_positions[1]]
+        # Verifica si alguna de las nuevas posiciones está ocupada
+        for pos in new_positions:
+            print("--")
+            if positions_occupied:
+                new_positions = old_pos.copy()
+                continue
+            print(new_positions)
+            if matriz[pos[0]][pos[1]] != [" "] :
+                print("Pos occupied")
+                positions_occupied = True
+
+
+
+
+        # Si no hay posiciones ocupadas, actualiza las coordenadas y sale del bucle
+        if not positions_occupied:
+            #print(current_pos[0][0], (current_pos[0][1])-1)
+            #main_dict[7][npc_id][npc_name][:2] = new_positions
+            char_1 = matriz[old_pos[0][0]][old_pos[0][1]]
+            char_2 = matriz[old_pos[1][0]][old_pos[1][1]]
+
+            #imprimimos la nueva posicion del npc en la matriz
+            matriz[new_positions[0][0]][new_positions[0][1]] = char_1
+            matriz[new_positions[1][0]][new_positions[1][1]] = char_2
+
+            print(matriz[old_pos[0][0]][old_pos[0][1]])
+            #borramos las posiciones anteriores
+            matriz[old_pos[0][0]][old_pos[0][1]] = [" "]
+            matriz[old_pos[1][0]][old_pos[1][1]] = [" "]
+
+            historialPrompt(prompt,f"Enemy '{npc_name}' moved to positions {current_positions}")
+
+            current_pos[0] = current_positions[0]
+            current_pos[1] = current_positions[1]
+            return
+
+    # Si todas las posiciones están ocupadas, imprime un mensaje
+    else:
+        print(f"All positions occupied, enemy '{npc_name}' can't move.")
+
+
+
+
+
+
+
+
+
+#VARIABLE PROMPT HISTORIAL
 def historialPrompt(prompt,NewLine):
     if "\n" in NewLine:
         NewLine.index("\n")
@@ -58,7 +190,8 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                     # AGREGAR SWORD A PLAYER
                                 elif sub_value[0] == 2:
-                                    prompt.append("You Got a Shield!")
+                                    historialPrompt(prompt, "You Got a Shield!")
+                                    #prompt.append("You Got a Shield!")
                                     # AGREGAR SHIELD A PLAYER
                                 matriz[x][y][0] = "W"
                                 sub_value[2]["isopen"] = True
@@ -78,20 +211,78 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 x == sub_value[1][0] and y == sub_value[1][1]) or (
                                 x == sub_value[2][0] and y == sub_value[2][1]):
                             if sub_value[3]["isopen"]:
-                                prompt.append(f"{sub_key} is already open.")
+                                #prompt.append(f"{sub_key} is already open.")
+                                historialPrompt(prompt, f"{sub_key} is already open.")
+
                                 return True
                             else:
                                 #prompt.append("You opened the sanctuary!")
-                                print()
+                                historialPrompt(prompt, "You opened the sanctuary!")
+
                                 # AGREGAR RECOMPENSA AL JUGADOR
-                                if matriz[x][y][0] != "?":
+                                if matriz[x][y][0] == "S":
                                     matriz[x][y+2][0] = " "
+                                elif str(matriz[x][y][0]).isdigit():
+                                    matriz[x][y + 1][0] = " "
                                 else:
                                     matriz[x][y][0] = " "
 
                                 sub_value[3]["isopen"] = True
 
                                 return True
+
+
+    def enemy_event(diccionario, x, y, matriz, prompt):
+        # Comprobamos en el diccionario si el santuario está abierto
+        for key, value in diccionario.items():
+            # Verificar si la clave 3 existe y es un diccionario
+            if 4 in value:
+                # Iterar sobre todas las claves en el diccionario interno
+                for sub_key, sub_value in value[4].items():
+                    # Verificar si la clave es un santuario y está abierto
+                    if sub_key.startswith("enemy_") and "isdead" in sub_value[2]:
+                        # Comprobamos si el jugador está cerca del enemigo
+                        if (x == sub_value[0][0] and y == sub_value[0][1]) or (
+                                x == sub_value[1][0] and y == sub_value[1][1]):
+                            if diccionarios.player_dict["weapons_equipped"]:
+                                if sub_value[2]["isdead"]:
+                                    historialPrompt(prompt, "Enemy killed!")
+
+                                else:
+                                    historialPrompt(prompt, "Enemy encountered!")
+                                    move_enemy(sub_value, matriz, diccionarios.main_dict_hyrule,int(key), 4, sub_key, prompt)
+
+                                    print(sub_value[1][0])
+                                    print(matriz[x][y][0])
+
+                                    #Restamos en el juego la vida del enemigo
+                                    matriz[sub_value[1][0]][sub_value[1][1]][0] = str(
+                                        int(matriz[sub_value[1][0]][sub_value[1][1]][0]) - 1)
+                                    #Restamos la vida del enemigo en el diccionario
+                                    sub_value[2]["current_hearts"] -= 1
+
+                                    #Si la vida del enemigo llega a 0, esta se elimina
+                                    if matriz[sub_value[1][0]][sub_value[1][1]][0] == "0":
+                                        matriz[sub_value[0][0]][sub_value[0][1]][0] = " "
+                                        matriz[sub_value[1][0]][sub_value[1][1]][0] = " "
+
+                                        historialPrompt(prompt, "Enemy dead")
+                                        sub_value[3]["isdead"] = True
+
+
+                            else:
+                                historialPrompt(prompt, "You have no Sword!")
+                                move_enemy(sub_value, matriz, diccionarios.main_dict_hyrule, int(key), 4, "enemy_1", prompt)
+
+                            # el enemigo se movera despues de la interaccion
+                            diccionarios.player_dict["hearts"] -= 1
+                            # restamos 1 de vida al jugador
+                            historialPrompt(prompt, "-1 health!")
+                            return
+
+
+
+
     def tree_event(diccionario, x, y):
         # Comprobamos en el diccionario si el cofre está abierto
         for key, value in diccionario.items():
@@ -143,16 +334,57 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 #AQUI DESGASTAMOS LA ESPADA EN UN USO
 
-                                #restamos uno de vida al abrol
+                                #restamos uno de vida al arbol
                                 sub_value[0] -= 1
                                 
                                 #si el arbol se queda sin vida, este se destruirá
 
                                 if sub_value[0] <= 0:
                                     matriz[x][y][0] = " "
-                                    prompt.append("Tree destroyed")
+                                    #prompt.append("Tree destroyed")
+                                    historialPrompt(prompt, "Tree destroyed")
 
                                 return True
+
+    def fox_event(diccionario, x, y):
+        # Comprobamos en el diccionario si el cofre está abierto
+        for key, value in diccionario.items():
+            if 1 in value:
+                for sub_key, sub_value in value[1].items():
+                    # Verificar si la clave es un fox
+                    if sub_key.startswith("fox_"):
+                        # Comprobar si el jugador está cerca del arbol
+                        if x == sub_value[1][0] and y == sub_value[1][1]:
+
+                            # comprobamos si el jugador tiene armas equipadas
+                            # prompt.append("Tree Attacked")
+
+                            if diccionarios.player_dict["weapons_equipped"]:
+                                historialPrompt(prompt, "Fox Attacked")
+                                prompt.append("You got meat")
+                                # Aqui se guarda el objeto
+                                diccionarios.player_dict["food_inventory"].append(1)
+
+                                # AQUI DESGASTAMOS EL/LAS ARMAS EQUIPADA EN UN USO
+                                for weapon in diccionarios.player_dict['weapons_equipped']:
+                                    # Iterar sobre las armas equipadas y restar uno a uses_left
+                                    for key, value in weapon.items():
+                                        value['uses_left'] -= 1
+
+                                # restamos uno de vida al fox
+                                sub_value[0] -= 1
+
+                                # si fox se queda sin vida, este desaparecerá
+
+                                if sub_value[0] <= 0:
+                                    matriz[x][y][0] = " "
+                                    historialPrompt(prompt, "Fox killed")
+
+                                return
+                            else:
+                                historialPrompt(prompt, "Fox not attacked, no weapon equipped")
+                                return
+
 
 
     #Variable encargada de llamar a los distintos eventos
@@ -180,10 +412,16 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 if sanctuary_event(diccionario, i, j, matriz, prompt):
                                     return
 
+                            # FUNCION ENEMIGOS
+                            if (matriz[i][j][0] == "E" or matriz[i][j][0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) and command.lower() == "attack":
+                                enemy_event(diccionario, i, j, matriz, prompt)
+
+                            # FUNCION FOX
+                            if matriz[i][j][0] == "F" and command.lower() == "attack":
+                                fox_event(diccionario, i, j)
+
 
                         except IndexError:
                             pass
-
-
 
     event_caller(matriz, current_pos, command, diccionario_mapa)

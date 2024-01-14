@@ -1,3 +1,5 @@
+import random
+
 import mapas
 import mysql.connector
 import os
@@ -6,12 +8,14 @@ import eventos
 
 
 
-
 def LimpiarPantalla():
     if os.name == "posix":
         os.system("clear")
     elif os.name == "ce" or os.name == "nt" or os.name == "dos":
         os.system("cls")
+
+
+
 
 
 
@@ -30,15 +34,30 @@ for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
 
+#evento Fox
+#el 50% de las veces, fox desaparecerá del mapa
+if random.randint(1,2) == 1:
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][j] == ["F"]:
+                # Encontrado, actualiza la matriz
+                matriz[i][j] = [" "]
+                break
 
+                #actualizamos mapa pre partida
+mapas.update_map_pre_start(matriz)
+
+#pasamos de matriz a string
+mapas.actualizar_mapa(matriz)
 
 current_pos = [8, 11]
 command = ""
 
 
-print(mapas.hyrule_map)
+
 
 while True:
+    #INICIO DE ACCION
 
 
     current_pos_original = current_pos.copy()
@@ -72,6 +91,9 @@ while True:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             y += int(command[command.find(" ", 3) + 1:])
+    if "go to water" in command:
+        new_pos = eventos.move_to_water(matriz, current_pos)
+        y,x = new_pos[0],new_pos[1]
 
 
 
@@ -80,7 +102,6 @@ while True:
 
     current_pos[0] = y
     current_pos[1] = x
-
     #condiciones limites del mapa
 
     if current_pos[1] > 57:
@@ -107,31 +128,17 @@ while True:
     eventos.interactable_events(matriz,current_pos,prompt,command,diccionarios.main_dict_hyrule)
 
 
+
+    #COMPROBAMOS LA VIDA DEL JUGADOR:
+    if diccionarios.player_dict["hearts"] <= 0:
+        eventos.historialPrompt(prompt, "You are dead!")
+    # AQUI INVOCAMOS PANTALLA DE MUERTE
+
     LimpiarPantalla()
-
-
-        # Desempaquetar la matriz e imprimir el mapa original
-    for i in range(len(matriz)):
-        for j in range(len(matriz[0])):
-            if j != 78:
-                print(matriz[i][j][0], end="")
-            else:
-                print(matriz[i][j][0])
-
+    #imprimimos el mapa
+    mapas.actualizar_mapa(matriz)
     print(current_pos)
 
-
-
-
-# Imprimimos las últimas 8 líneas de la lista prompt
-    for line in prompt[-8:]:
-        print(line)
-    if len(prompt) > 8:
-        prompt.remove(prompt[0])
-
-    #Sumamos una accion
-
-    diccionarios.player_dict["action_count"] += 1
-
-
-
+    if len(prompt) != 0:
+        for i in prompt:
+            print(i)
