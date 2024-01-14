@@ -1,4 +1,4 @@
-def menu_principal(figura,opciones,prompt):
+def menu_principal(figura,opciones, prompt):
     print("*"+" *"*38+" *")
 
     count = 0
@@ -132,10 +132,10 @@ def opcionesPlantilla(opciones,prompt,dicc):
         elif opc_texto=="Help":
             historialPrompt(prompt, opc_texto)
             soloBack(dialogos.help_saved_games_top,dialogos.help_saved_games_end,dialogos.help_saved_games_content)
-        else:
+        elif opc_texto=="Back":
             historialPrompt(prompt, opc_texto)
-    else:
-        historialPrompt(prompt,"Invalid action")
+        else:
+            historialPrompt(prompt,"Invalid action")
 
 
     return opc_texto, prompt
@@ -154,30 +154,59 @@ def soloBack(top,end,content):
 
 def queries(consulta):
     if consulta==1:
-        cursor.execute("select * from show_players")
-        rows = cursor.fetchall()
+        cursor.execute("select * from show_players")#seleccionamos todos los usuarios que hayan jugado
+        rows = cursor.fetchall()#los transformamos en lista
+        print("+------------+-------------------+")#creamos la cabecera
+        print("| {} | {} |".format("user_name".ljust(10),"last_save".ljust(17)))
+        print("+------------+-------------------+")
+        for i in range(len(rows)):#usamos bubble sort para ordenar por la ultima partida guardada
+            for j in range(len(rows)-1):
+                if rows[j][1]<rows[j+1][1]:
+                    rows[j],rows[j+1]=rows[j+1],rows[j]
         for i in rows:
-            print(i)
+            print("| {} | {} |".format(i[0].ljust(10),i[1].ljust(17))) #imprimos las filas que la consulta
+        print("+------------+-------------------+")
     elif consulta==2:
         cursor.execute("select * from games_played")
         rows = cursor.fetchall()
+        print("+------------+--------------+")  # creamos la cabecera
+        print("| {} | {} |".format("user_name".ljust(10), "times_played".ljust(12)))
+        print("+------------+--------------+")
+        for i in range(len(rows)):#usamos bubble sort para ordenar por las partidas jugadas por usuario
+            for j in range(len(rows)-1):
+                if rows[j][1]<rows[j+1][1]:
+                    rows[j],rows[j+1]=rows[j+1],rows[j]
         for i in rows:
-            print(i)
-
+            print("| {} | {} |".format(i[0].ljust(10),str(i[1]).rjust(12)))
+        print("+------------+--------------+")
     elif consulta==3:
         cursor.execute("select * from acquired_weapons")
         rows = cursor.fetchall()
+        print("+------------+-------------+----------------+---------------------+")  # creamos la cabecera
+        print("| {} | {} | {} | {} |".format("user_name".ljust(10),"weapon_name".ljust(11),"times_achieved".ljust(14),\
+                                             "game_most_used".ljust(19)))
+        print("+------------+-------------+----------------+---------------------+")
+        for i in range(len(rows)):#usamos bubble sort para ordenar por las partidas jugadas por vegades fet servir
+            for j in range(len(rows)-1):
+                if rows[j][2]<rows[j+1][2]:
+                    rows[j],rows[j+1]=rows[j+1],rows[j]
         for i in rows:
-            print(i)
+            print("| {} | {} | {} | {} |".format(i[0].ljust(10),i[1].ljust(11),str(i[2]).rjust(14),str(i[3]).ljust(19)))
+        print("+------------+-------------+----------------+---------------------+")
     elif consulta==4:
 
-        print(cursor.execute("select * from food_eaten"))
+        rows=cursor.execute("select * from food_eaten")
+
+        print(rows)
     else:
         cursor.execute("select * from max_bloodmoons")
         rows = cursor.fetchall()
+        cursor.execute("select * from avg_bloodmoons")
+        rows.append(cursor.fetchone())
         for i in rows:
             print(i)
     input("Press 'Enter' to continue")
+    LimpiarPantalla()
 
 # " "*76 seria todo el contenido
 #56 seria la parte antes de la figura
@@ -288,6 +317,8 @@ while flag_0:
                         opciones = ("Continue", "New Game", "Help", "About", "Query", "Exit")
                         opciones_guardadas = ("Play X", "Erase X", "Help", "Back")
                         contenido = "X"
+                        if len(rows)==1:
+                            break
 
         elif opcion == "New Game":
             opc = ""
