@@ -1,5 +1,6 @@
 import random
 import diccionarios
+import funciones.inventario
 #MAPAS
 
 
@@ -13,7 +14,7 @@ hyrule_map_original = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * 
 *                                   E9                    *                   *\n\
 *                                           S0            *                   *\n\
 *                                                         *                   *\n\
-*         !X                                    T         *                   *\n\
+*         X                                     T         *                   *\n\
 * OO    OOOO         E1        S1?            T M    F    *                   *\n\
 *OOOOOOOOOOO                                              *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
@@ -28,7 +29,7 @@ hyrule_map = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *                                   E9                    *                   *\n\
 *                                           S0            *                   *\n\
 *                                                         *                   *\n\
-*         !X                                    T         *                   *\n\
+*         X                                     T         *                   *\n\
 * OO    OOOO         E1        S1?            T M    F    *                   *\n\
 *OOOOOOOOOOO                                              *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
@@ -68,23 +69,28 @@ def update_map_pre_start(matriz):
 
                     # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str
                     matriz[coordenadas[0]][coordenadas[1]] = [vidas]
-    #RESTO DE MAPAS...
+    # RESTO DE MAPAS...
 
 
+def agregar_inventario(matriz,inventario):
+    map = ""
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            if j != 78:
+                map += matriz[i][j][0]
+            else:
+                map += matriz[i][j][0] + "\n"
 
-
-
-
-
-
-
-
-
-
+    new_map = funciones.inventario.insertar_mapa(map, inventario)
+    lineas = new_map.strip().split('\n')
+    matriz = []
+    for linea in lineas:
+        fila = [[c] for c in linea]
+        matriz.append(fila)
+    return matriz
 
 
 def actualizar_mapa(matriz):
-
     # Desempaquetar la matriz e imprimir el mapa original
     for i in range(len(matriz)):
         for j in range(len(matriz[0])):
@@ -92,3 +98,8 @@ def actualizar_mapa(matriz):
                 print(matriz[i][j][0], end="")
             else:
                 print(matriz[i][j][0])
+
+
+
+
+

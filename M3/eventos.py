@@ -3,31 +3,29 @@ import random
 
 
 #mover jugador a water
-def move_to_water(matriz, current_position):
+def move_to_X(matriz, current_position,casilla):
     x, y = current_position
-    water_position = None
+    position = None
 
     # Buscar la posición de la casilla con "~"
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
-            if matriz[i][j] == ["~"]:
-                water_position = (i, j)
+            if matriz[i][j] == casilla:
+                position = (i, j)
                 break
 
     # Verificar si se encontró una posición con "~"
-    if water_position:
+    if position:
         # Buscar la posición vacía más cercana
         for i in range(-1, 2):
             for j in range(-1, 2):
-                new_x, new_y = water_position[0] + i, water_position[1] + j
+                new_x, new_y = position[0] + i, position[1] + j
                 if 0 <= new_x < len(matriz) and 0 <= new_y < len(matriz[new_x]) and matriz[new_x][new_y] == [" "]:
                     return (new_x, new_y)
 
-        # Si no se encuentra una posición vacía, devolver la posición original
-        print("No se encontró ninguna posición vacía cercana a '~'")
+        # Si no se encuentra una posición vacía, devolvemos la posición original
         return (x, y)
     else:
-        print("No se encontró ninguna casilla con '~'")
         return (x, y)
 
 
@@ -220,6 +218,11 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 historialPrompt(prompt, "You opened the sanctuary!")
 
                                 # AGREGAR RECOMPENSA AL JUGADOR
+                                diccionarios.player_dict["hearts"] += 1
+
+
+
+                                #Borramos el interrogante del mapa
                                 if matriz[x][y][0] == "S":
                                     matriz[x][y+2][0] = " "
                                 elif str(matriz[x][y][0]).isdigit():

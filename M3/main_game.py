@@ -1,4 +1,5 @@
 import random
+import funciones.inventario
 
 import mapas
 import mysql.connector
@@ -26,13 +27,16 @@ lineas = mapas.hyrule_map.strip().split('\n')
 matriz = []
 prompt = []
 
-#Variable que almacena las acciones.
-
-
 # Procesar cada línea y agregarla a la matriz como una lista de caracteres
 for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
+
+#Variable que almacena las acciones.
+
+
+
+
 
 #evento Fox
 #el 50% de las veces, fox desaparecerá del mapa
@@ -44,20 +48,24 @@ if random.randint(1,2) == 1:
                 matriz[i][j] = [" "]
                 break
 
-                #actualizamos mapa pre partida
+
+
+#actualizamos mapa pre partida
 mapas.update_map_pre_start(matriz)
 
-#pasamos de matriz a string
-mapas.actualizar_mapa(matriz)
 
-current_pos = [8, 11]
+current_pos = [8, 10]
 command = ""
 
-
+#funcion que muestra el inventario actual seleccionado
+current_inventory = funciones.inventario.player_inventory_main
 
 
 while True:
     #INICIO DE ACCION
+    LimpiarPantalla()
+    matriz = mapas.agregar_inventario(matriz,current_inventory)
+    mapas.actualizar_mapa(matriz)
 
 
     current_pos_original = current_pos.copy()
@@ -91,11 +99,30 @@ while True:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             y += int(command[command.find(" ", 3) + 1:])
-    if "go to water" in command:
-        new_pos = eventos.move_to_water(matriz, current_pos)
+    if "go by water" in command:
+        new_pos = eventos.move_to_X(matriz, current_pos,["~"])
         y,x = new_pos[0],new_pos[1]
 
+    if "go by sanctuary" in command:
+        new_pos = eventos.move_to_X(matriz, current_pos,["S"])
+        y,x = new_pos[0],new_pos[1]
 
+    if "go by tree" in command:
+        new_pos = eventos.move_to_X(matriz, current_pos,["T"])
+        y,x = new_pos[0],new_pos[1]
+
+    if "go by tree" in command:
+        new_pos = eventos.move_to_X(matriz, current_pos,["T"])
+        y,x = new_pos[0],new_pos[1]
+
+    if "show inventory main" in command:
+        current_inventory = funciones.inventario.player_inventory_main
+
+    if "show inventory weapons" in command:
+        current_inventory = funciones.inventario.player_inventory_weapons
+
+    if "show inventory food" in command:
+        current_inventory = funciones.inventario.player_inventory_food
 
     #posicion actual del jugador
     matriz[current_pos[0]][current_pos[1]] = [" "]

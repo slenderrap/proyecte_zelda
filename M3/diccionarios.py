@@ -36,7 +36,7 @@ dades = {}
 
 
 #REVISAR WEAPONS INVENTORY, puede ser innecesario
-player_dict = {'weapons_equipped': [{1:{"uses_og":5,"uses_left":5}}], 'weapons_inventory': [], 'hearts': 3 , 'action_count': 0, 'food_inventory': [] }
+player_dict = {'weapons_equipped': [{1:{"uses_og":5,"uses_left":5}}], 'weapons_inventory': [], 'hearts': 3 ,"hearts_max": 5, 'action_count': 0, 'food_inventory': [] }
 
 
 #composicion diccionarios:
@@ -61,7 +61,6 @@ main_dict_hyrule = {
     7: {4: {"enemy_1": [[9,21],[9,22],{"isdead": False,"current_hearts" : 1 }]}},
     8: {4: {"enemy_2": [[5,36],[5,37],{"isdead": False,"current_hearts" : 9 }]}},
     9: {1: {"fox_1": [1,[9,53]]}},
-
 
 
 }
