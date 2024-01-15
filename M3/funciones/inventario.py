@@ -7,8 +7,8 @@
 # Añadir maximo 99 armas
 # Añadir maximo 99 food
 
-import M3.mapas
-import M3.diccionarios
+import mapas
+import diccionarios
 
 # Conector MySQL
 import mysql.connector
@@ -50,18 +50,18 @@ inventory_weapons = \
   X *\n\
  * * * * * * * * * * ")
 inventory_food = \
-(" * * * * *  Food *\n\
-                 *\n\
-                 *\n\
+(" * * * * * *  Food *\n\
+                   *\n\
+                   *\n\
  Vegetables  X *\n\
  Fish        X *\n\
  Meat        X *\n\
-                 *\n\
+                   *\n\
  Salads      X *\n\
  Pescatarian X *\n\
  Roasted     X *\n\
-                 *\n\
- * * * * * * * * *")
+                   *\n\
+ * * * * * * * * * *")
 
 
 # Funciones generar inventario
@@ -70,23 +70,18 @@ def inv_main(player_id):
     # Inventory
     inventory = inventory_main
     # name_user=43
-    consulta = "SELECT user_name FROM game WHERE game_id = %s"
-    cursor.execute(consulta, (player_id,))
-    name_user = cursor.fetchone()
-    inventory = inventory[:43] + f"{name_user[0]}".ljust(11) + inventory[43 + 1:]
+    inventory = inventory[:43] + f"{diccionarios.player_dict['user_name']}".ljust(11) + inventory[43 + 1:]
 
 
     # Inventory - health
-    current_hearts = 3
     # current_hearts i= 57
-    inventory = inventory[:57] + f"{current_hearts}" + inventory[57 + 1:]
+    inventory = inventory[:57] + f"{diccionarios.player_dict['hearts']}" + inventory[57 + 1:]
 
-    full_hearts = 5
     # full_hearts i=59
-    inventory = inventory[:59] + f"{full_hearts}" + inventory[59 + 1:]
+    inventory = inventory[:59] + f"{diccionarios.player_dict['hearts_max']}" + inventory[59 + 1:]
 
-    # Iventory - Blood moon
-    inventory = inventory[:78] + "25".rjust(3) + inventory[78 + 1:]
+    # Inventory - Blood moon
+    inventory = inventory[:78] + f"{diccionarios.player_dict['action_count']}".rjust(3) + inventory[78 + 1:]
 
 
     # Inventory - equipment
@@ -118,9 +113,6 @@ def inv_main(player_id):
     weapons_remaining = cursor.fetchall()
     inventory = inventory[:198] + f"{weapons_remaining[0][0]}".rjust(9) + inventory[198 + 1:]
 
-    for i, char in enumerate(inventory):
-        if char == "X":
-            print(f"Posiciones i: {i}")
 
     return inventory
 def inv_weapons(player_id):
@@ -214,38 +206,40 @@ def inv_food(player_id):
     # Inventory
     inventory = inventory_food
 
-    # vegetables i=70
+    # vegetables i=76
     consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Vegetables'"
     cursor.execute(consulta, (player_id,))
     vegetables_int = cursor.fetchone()
-    inventory = inventory[:70] + f"{vegetables_int[0]}".rjust(3) + inventory[70 + 1:]
-    # fish i=89
+    inventory = inventory[:76] + f"{vegetables_int[0]}".rjust(5) + inventory[76 + 1:]
+    # fish i=97
     consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Fish'"
     cursor.execute(consulta, (player_id,))
     fish_int = cursor.fetchone()
-    inventory = inventory[:89] + f"{fish_int[0]}".rjust(3) + inventory[89 + 1:]
-    # meat i=108
+    inventory = inventory[:97] + f"{fish_int[0]}".rjust(5) + inventory[97 + 1:]
+    # meat i=120
     consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Meat'"
     cursor.execute(consulta, (player_id,))
     meat_int = cursor.fetchone()
-    inventory = inventory[:108] + f"{meat_int[0]}".rjust(3) + inventory[108 + 1:]
-    # salad i=146
+    inventory = inventory[:118] + f"{meat_int[0]}".rjust(5) + inventory[118 + 1:]
+    # salad i=160
     consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Salad'"
     cursor.execute(consulta, (player_id,))
     salad_int = cursor.fetchone()
-    inventory = inventory[:146] + f"{salad_int[0]}".rjust(3) + inventory[146 + 1:]
-    # pescatarian i=165
+    inventory = inventory[:160] + f"{salad_int[0]}".rjust(5) + inventory[160 + 1:]
+    # pescatarian i=181
     consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Pescatarian'"
     cursor.execute(consulta, (player_id,))
     pescatarian_int = cursor.fetchone()
-    inventory = inventory[:165] + f"{pescatarian_int[0]}".rjust(3) + inventory[165 + 1:]
-    # roasted i=184
+    inventory = inventory[:181] + f"{pescatarian_int[0]}".rjust(5) + inventory[181 + 1:]
+    # roasted i=202
     consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Roasted'"
     cursor.execute(consulta, (player_id,))
     roasted_int = cursor.fetchone()
-    inventory = inventory[:184] + f"{roasted_int[0]}".rjust(3) + inventory[184 + 1:]
+    inventory = inventory[:202] + f"{roasted_int[0]}".rjust(5) + inventory[202 + 1:]
 
-
+    for i, char in enumerate(inventory):
+        if char == "X":
+            print(f"Posiciones i: {i}")
 
     return inventory
 
@@ -263,14 +257,13 @@ def insertar_mapa(mapa, inventario):
     return resultado
 
 
-player_id = {"game_id":1}
 
 # Funcion menu main
-player_inventory_main = inv_main(player_id["game_id"])
+player_inventory_main = inv_main(diccionarios.player_dict["game_id"])
 # Funcion menu weapons
-player_inventory_weapons = inv_weapons(player_id["game_id"])
+player_inventory_weapons = inv_weapons(diccionarios.player_dict["game_id"])
 # Funcion menu food
-player_inventory_food = inv_food(player_id["game_id"])
+player_inventory_food = inv_food(diccionarios.player_dict["game_id"])
 
 # Funcion insertar inv
-map_solved = insertar_mapa(M3.mapas.hyrule_map, player_inventory_main)
+map_solved = insertar_mapa(mapas.hyrule_map, player_inventory_main)

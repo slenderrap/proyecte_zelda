@@ -32,7 +32,6 @@ for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
 
-#Variable que almacena las acciones.
 
 
 
@@ -60,12 +59,51 @@ command = ""
 #funcion que muestra el inventario actual seleccionado
 current_inventory = funciones.inventario.player_inventory_main
 
-
-while True:
+flag_01 = True
+while flag_01:
     #INICIO DE ACCION
+
+    current_map = "main_dict_hyrule"
+
+
+    #verificamos si hay arboles muertos
+    for key, value in getattr(diccionarios,current_map).items():
+        if 1 in value:
+            for sub_key, sub_value in value[1].items():
+                if sub_key.startswith("tree_"):
+                    if matriz[sub_value[1][0]][sub_value[1][1]][0] != "T":
+                        if sub_value[2] == 0:
+                            matriz[sub_value[1][0]][sub_value[1][1]][0] = "T"
+                            sub_value[0] = 4
+                            sub_value[2] = 10
+                        else:
+                            if sub_value[0] == 0:
+                                sub_value[2] -= 1
+                                matriz[sub_value[1][0]][sub_value[1][1]][0] = str(sub_value[2])
+
+
+
+
+
+
+
+
+    #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
     LimpiarPantalla()
     matriz = mapas.agregar_inventario(matriz,current_inventory)
+
+
+
+
     mapas.actualizar_mapa(matriz)
+
+    #imprimimos el mapa
+    #print(current_pos)
+
+    if len(prompt) != 0:
+        for i in prompt:
+            print(i)
+
 
 
     current_pos_original = current_pos.copy()
@@ -99,6 +137,7 @@ while True:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             y += int(command[command.find(" ", 3) + 1:])
+
     if "go by water" in command:
         new_pos = eventos.move_to_X(matriz, current_pos,["~"])
         y,x = new_pos[0],new_pos[1]
@@ -111,8 +150,12 @@ while True:
         new_pos = eventos.move_to_X(matriz, current_pos,["T"])
         y,x = new_pos[0],new_pos[1]
 
-    if "go by tree" in command:
-        new_pos = eventos.move_to_X(matriz, current_pos,["T"])
+    if "go by chest" in command:
+        new_pos = eventos.move_to_X(matriz, current_pos,["M"])
+        y,x = new_pos[0],new_pos[1]
+
+    if "go by bowl" in command:
+        new_pos = eventos.move_to_X(matriz, current_pos,["C"])
         y,x = new_pos[0],new_pos[1]
 
     if "show inventory main" in command:
@@ -161,11 +204,3 @@ while True:
         eventos.historialPrompt(prompt, "You are dead!")
     # AQUI INVOCAMOS PANTALLA DE MUERTE
 
-    LimpiarPantalla()
-    #imprimimos el mapa
-    mapas.actualizar_mapa(matriz)
-    print(current_pos)
-
-    if len(prompt) != 0:
-        for i in prompt:
-            print(i)
