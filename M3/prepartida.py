@@ -78,8 +78,12 @@ def PantallaPrincipal():
     def saveGames(lista):#esta funcion se encarga de pasarle la lista de las ultimas partidas guardadas +
         historial=[("")]  # a la funcion dialogos.generador_menus
         diccionari_jugadors={}
+        corazones_maximos=[]
+        for i in range(len(lista)):
+            cursor.execute("select count(*) from game_sanctuaries_opened where game_id = {} ".format(lista[i][0]))
+            corazones_maximos.append(cursor.fetchone())
         for i in range(len(lista)):#agreagamos los resultados de la query anterior en un diccionario con el id de partida
-            diccionari_jugadors[i] = {"id":lista[i][0],"data_partida":lista[i][1],"player":lista[i][2],"region":lista[i][3]}
+            diccionari_jugadors[i] = {"id":lista[i][0],"data_partida":lista[i][1],"player":lista[i][2],"region":lista[i][3], "corazones_actuales":lista[i][4], "corazones_maximos":corazones_maximos[i][0]+3}
 
         for i in range(len(diccionari_jugadors.keys())):
             for j in range(len(diccionari_jugadors.keys())-1):#ordenamos con bubble sort
@@ -90,7 +94,7 @@ def PantallaPrincipal():
             if len(historial)==9: #quando vaya a introducir la novena fila sale del bucle porque solo son las ultimas 8 partidas
                 diccionari_jugadors.pop(i)
             else:
-                historial.append("{}: {} - {}, {}  ".format(i,diccionari_jugadors.get(i).get("data_partida"),diccionari_jugadors.get(i).get("player"),diccionari_jugadors.get(i).get("region")).ljust(66) + u"\u2665" + "3/4".rjust(5)),
+                historial.append("{}: {} - {}, {}  ".format(i,diccionari_jugadors.get(i).get("data_partida"),diccionari_jugadors.get(i).get("player"),diccionari_jugadors.get(i).get("region")).ljust(66) + u"\u2665" + "{}/{}".format(diccionari_jugadors.get(i).get("corazones_actuales"),diccionari_jugadors.get(i).get("corazones_maximos")).rjust(5)),
         for i in range(10-len(historial)): #aqui terminamos de rellenar los espacios en blanco para mantener todas las lineas de la plantilla
             historial.append(("  "))
 
@@ -210,7 +214,7 @@ def PantallaPrincipal():
         else:
 
             print("+------------+---------------------+------------------------+--------------------------------+")
-            print("| {} | {} | {} | {} |".format("user_name".ljust(10), "created_at".ljust(19), "blood_moon_appearances".ljust(22), \
+            print("| {} | {} | {} | {} |".format("user_name".ljust(10), "changed_at".ljust(19), "blood_moon_appearances".ljust(22), \
                                                  "average_blood_moon_appearances".ljust(30)))
             print("+------------+---------------------+------------------------+--------------------------------+")
             cursor.execute("select * from max_bloodmoons") #seleccionamos las veces que más han aparecido lunas sangrientas
@@ -240,11 +244,7 @@ def PantallaPrincipal():
         user="zelda",
         port="3306",
         password="link",
-        database="zelda_pre"
-
-
-        #la base de datos real es zelda, esta es de pruebas
-
+        database="zelda"
 
     )
 
@@ -300,10 +300,9 @@ def PantallaPrincipal():
              2:skin_2,
              3:skin_3}
 
-    cursor.execute("select * from save_games")
+    cursor.execute("select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s'), hearts from game")
     rows = cursor.fetchall()
-    # cursor.execute("select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s') from game")
-    # rows_savegames = cursor.fetchall()
+
 
     if len(rows)==0:
         opciones = ("New Game", "Help", "About", "Query", "Exit")
@@ -339,7 +338,7 @@ def PantallaPrincipal():
                         if str(opc).isdigit():
                             return opc, prompt
                         elif "Erase" in opc:
-                            cursor.execute("select game_id, user_name, region , changed_at from game_saved")
+                            cursor.execute("select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s'), hearts from game")
                             rows = cursor.fetchall()
                             if len(rows)==1:
                                 break
@@ -365,12 +364,11 @@ def PantallaPrincipal():
                                 opc= "Link"
                             historialPrompt(prompt,"Welcome to the game, {}".format(opc),opc)
                             name=opc
-                            values = ("0,'{}', 0,0,'Hyrule',now(),now()").format(name)
-                            sql = "insert into game (game_id,user_name,blood_moon_countdown,blood_moon_appearances,region,created_at,changed_at) values ({})".format(values)
+                            values = ("0,'{}', 0,0,3,'Hyrule',now(),now()").format(name)
+                            sql = "insert into game (game_id,user_name,blood_moon_countdown,blood_moon_appearances,hearts,region,created_at,changed_at) values ({})".format(values)
                             cursor.execute(sql)
                             mi_conexion.commit()
-
-                            cursor.execute("select * from save_games")
+                            cursor.execute("select * from game where game_id = (select max(game_id) from game)")
                             rows = cursor.fetchall()
                             break
                         else:
