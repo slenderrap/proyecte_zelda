@@ -12,11 +12,13 @@ config = {
 
 connection = mysql.connector.connect(**config)
 cursor = connection.cursor()
+
+
 #Diccionarios de cada arma
 wood_sword = {1:{"uses_og":5,"uses_left":5}}
-sword = {1:{"uses_og":5,"uses_left":5}}
+sword = {2:{"uses_og":9,"uses_left":9}}
 wood_shield = {1:{"uses_og":5,"uses_left":5}}
-shield = {1:{"uses_og":5,"uses_left":5}}
+shield = {2:{"uses_og":9,"uses_left":9}}
 
 
 
@@ -64,8 +66,20 @@ dades = {1 : {"blood_moon_count":25},2 :{"current_map":"main_dict_hyrule"} }
 
 
 #REVISAR WEAPONS INVENTORY, puede ser innecesario
-player_dict = {'game_id':1,'user_name':'Player 1', 'weapons_equipped': [{1:{"uses_og":5,"uses_left":5}}], 'weapons_inventory': [], 'hearts': 3 ,"hearts_max": 5, 'action_count': 0, 'food_inventory': [6,2,2,6,2] }
-
+player_dict = {'game_id':1,'user_name':'Player 1','hearts': 3,"hearts_max": 5, 'region':'Hyrule',
+               'weapons_equipped': [{1:{'weapon_name':'Wood Sword',"uses_og":5,"uses_left":5}},
+                                    {2:{'shield_name':'Shield',"uses_og":9,"uses_left":5}}],
+               'weapons_inventory': [{1:{"name":"Wood Sword","quantity":4,'uses':0}},
+                                     {2:{"name":"Sword","quantity":2,'uses':0}}],
+               'shields_inventory': [{1:{"name":"Wood Shield","quantity":4,'uses':0}},
+                                     {2:{"name":"Shield","quantity":3,'uses':0}}],
+               'food_inventory': [{1:{"food_name":"Vegetables","quantity":1,'uses':0}},
+                                  {2:{"food_name":"Fish","quantity":2,'uses':0}},
+                                  {3:{"food_name":"Meat","quantity":3,'uses':0}},
+                                  {4:{"food_name":"Salad","quantity":4,'uses':0}},
+                                  {5:{"food_name":"Pescatarian","quantity":5,'uses':0}},
+                                  {6:{"food_name":"Roasted","quantity":6,'uses':0}}],
+               'blood_moon_countdown': 0, 'blood_moon_appearances':0,}
 
 #composicion diccionarios:
 #primera clave: ID General (Unica),
@@ -91,6 +105,19 @@ main_dict_hyrule = {
     9: {5: {"fox_1": [1,[9,53]]}},
     10: {6: {"already_fished" : False}}
 
+}
+
+main_dict_death_mountain = {
+    1: {1: {"tree_1": [4,[7,19],10]}},
+    2: {1: {"tree_2": [4,[8,18],10]}},
+    3: {1: {"tree_3": [4,[9,18],10]}},
+    4: {2: {"chest_1": [2,[8,36], {"isopen": False}]}},
+    5: {3: {"sanctuary_2": [[3,6],[3,7],[3,8],{"isopen": False}]}},
+    6: {3: {"sanctuary_3": [[9,50],[9,51],[9,52],{"isopen": False}]}},
+    7: {4: {"enemy_1": [[4,13],[4,14],{"isdead": False,"current_hearts" : 2 }]}},
+    8: {4: {"enemy_2": [[3,51],[5,52],{"isdead": False,"current_hearts" : 2 }]}},
+    9: {5: {"fox_1": [1,[2,30]]}},
+    10: {6: {"already_fished" : False}}
 
 }
 

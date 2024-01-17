@@ -1,6 +1,8 @@
 import random
 import diccionarios
 import funciones.inventario
+from funciones.map import current_map
+
 #MAPAS
 
 
@@ -35,7 +37,7 @@ hyrule_map = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
 
-death_mountain_map = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+death_mountain_map_original = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
 * O                OOOO                                   *                   *\n\
 * O                 OOOO      F                           *                   *\n\
 * ~~  S2?            OOOO                           E2    *                   *\n\
@@ -45,6 +47,19 @@ death_mountain_map = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * *
 *    ~~~           T        OOOO           OO             *                   *\n\
 *                 T          OO     M                     *                   *\n\
 * !   C           T          OO                   S3?     *                   *\n\
+*                                                         *                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+death_mountain_map = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+* O                OOOO                                   *                   *\n\
+* O                 OOOO      F                           *                   *\n\
+* ~~  S2?            OOOO                           E2    *                   *\n\
+* ~~~        E2      OOOO      OOOO                       *                   *\n\
+* O~~~~~~~~            OOOO  OO    OOOOOOOO               *                   *\n\
+* ~~~~~~~~~             OOOOOO           OOOO             *                   *\n\
+*    ~~~           T        OOOO           OO             *                   *\n\
+*                 T          OO     M                     *                   *\n\
+* X   C           T          OO                   S3?     *                   *\n\
 *                                                         *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
@@ -59,7 +74,7 @@ def update_map_pre_start(matriz):
     # Iterar sobre el diccionario
 
     #HYRULE
-    for key, value in diccionarios.main_dict_hyrule.items():
+    for key, value in getattr(diccionarios,current_map):
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy" in subsubkey:

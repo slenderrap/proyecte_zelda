@@ -6,25 +6,16 @@
 # Solo puede tener dos armas
 # Añadir maximo 99 armas
 # Añadir maximo 99 food
+# guardar usos arma equipada si se cambia
 
 import mapas
-import diccionarios
+from M3 import diccionarios
 
-# Conector MySQL
-import mysql.connector
-config = {
-    'user': 'zelda',
-    'password': 'link',
-    'host': '4.231.10.226',
-    'database': 'zelda_pre',
-    'raise_on_warnings': True
-}
-connection = mysql.connector.connect(**config)
-cursor = connection.cursor()
+
 
 # Strings inventarios
 inventory_main = \
-(" * * * * Inventory *\n\
+    (" * * * * Inventory *\n\
                    *\n\
  X ♥ X/X *\n\
  Blood moon in X *\n\
@@ -37,7 +28,7 @@ inventory_main = \
                    *\n\
  * * * * * * * * * *")
 inventory_weapons = \
-(" * * * * * Weapons *\n\
+    (" * * * * * Weapons *\n\
                    *\n\
                    *\n\
  Wood Sword X *\n\
@@ -50,7 +41,7 @@ inventory_weapons = \
   X *\n\
  * * * * * * * * * * ")
 inventory_food = \
-(" * * * * * *  Food *\n\
+    (" * * * * * *  Food *\n\
                    *\n\
                    *\n\
  Vegetables  X *\n\
@@ -66,12 +57,10 @@ inventory_food = \
 
 # Funciones generar inventario
 def inv_main(player_id):
-
     # Inventory
     inventory = inventory_main
     # name_user=43
     inventory = inventory[:43] + f"{diccionarios.player_dict['user_name']}".ljust(11) + inventory[43 + 1:]
-
 
     # Inventory - health
     # current_hearts i= 57
@@ -81,161 +70,121 @@ def inv_main(player_id):
     inventory = inventory[:59] + f"{diccionarios.player_dict['hearts_max']}" + inventory[59 + 1:]
 
     # Inventory - Blood moon
-    inventory = inventory[:78] + f"{diccionarios.player_dict['action_count']}".rjust(3) + inventory[78 + 1:]
-
+    inventory = inventory[:78] + f"{diccionarios.player_dict['blood_moon_countdown']}".rjust(3) + inventory[78 + 1:]
 
     # Inventory - equipment
     # weapon_1 = 106
-    consulta = "SELECT weapon_name FROM game_weapons WHERE game_id = %s AND equiped=1 AND weapon_name LIKE '%Sword%'"
-    cursor.execute(consulta, (player_id,))
-    weapon_1 = cursor.fetchall()
-    if len(weapon_1) > 0:
-        inventory = inventory[:106] + f"{weapon_1[0][0]}".rjust(17) + inventory[106 + 1:]
+    if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] in ("Wood Sword", "Sword"):
+        weapon_1 = diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name']
+        inventory = inventory[:106] + f"{weapon_1}".rjust(17) + inventory[106 + 1:]
     else:
         inventory = inventory[:106] + "".rjust(17) + inventory[106 + 1:]
-    # weapon_2 = 127
-    consulta = "SELECT weapon_name FROM game_weapons WHERE game_id = %s AND equiped=1 AND weapon_name LIKE '%Shield%'"
-    cursor.execute(consulta, (player_id,))
-    weapon_2 = cursor.fetchall()
-    if len(weapon_2) > 0:
-        inventory = inventory[:127] + f"{weapon_2[0][0]}".rjust(1) + inventory[127 + 1:]
+
+    # weapon_2 (shield) = 127
+    if diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] in ("Wood Shield", "Shield"):
+        weapon_2 = diccionarios.player_dict['weapons_equipped'][1][2]['shield_name']
+        inventory = inventory[:127] + f"{weapon_2}".rjust(17) + inventory[127 + 1:]
     else:
         inventory = inventory[:127] + "".rjust(17) + inventory[127 + 1:]
 
     # food = 174
-    consulta = "SELECT SUM(quantity_remaining) FROM game_food WHERE game_id = %s GROUP BY game_id"
-    cursor.execute(consulta, (player_id,))
-    food_remaining = cursor.fetchall()
-    inventory = inventory[:174] + f"{food_remaining[0][0]}".rjust(12) + inventory[174 + 1:]
-    # weapons = 198
-    consulta = "SELECT count(*) FROM game_weapons WHERE game_id = %s GROUP BY game_id"
-    cursor.execute(consulta, (player_id,))
-    weapons_remaining = cursor.fetchall()
-    inventory = inventory[:198] + f"{weapons_remaining[0][0]}".rjust(9) + inventory[198 + 1:]
+    food_remaining = sum(next(iter(item.values()))["quantity"] for item in diccionarios.player_dict['food_inventory'])
+    inventory = inventory[:174] + f"{food_remaining}".rjust(12) + inventory[174 + 1:]
 
+    # weapons = 198
+    weapons_remaining = sum(
+        next(iter(item.values()))["quantity"] for item in diccionarios.player_dict['weapons_inventory'])
+    inventory = inventory[:198] + f"{weapons_remaining}".rjust(9) + inventory[198 + 1:]
 
     return inventory
+
+
 def inv_weapons(player_id):
     # Inventory
     inventory = inventory_weapons
 
-
     # wood_sword = 75
-    consulta = "SELECT lives_remaining FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Wood Sword'"
-    cursor.execute(consulta, (player_id,))
-    lives_current_woodsword = cursor.fetchone()
-    consulta = "SELECT count(*) FROM game_weapons WHERE game_id = %s and weapon_name='Wood Sword'"
-    cursor.execute(consulta, (player_id,))
-    total_woodsword = cursor.fetchone()
-    if total_woodsword[0] >= 1:
-        inventory = inventory[:75] + f"{lives_current_woodsword[0]}/{total_woodsword[0]}".rjust(6) + inventory[75 + 1:]
-    else:
-        inventory = inventory[:75] + "0/0".rjust(6) + inventory[75 + 1:]
     # wood_sword equiped = 86
-    consulta = "SELECT equiped FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Wood Sword'"
-    cursor.execute(consulta, (player_id,))
-    woodsword_equiped = cursor.fetchone()
-    if woodsword_equiped:
+    if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Wood Sword":
+        lives_current_woodsword = diccionarios.player_dict['weapons_equipped'][0][1]['uses_left']
+        total_woodsword = diccionarios.player_dict['weapons_inventory'][0][1]['quantity']
+        inventory = inventory[:75] + f"{lives_current_woodsword}/{total_woodsword}".rjust(6) + inventory[75 + 1:]
         inventory = inventory[:86] + "(equiped)".ljust(16) + inventory[86 + 1:]
-    else:
+    if not diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Wood Sword":
+        lives_current_woodsword = 5
+        total_woodsword = diccionarios.player_dict['weapons_inventory'][0][1]['quantity']
+        inventory = inventory[:75] + f"{lives_current_woodsword}/{total_woodsword}".rjust(6) + inventory[75 + 1:]
         inventory = inventory[:86] + "".ljust(16) + inventory[86 + 1:]
 
+
+
     # sword = 112
-    consulta = "SELECT lives_remaining FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Sword'"
-    cursor.execute(consulta, (player_id,))
-    lives_current_sword = cursor.fetchone()
-    consulta = "SELECT count(*) FROM game_weapons WHERE game_id = %s and weapon_name='Sword'"
-    cursor.execute(consulta, (player_id,))
-    total_sword = cursor.fetchone()
-    if total_sword[0] >= 1:
-        inventory = inventory[:112] + f"{lives_current_sword[0]}/{total_sword[0]}".rjust(11) + inventory[112 + 1:]
-    else:
-        inventory = inventory[:112] + "0/0".rjust(11) + inventory[112 + 1:]
     # sword equiped = 128
-    consulta = "SELECT equiped FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Sword'"
-    cursor.execute(consulta, (player_id,))
-    sword_equiped = cursor.fetchone()
-    if sword_equiped:
+    if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
+        lives_current_sword = diccionarios.player_dict['weapons_equipped'][0][1]['uses_left']
+        total_sword = diccionarios.player_dict['weapons_inventory'][1][2]['quantity']
+        inventory = inventory[:112] + f"{lives_current_sword}/{total_sword}".rjust(11) + inventory[112 + 1:]
         inventory = inventory[:128] + "(equiped)".ljust(16) + inventory[128 + 1:]
-    else:
-        inventory = inventory[:128] + "".rjust(16) + inventory[128 + 1:]
+    if not diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
+        lives_current_sword = 5
+        total_sword = diccionarios.player_dict['weapons_inventory'][1][2]['quantity']
+        inventory = inventory[:112] + f"{lives_current_sword}/{total_sword}".rjust(11) + inventory[112 + 1:]
+        inventory = inventory[:128] + "".ljust(16) + inventory[128 + 1:]
+
 
     # wood_shield = 160
-    consulta = "SELECT lives_remaining FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Wood Shield'"
-    cursor.execute(consulta, (player_id,))
-    lives_current_woodshield = cursor.fetchone()
-    consulta = "SELECT count(*) FROM game_weapons WHERE game_id = %s and weapon_name='Wood Shield'"
-    cursor.execute(consulta, (player_id,))
-    total_woodshield = cursor.fetchone()
-    if total_sword[0] >= 1:
-        inventory = inventory[:160] + f"{lives_current_woodshield[0]}/{total_woodshield[0]}".rjust(5) + inventory[160 + 1:]
-    else:
-        inventory = inventory[:160] + "0/0".rjust(5) + inventory[160 + 1:]
     # wood_shield equiped = 170
-    consulta = "SELECT equiped FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Wood Shield'"
-    cursor.execute(consulta, (player_id,))
-    woodshield_equiped = cursor.fetchone()
-    if woodshield_equiped:
+    if diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Wood Shield":
+        lives_current_woodshield = diccionarios.player_dict['weapons_equipped'][1][2]['uses_left']
+        total_woodshield = diccionarios.player_dict['shields_inventory'][0][1]['quantity']
+        inventory = inventory[:160] + f"{lives_current_woodshield}/{total_woodshield}".rjust(5) + inventory[160 + 1:]
         inventory = inventory[:170] + "(equiped)".ljust(16) + inventory[170 + 1:]
-    else:
-        inventory = inventory[:170] + "".rjust(16) + inventory[170 + 1:]
+    if not diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Wood Shield":
+        lives_current_woodshield = 9
+        total_woodshield = diccionarios.player_dict['shields_inventory'][0][1]['quantity']
+        inventory = inventory[:160] + f"{lives_current_woodshield}/{total_woodshield}".rjust(5) + inventory[160 + 1:]
+        inventory = inventory[:170] + "".ljust(16) + inventory[170 + 1:]
+
 
     # shield = 197
-    consulta = "SELECT lives_remaining FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Sword'"
-    cursor.execute(consulta, (player_id,))
-    lives_current_shield = cursor.fetchone()
-    consulta = "SELECT count(*) FROM game_weapons WHERE game_id = %s and weapon_name='Sword'"
-    cursor.execute(consulta, (player_id,))
-    total_shield = cursor.fetchone()
-    if total_sword[0] >= 1:
-        inventory = inventory[:197] + f"{lives_current_shield}/{total_shield}".rjust(10) + inventory[197 + 1:]
-    else:
-        inventory = inventory[:197] + "0/0".rjust(10) + inventory[197 + 1:]
     # shield equiped = 212
-    consulta = "SELECT equiped FROM game_weapons WHERE game_id = %s and equiped=1 and weapon_name='Sword'"
-    cursor.execute(consulta, (player_id,))
-    sword_equiped = cursor.fetchone()
-    if sword_equiped:
+    if diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Shield":
+        lives_current_shield = diccionarios.player_dict['weapons_equipped'][1][2]['uses_left']
+        total_shield = diccionarios.player_dict['shields_inventory'][1][2]['quantity']
+        inventory = inventory[:197] + f"{lives_current_shield}/{total_shield}".rjust(10) + inventory[197 + 1:]
         inventory = inventory[:212] + "(equiped)".ljust(16) + inventory[212 + 1:]
-    else:
-        inventory = inventory[:212] + "".rjust(16) + inventory[212 + 1:]
+    if not diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Shield":
+        lives_current_shield = 9
+        total_shield = diccionarios.player_dict['shields_inventory'][1][2]['quantity']
+        inventory = inventory[:197] + f"{lives_current_shield}/{total_shield}".rjust(10) + inventory[197 + 1:]
+        inventory = inventory[:212] + "".ljust(16) + inventory[212 + 1:]
 
 
     return inventory
+
+
 def inv_food(player_id):
     # Inventory
     inventory = inventory_food
 
     # vegetables i=76
-    consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Vegetables'"
-    cursor.execute(consulta, (player_id,))
-    vegetables_int = cursor.fetchone()
-    inventory = inventory[:76] + f"{vegetables_int[0]}".rjust(5) + inventory[76 + 1:]
+    vegetables_int = diccionarios.player_dict['food_inventory'][0][1]['quantity']
+    inventory = inventory[:76] + f"{vegetables_int}".rjust(5) + inventory[76 + 1:]
     # fish i=97
-    consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Fish'"
-    cursor.execute(consulta, (player_id,))
-    fish_int = cursor.fetchone()
-    inventory = inventory[:97] + f"{fish_int[0]}".rjust(5) + inventory[97 + 1:]
+    fish_int = diccionarios.player_dict['food_inventory'][1][2]['quantity']
+    inventory = inventory[:97] + f"{fish_int}".rjust(5) + inventory[97 + 1:]
     # meat i=120
-    consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Meat'"
-    cursor.execute(consulta, (player_id,))
-    meat_int = cursor.fetchone()
-    inventory = inventory[:118] + f"{meat_int[0]}".rjust(5) + inventory[118 + 1:]
+    meat_int = diccionarios.player_dict['food_inventory'][2][3]['quantity']
+    inventory = inventory[:118] + f"{meat_int}".rjust(5) + inventory[118 + 1:]
     # salad i=160
-    consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Salad'"
-    cursor.execute(consulta, (player_id,))
-    salad_int = cursor.fetchone()
-    inventory = inventory[:160] + f"{salad_int[0]}".rjust(5) + inventory[160 + 1:]
+    salad_int = diccionarios.player_dict['food_inventory'][3][4]['quantity']
+    inventory = inventory[:160] + f"{salad_int}".rjust(5) + inventory[160 + 1:]
     # pescatarian i=181
-    consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Pescatarian'"
-    cursor.execute(consulta, (player_id,))
-    pescatarian_int = cursor.fetchone()
-    inventory = inventory[:181] + f"{pescatarian_int[0]}".rjust(5) + inventory[181 + 1:]
+    pescatarian_int = diccionarios.player_dict['food_inventory'][4][5]['quantity']
+    inventory = inventory[:181] + f"{pescatarian_int}".rjust(5) + inventory[181 + 1:]
     # roasted i=202
-    consulta = "SELECT count(*) FROM game_food WHERE game_id = %s and food_name='Roasted'"
-    cursor.execute(consulta, (player_id,))
-    roasted_int = cursor.fetchone()
-    inventory = inventory[:202] + f"{roasted_int[0]}".rjust(5) + inventory[202 + 1:]
+    roasted_int = diccionarios.player_dict['food_inventory'][5][6]['quantity']
+    inventory = inventory[:202] + f"{roasted_int}".rjust(5) + inventory[202 + 1:]
 
     for i, char in enumerate(inventory):
         if char == "X":
@@ -243,9 +192,9 @@ def inv_food(player_id):
 
     return inventory
 
+
 # Funcion insertar inventario dentro de cualquier mapa
 def insertar_mapa(mapa, inventario):
-
     # Dividir cada string en líneas
     lineas_inv = inventario.split('\n')
     lineas_map = mapa.split('\n')
@@ -255,7 +204,6 @@ def insertar_mapa(mapa, inventario):
         resultado += lineas_map[i][:59] + lineas_inv[i] + '\n'
 
     return resultado
-
 
 
 # Funcion menu main

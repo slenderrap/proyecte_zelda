@@ -6,6 +6,7 @@ import mysql.connector
 import os
 import diccionarios
 import eventos
+from funciones.map import current_map
 
 
 
@@ -15,13 +16,57 @@ def LimpiarPantalla():
     elif os.name == "ce" or os.name == "nt" or os.name == "dos":
         os.system("cls")
 
+def addbottomline_update_map(matriz):
+    def update_map_bl():
+        # añadimos al mapa los posibles inputs al final
+        show_inputs = ""
+        for z in range(len(input_variable)):
+            show_inputs += input_variable[z] + ", "
+        show_inputs = show_inputs[:-2] + " "
+        new_map = funciones.inventario.insertar_mapa( map, current_inventory)
+        if len(show_inputs) %2 == 0:
+            show_inputs += " "
 
+        new_map = new_map[:882] + ("*  " + show_inputs + ("* " * ((76 - len(show_inputs)) // 2)))
+        lineas = new_map.strip().split('\n')
+        matriz = []
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+        return matriz
 
+    map = ""
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            if j != 78:
+                map += matriz[i][j][0]
+            else:
+                map += matriz[i][j][0] + "\n"
+    x, y = current_pos
+    input_variable = ["Exit", "Attack", "Go"]
+    for j in range(y - 1, y + 2):
+        for i in range(x - 1, x + 2):
+            # Agregar listado de inputs disponibles
+            if diccionarios.player_dict["weapons_inventory"] and "Equip" not in input_variable:
+                input_variable.append("Equip")
+            if diccionarios.player_dict["weapons_equipped"] and "Unequip" not in input_variable:
+                input_variable.append("Unequip")
+            if diccionarios.player_dict["food_inventory"] and "Eat" not in input_variable:
+                input_variable.append("Eat")
+            if matriz[i][j][0] == "C" and "Cook" not in input_variable:
+                input_variable.append("Cook")
+            if matriz[i][j][0] == "~" and "Fish" not in input_variable:
+                input_variable.append("Fish")
+            if matriz[i][j][0] in ("M", "W","S") and "Open" not in input_variable:
+                input_variable.append("Open")
 
+            matriz = update_map_bl()
 
+    mapas.actualizar_mapa(matriz)
+    return
 
 # Dividir el mapa en líneas
-lineas = mapas.hyrule_map.strip().split('\n')
+lineas = getattr(mapas,(current_map[10:]+"_map")).strip().split('\n')
 
 # Crear una lista de listas
 matriz = []
@@ -48,12 +93,26 @@ if random.randint(1,2) == 1:
                 break
 
 
-
+current_pos = []
 #actualizamos mapa pre partida
-mapas.update_map_pre_start(matriz)
+#mapas.update_map_pre_start(matriz)
+#funcion para cambiar la posicion inicial del mapa según su ubicacion
+def player_change_pos():
+    global current_pos
+    if "hyrule" in current_map:
+        current_pos = [8, 10]
+    elif "death" in current_map:
+        current_pos = [9,2]
+    #elif ""
+
+player_change_pos()
 
 
-current_pos = [8, 10]
+
+
+
+
+
 command = ""
 
 #funcion que muestra el inventario actual seleccionado
@@ -63,11 +122,11 @@ flag_01 = True
 while flag_01:
     #INICIO DE ACCION
 
-    current_map = "main_dict_hyrule"
+    current_map = "main_dict_death_mountain"
 
 
     #verificamos si hay arboles muertos
-    for key, value in getattr(diccionarios,current_map).items():
+    for key, value in getattr(diccionarios,funciones.map.current_map).items():
         if 1 in value:
             for sub_key, sub_value in value[1].items():
                 if sub_key.startswith("tree_"):
@@ -92,10 +151,8 @@ while flag_01:
     LimpiarPantalla()
     matriz = mapas.agregar_inventario(matriz,current_inventory)
 
-
-
-
-    mapas.actualizar_mapa(matriz)
+    #mapas.actualizar_mapa(matriz)
+    addbottomline_update_map(matriz)
 
     #imprimimos el mapa
     #print(current_pos)
@@ -166,6 +223,36 @@ while flag_01:
 
     if "show inventory food" in command:
         current_inventory = funciones.inventario.player_inventory_food
+    if "hyrule" in current_map:
+        if "go to gerudo" in command:
+            current_map = "main_dict_gerudo"
+        if "go to death mountain" in command:
+            current_map = "main_dict_death_mountain"
+        if "go to castle" in command:
+            current_map = "main_dict_castle"
+    elif "death" in current_map:
+        if "go to necluda" in command:
+            current_map = "main_dict_necluda"
+        if "go to hyrule" in command:
+            current_map = "main_dict_hyrule"
+        if "go to castle" in command:
+            current_map = "main_dict_castle"
+    elif "gerudo" in current_map:
+        if "go to necluda" in command:
+            current_map = "main_dict_necluda"
+        if "go to hyrule" in command:
+            current_map = "main_dict_hyrule"
+        if "go to castle" in command:
+            current_map = "main_dict_castle"
+    elif "necluda" in current_map:
+        if "go to death mountain" in command:
+            current_map = "main_dict_death_mountain"
+        if "go to gerudo" in command:
+            current_map = "main_dict_gerudo"
+        if "go to castle" in command:
+            current_map = "main_dict_castle"
+
+
 
     #posicion actual del jugador
     matriz[current_pos[0]][current_pos[1]] = [" "]
@@ -195,7 +282,7 @@ while flag_01:
         current_pos = current_pos_original
         matriz[current_pos[0]][current_pos[1]] = ["X"]
 
-    eventos.interactable_events(matriz,current_pos,prompt,command,diccionarios.main_dict_hyrule)
+    eventos.interactable_events(matriz,current_pos,prompt,command,getattr(diccionarios,current_map))
 
 
 

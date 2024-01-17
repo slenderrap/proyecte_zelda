@@ -191,12 +191,17 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     historialPrompt(prompt, "You Got a Sword!")
 
                                     # AGREGAR SWORD A PLAYER
+                                    diccionarios.player_dict["weapons_inventory"].append(diccionarios.sword)
+
                                 elif sub_value[0] == 2:
                                     historialPrompt(prompt, "You Got a Shield!")
                                     #prompt.append("You Got a Shield!")
                                     # AGREGAR SHIELD A PLAYER
+                                    diccionarios.player_dict["weapons_inventory"].append(diccionarios.shield)
                                 matriz[x][y][0] = "W"
                                 sub_value[2]["isopen"] = True
+                                #cuando se abra el cofre, se guarda en la base de datos
+
                                 return True
 
     def sanctuary_event(diccionario, x, y, matriz, prompt):
@@ -235,6 +240,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     matriz[x][y][0] = " "
 
                                 sub_value[3]["isopen"] = True
+                                #cuando se abra el santuario, se guarda en la base de datos
 
                                 return True
 
@@ -257,10 +263,8 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 else:
                                     historialPrompt(prompt, "Enemy encountered!")
-                                    move_enemy(sub_value, matriz, diccionarios.main_dict_hyrule,int(key), 4, sub_key, prompt)
+                                    move_enemy(sub_value, matriz, getattr(diccionarios,diccionario_mapa),int(key), 4, sub_key, prompt)
 
-                                    print(sub_value[1][0])
-                                    print(matriz[x][y][0])
 
                                     #Restamos en el juego la vida del enemigo
                                     matriz[sub_value[1][0]][sub_value[1][1]][0] = str(
@@ -279,7 +283,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                             else:
                                 historialPrompt(prompt, "You have no Sword!")
-                                move_enemy(sub_value, matriz, diccionarios.main_dict_hyrule, int(key), 4, "enemy_1", prompt)
+                                move_enemy(sub_value, matriz, getattr(diccionarios,diccionario_mapa), int(key), 4, "enemy_1", prompt)
 
                             # el enemigo se movera despues de la interaccion
                             diccionarios.player_dict["hearts"] -= 1
@@ -297,6 +301,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                 for sub_key, sub_value in value[1].items():
                     # Verificar si la clave es un arbol
                     if sub_key.startswith("tree_"):
+                        print(sub_value)
                         # Comprobar si el jugador está cerca del arbol
                         if x == sub_value[1][0] and y == sub_value[1][1]:
                             #comprobamos si el arbol tiene vida
@@ -316,7 +321,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     if random.randint(1,10) == 10:
                                         if random.randint(1,2) == 1:
                                             #prompt.append("Tree dropped a Wood Sword")
-                                            historialPrompt(prompt, "Wood Sword")
+                                            historialPrompt(prompt, "You got a Wood Sword")
                                             diccionarios.player_dict["weapons_inventory"].append(diccionarios.wood_sword)
 
                                         else:
@@ -434,7 +439,6 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 tree_event(diccionario, i, j)
 
                             # FUNCION SANTUARIOS
-                            print(matriz[i][j][0])
                             if (matriz[i][j][0] == "S" or matriz[i][j][0] in ("0","1","2","3","4","5","6","7","8","9") or matriz[i][j][0] == "?") and command.lower() == "open":
                                 if sanctuary_event(diccionario, i, j, matriz, prompt):
                                     return
@@ -531,5 +535,14 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                         except IndexError:
                             pass
+                    #Funcion Hierba
+                    # if matriz[i][j][0] == " " and "attack" in command.lower():
+                    #     if diccionarios.player_dict["weapons_equipped"]:
+                    #         if random.randint(1,10) == 1:
+                    #             historialPrompt(prompt, "You got a lizard!")
+                    #             diccionarios.player_dict["food_inventory"].append(1)
+                    #     return
+
+
 
     event_caller(matriz, current_pos, command, diccionario_mapa)
