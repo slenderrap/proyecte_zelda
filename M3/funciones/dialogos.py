@@ -1,5 +1,7 @@
 # Funcion encargada de generar las pantallas de dialogo que suceden antes de iniciar y durante la partida.
 #nos conectamos a la base de datos
+import random
+
 
 # Los parentesis indican salto de linea
 # top y end añadir 1 y 2 espacios dependiendo de Longitud.
@@ -26,6 +28,19 @@ def generador_menus(top,end,content):
     print("* " + end + ("* " * ((77 - len(end)) // 2)) + "*")
 
 
+def dialogo():
+    dialogo_ganon = (("Ganon is powerful, are you sure you can defeat him?"),
+                     ("Ganon's strength is supernatural, Zelda fought with bravery."),
+                     ("To Ganon, you are like a fly, find a weak spot and attack."),
+                     ("Ganon will not surrender easily."),
+                     ("Ganon has fought great battles, is an expert fighter."),
+                     ("Link, transform your fears into strengths."),
+                     ("Keep it up, Link, Ganon can't hold out much longer."),
+                     ("Link, history repeats itself, Ganon can be defeated."),
+                     ("Think of all the warriors who have tried before."),
+                     ("You fight for the weaker ones, Link, persevere."))
+
+    return dialogo_ganon[random.randrange(len(dialogo_ganon))]
 
 # MAIN MENU
 help_main_menu_top = "Help, main menu "
@@ -120,7 +135,7 @@ queries_top = "Queries "
 queries_end = "Select X, Back  "
 queries_content = (("  "),("  "),
                    ("  1: User has played"),
-                   ("  2: Quantity of games played per user"),
+                   ("  2: Quantity of games played per xuser"),
                    ("  3: Weapons used per user and game where he spend more this weapon"),
                    ("  4: Meal eat per user and game where he eat more this meal"),
                    ("  5: Stadistic of 'Blood moons'"),
@@ -130,38 +145,47 @@ queries_content = (("  "),("  "),
                    )
 
 
-# HELP, INVENTORY
-# plot_top = "Help, inventory  "
-# plot_end = "Back  "
-# plot_content = (("  "),("  Type 'show inventory main' to show the main inventory"),
-#                 ("        (main, weapons, Food)"),
-#                 ("  Type 'eatX' to eat X,where X is a Food item"),
-#                 ("  Type 'Cook X' to Cook X, where X is a Food item"),
-#                 ("  Type 'equip X' to equip X, where X is a weapon"),
-#                 ("  Type 'unequip X' to unequip X, where X is a weapon"),
-#                 ("  "),
-#                 ("  Type 'back' now to go back to the 'Game'"),
-#                 ("  "))
-#
-# # LINK DEATH
-# plot_top = "Link Death  "
-# plot_end = "Continue  "
-# plot_content = (("  "),("  "),("  "),("  "),("  Game Over."),
-#                 ("  "),
-#                 ("  "),
-#                 ("  "),
-#                 ("  "),
-#                 ("  "))
-#
-# # ZELDA SAVED
-# plot_top = "Zelda saved "
-# plot_end = "Continue  "
-# plot_content = (("  "),("  "),("  "),("  "),("  Congratulations, Link has saved Princess Zelda."),
-#                 ("  Thanks for playing!"),
-#                 ("  "),
-#                 ("  "),
-#                 ("  "),
-#                 ("  "))
+#help, inventory
+help_inventory_top = "Help, inventory "
+help_inventory_end = "Back  "
+help_inventory_content = (("  "),
+                    ("  Type 'show inventory main' to show the main inventory"),
+                    ("       (main, weapons, Food)"),
+                    ("  Type 'eat X' to eat X, where X is a Food item"),
+                    ("  Type 'Cook X' to Cook X, where X is a Food item"),
+                    ("  Type 'equip X' to equip X, where X is a weapon"),
+                    ("  Type 'unequip X' to unequip X, where X is a weapon"),
+                    ("  Type 'back' now to go back to the 'Game'"),
+                    ("  "),
+                    ("  ")
+                   )
+
+
+
+# LINK DEATH
+death_top = "Link Death  "
+death_end = "Continue  "
+death_content = (("  "),("  "),("  "),("  "),("  Game Over."),
+                ("  "),
+                ("  "),
+                ("  "),
+                ("  "),
+                ("  "))
+
+# ZELDA SAVED
+zelda_saved_top = "Zelda saved "
+zelda_saved_end = "Continue  "
+zelda_saved_content = (("  "),("  "),("  "),("  "),("  Congratulations, Link has saved Princess Zelda."),
+                ("  Thanks for playing!"),
+                ("  "),
+                ("  "),
+                ("  "),
+                ("  "))
+
+
+
+
+
 
 # # MAIN MENU
 # generador_menus(help_main_menu_top, help_main_menu_end, help_main_menu_content)
