@@ -77,13 +77,13 @@ def PantallaPrincipal():
 
     def saveGames(lista):#esta funcion se encarga de pasarle la lista de las ultimas partidas guardadas +
         historial=[("")]  # a la funcion dialogos.generador_menus
-        diccionari_jugadors={}
+        diccionari_jugadors={}  #cursor.execute("select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s'), hearts from game")
         corazones_maximos=[]
         for i in range(len(lista)):
             cursor.execute("select count(*) from game_sanctuaries_opened where game_id = {} ".format(lista[i][0]))
             corazones_maximos.append(cursor.fetchone())
         for i in range(len(lista)):#agreagamos los resultados de la query anterior en un diccionario con el id de partida
-            diccionari_jugadors[i] = {"id":lista[i][0],"data_partida":lista[i][1],"player":lista[i][2],"region":lista[i][3], "corazones_actuales":lista[i][4], "corazones_maximos":corazones_maximos[i][0]+3}
+            diccionari_jugadors[i] = {"id":lista[i][0],"data_partida":lista[i][3],"player":lista[i][1],"region":lista[i][2], "corazones_actuales":lista[i][4], "corazones_maximos":corazones_maximos[i][0]+3}
 
         for i in range(len(diccionari_jugadors.keys())):
             for j in range(len(diccionari_jugadors.keys())-1):#ordenamos con bubble sort
@@ -433,5 +433,5 @@ def PantallaPrincipal():
             elif opcion == "Exit":
                 flag_00 = False
                 flag_0 = False
-
+                return flag_0,flag_00
 
