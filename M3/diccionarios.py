@@ -2,6 +2,7 @@ import os
 import mysql.connector
 
 
+
 config = {
     'user': 'zelda',
     'password': 'link',

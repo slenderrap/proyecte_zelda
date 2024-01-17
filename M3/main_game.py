@@ -7,6 +7,7 @@ import os
 import diccionarios
 import eventos
 from funciones.map import current_map
+import funciones.dialogos
 
 
 
@@ -67,7 +68,7 @@ def addbottomline_update_map(matriz):
     return
 
 # Dividir el mapa en líneas
-lineas = getattr(mapas,(current_map[10:]+"_map")).strip().split('\n')
+lineas = getattr(mapas,(funciones.map.current_map[10:]+"_map")).strip().split('\n')
 
 # Crear una lista de listas
 matriz = []
@@ -100,9 +101,9 @@ current_pos = []
 #funcion para cambiar la posicion inicial del mapa según su ubicacion
 def player_change_pos():
     global current_pos
-    if "hyrule" in current_map:
+    if "hyrule" in funciones.map.current_map:
         current_pos = [8, 10]
-    elif "death" in current_map:
+    elif "death" in funciones.map.current_map:
         current_pos = [9,2]
     #elif ""
 
@@ -119,8 +120,7 @@ command = ""
 #funcion que muestra el inventario actual seleccionado
 current_inventory = funciones.inventario.player_inventory_main
 
-current_map = "main_dict_death_hyrule"
-
+flag_00 = False #main menu
 flag_01 = True
 while flag_01:
     #INICIO DE ACCION
@@ -150,7 +150,6 @@ while flag_01:
 
     #mapas.actualizar_mapa(matriz)
     addbottomline_update_map(matriz)
-    print(current_map)
 
     #imprimimos la posiicion actual
     #print(current_pos)
@@ -221,59 +220,79 @@ while flag_01:
 
     if "show inventory food" in command:
         current_inventory = funciones.inventario.player_inventory_food
-    if "hyrule" in current_map:
+    if "hyrule" in funciones.map.current_map:
         if "go to gerudo" in command:
             funciones.map.current_map = "main_dict_gerudo"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [9,2]
+            continue
         if "go to death mountain" in command:
             funciones.map.current_map = "main_dict_death_mountain"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [9,2]
+            continue
         if "go to castle" in command:
             funciones.map.current_map = "main_dict_castle"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
-        continue
-    elif "death" in current_map:
+            continue
+    elif "death" in funciones.map.current_map:
         if "go to necluda" in command:
             funciones.map.current_map = "main_dict_necluda"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [2,2]
+            continue
         if "go to hyrule" in command:
             funciones.map.current_map = "main_dict_hyrule"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [8,10]
+            continue
         if "go to castle" in command:
             funciones.map.current_map = "main_dict_castle"
-    elif "gerudo" in current_map:
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
+            current_pos = [8,10]
+            continue
+    elif "gerudo" in funciones.map.current_map:
         if "go to necluda" in command:
             funciones.map.current_map = "main_dict_necluda"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [2,2]
+            continue
         if "go to hyrule" in command:
             funciones.map.current_map = "main_dict_hyrule"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [8,10]
+            continue
         if "go to castle" in command:
             funciones.map.current_map = "main_dict_castle"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
-        continue
-    elif "necluda" in current_map:
+            continue
+    elif "necluda" in funciones.map.current_map:
         if "go to death mountain" in command:
             funciones.map.current_map = "main_dict_death_mountain"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [9,2]
+            continue
         if "go to gerudo" in command:
             funciones.map.current_map = "main_dict_gerudo"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
+            current_pos = [9,2]
+            continue
         if "go to castle" in command:
             funciones.map.current_map = "main_dict_castle"
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
-        continue
+            continue
 
 
 
@@ -306,12 +325,24 @@ while flag_01:
         current_pos = current_pos_original
         matriz[current_pos[0]][current_pos[1]] = ["X"]
 
-    eventos.interactable_events(matriz,current_pos,prompt,command,getattr(diccionarios,current_map))
+    eventos.interactable_events(matriz,current_pos,prompt,command,getattr(diccionarios,funciones.map.current_map))
 
 
 
     #COMPROBAMOS LA VIDA DEL JUGADOR:
     if diccionarios.player_dict["hearts"] <= 0:
         eventos.historialPrompt(prompt, "You are dead!")
+
     # AQUI INVOCAMOS PANTALLA DE MUERTE
+    flag_02 = True
+    flag_01 = False
+
+while flag_02:#pantalla de muerte
+    funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end, funciones.dialogos.death_content)
+    prompt = input("Give an Order:")
+
+
+
+
+
 

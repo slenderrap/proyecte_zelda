@@ -130,18 +130,43 @@ necluda_map = ("\
 def update_map_pre_start(matriz):
     # Iterar sobre el diccionario
 
-    #HYRULE
-    for key, value in getattr(diccionarios,current_map).items():
+    for key, value in getattr(diccionarios,funciones.map.current_map).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
-                if "enemy" in subsubkey:
+                if "enemy_" in subsubkey:
+                    #antes de nada, borramos las posiciones del enemigo en el mapa original
+                    for i in range(len(matriz)):
+                        for j in range(len(matriz[0])):
+                            if matriz[i][j][0] == "E":
+                                matriz[i][j][0],matriz[i][j+1][0] = " "," "
+
                     # Cogemos las coordenadas y el número de vidas
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
 
-                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str
+                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
                     matriz[coordenadas[0]][coordenadas[1]] = [vidas]
-    # RESTO DE MAPAS...
+                    matriz[coordenadas[0]][coordenadas[1]-1] = ["E"]
+                if "chest_" in subsubkey:
+                    # Cogemos las coordenadas
+                    coordenadas = subsubvalue[1]
+                    if subsubvalue [2]["isopen"]:
+                        # Reemplazamos las coordenadas con el cofre abierto
+                        matriz[coordenadas[0]][coordenadas[1]] = ["W"]
+
+                if "sanctuary_" in subsubkey:
+                    # Cogemos las coordenadas
+                    coordenadas = subsubvalue[2]
+                    if subsubvalue [3]["isopen"]:
+                        # Reemplazamos las coordenadas con el cofre abierto
+                        matriz[coordenadas[0]][coordenadas[1]] = [" "]
+
+                if "tree_" in subsubkey:
+                    if subsubvalue[0] <= 0:
+                        # Cogemos las coordenadas
+                        coordenadas = subsubvalue[1]
+                        # Reemplazamos las coordenadas con el numero de turnos del arbol para aparecer
+                        matriz[coordenadas[0]][coordenadas[1]] = [str(subsubvalue[2])]
 
 
 def agregar_inventario(matriz,inventario):
@@ -163,6 +188,26 @@ def agregar_inventario(matriz,inventario):
 
 
 def actualizar_mapa(matriz):
+    #actualizamos vida enemigos en mapa
+    for key, value in getattr(diccionarios, funciones.map.current_map).items():
+        for subkey, subvalue in value.items():
+            for subsubkey, subsubvalue in subvalue.items():
+                if "enemy_" in subsubkey:
+                    # antes de nada, borramos las posiciones del enemigo en el mapa original
+                    for i in range(len(matriz)):
+                        for j in range(len(matriz[0])):
+                            if i < 11 and j < 58:
+                                if matriz[i][j][0] == "E":
+                                    matriz[i][j][0], matriz[i][j + 1][0] = " ", " "
+
+                    # Cogemos las coordenadas y el número de vidas
+                    coordenadas = subsubvalue[1]
+                    vidas = str(subsubvalue[2]["current_hearts"])
+
+                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
+                    matriz[coordenadas[0]][coordenadas[1]] = [vidas]
+                    matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
+
     # Desempaquetar la matriz e imprimir el mapa original
     for i in range(len(matriz)):
         for j in range(len(matriz[0])):

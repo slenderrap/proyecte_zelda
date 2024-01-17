@@ -1,5 +1,7 @@
 import diccionarios
 import random
+import funciones
+
 
 
 
@@ -263,12 +265,9 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 else:
                                     historialPrompt(prompt, "Enemy encountered!")
-                                    move_enemy(sub_value, matriz, getattr(diccionarios,diccionario_mapa),int(key), 4, sub_key, prompt)
+                                    move_enemy(sub_value, matriz, getattr(diccionarios,funciones.map.current_map),int(key), 4, sub_key, prompt)
 
 
-                                    #Restamos en el juego la vida del enemigo
-                                    matriz[sub_value[1][0]][sub_value[1][1]][0] = str(
-                                        int(matriz[sub_value[1][0]][sub_value[1][1]][0]) - 1)
                                     #Restamos la vida del enemigo en el diccionario
                                     sub_value[2]["current_hearts"] -= 1
 
