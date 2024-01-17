@@ -63,6 +63,63 @@ death_mountain_map = ("* Death Mountain  * * * * * * * * * * * * * * * * * * * *
 *                                                         *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
+gerudo_map_original = ("\
+* Gerudo  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*OOOOOOOOOOOOOOOO                                   M     *                   *\n\
+*  OOOOO  OOOOO              TTT                          *                   *\n\
+*                              TT             S4?        O*                   *\n\
+*  E1          C                                        OO*                   *\n\
+*                                                       OO*                   *\n\
+*             AAAAAA                  E2                  *                   *\n\
+*             AAAAAAAA                                    *                   *\n\
+*    T       AAAAAAA                 OOOOO      F       ~~*                   *\n\
+* X     M      AAA        OOOOO    OOOOO              ~~~~*                   *\n\
+*                OOOOOOOOOOOOOOOOOOOO              ~~~~~~~*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+gerudo_map = ("\
+* Gerudo  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*OOOOOOOOOOOOOOOO                                   M     *                   *\n\
+*  OOOOO  OOOOO              TTT                          *                   *\n\
+*                              TT             S4?        O*                   *\n\
+*  E1          C                                        OO*                   *\n\
+*                                                       OO*                   *\n\
+*             AAAAAA                  E2                  *                   *\n\
+*             AAAAAAAA                                    *                   *\n\
+*    T       AAAAAAA                 OOOOO      F       ~~*                   *\n\
+* X     M      AAA        OOOOO    OOOOO              ~~~~*                   *\n\
+*                OOOOOOOOOOOOOOOOOOOO              ~~~~~~~*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+necluda_map_original = ("\
+* Necluda * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                     M                                   *                   *\n\
+* X       E1                         TT            M      *                   *\n\
+*OO                C               TT                ~~~~~*                   *\n\
+*OOOOO                                           ~~~~~~~~~*                   *\n\
+*OOOO                                              ~~~~~~~*                   *\n\
+*              T                      E2           S5?~~~~*                   *\n\
+*     F       TT                                ~~~~~~~~~~*                   *\n\
+*~~            TT                                  ~~~~~~~*                   *\n\
+*~~~~~~~~              M         S6?         ~~~~~~~~~~~~~*                   *\n\
+*~~~~~~~~~~~~                           ~~~~~~~~~~~~~~~~~~*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+necluda_map = ("\
+* Necluda * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                     M                                   *                   *\n\
+* X       E1                         TT            M      *                   *\n\
+*OO                C               TT                ~~~~~*                   *\n\
+*OOOOO                                           ~~~~~~~~~*                   *\n\
+*OOOO                                              ~~~~~~~*                   *\n\
+*              T                      E2           S5?~~~~*                   *\n\
+*     F       TT                                ~~~~~~~~~~*                   *\n\
+*~~            TT                                  ~~~~~~~*                   *\n\
+*~~~~~~~~              M         S6?         ~~~~~~~~~~~~~*                   *\n\
+*~~~~~~~~~~~~                           ~~~~~~~~~~~~~~~~~~*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+
 
 #Ancho mapa:57
 #Ancho inventario:19
@@ -74,7 +131,7 @@ def update_map_pre_start(matriz):
     # Iterar sobre el diccionario
 
     #HYRULE
-    for key, value in getattr(diccionarios,current_map):
+    for key, value in getattr(diccionarios,current_map).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy" in subsubkey:
@@ -115,6 +172,33 @@ def actualizar_mapa(matriz):
                 print(matriz[i][j][0])
 
 
+def change_map():
+    matriz = []
+    if "gerudo" in funciones.map.current_map:
+        lineas = gerudo_map.strip().split('\n')
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+
+    elif "necluda" in funciones.map.current_map:
+        lineas = necluda_map.strip().split('\n')
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+
+    elif "death" in funciones.map.current_map:
+        lineas = death_mountain_map.strip().split('\n')
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+
+    elif "hyrule" in funciones.map.current_map:
+        lineas = hyrule_map.strip().split('\n')
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+
+    return matriz
 
 
 

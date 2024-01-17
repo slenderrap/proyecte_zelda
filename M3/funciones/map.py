@@ -1,1 +1,1 @@
-current_map="main_dict_death_mountain"
+current_map="main_dict_hyrule"

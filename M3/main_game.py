@@ -46,21 +46,22 @@ def addbottomline_update_map(matriz):
     input_variable = ["Exit", "Attack", "Go"]
     for j in range(y - 1, y + 2):
         for i in range(x - 1, x + 2):
-            # Agregar listado de inputs disponibles
-            if diccionarios.player_dict["weapons_inventory"] and "Equip" not in input_variable:
-                input_variable.append("Equip")
-            if diccionarios.player_dict["weapons_equipped"] and "Unequip" not in input_variable:
-                input_variable.append("Unequip")
-            if diccionarios.player_dict["food_inventory"] and "Eat" not in input_variable:
-                input_variable.append("Eat")
-            if matriz[i][j][0] == "C" and "Cook" not in input_variable:
-                input_variable.append("Cook")
-            if matriz[i][j][0] == "~" and "Fish" not in input_variable:
-                input_variable.append("Fish")
-            if matriz[i][j][0] in ("M", "W","S") and "Open" not in input_variable:
-                input_variable.append("Open")
+            if (i == x and j != y) or (i != x and j == y):
+                # Agregar listado de inputs disponibles
+                if diccionarios.player_dict["weapons_inventory"] and "Equip" not in input_variable:
+                    input_variable.append("Equip")
+                if diccionarios.player_dict["weapons_equipped"] and "Unequip" not in input_variable:
+                    input_variable.append("Unequip")
+                if diccionarios.player_dict["food_inventory"] and "Eat" not in input_variable:
+                    input_variable.append("Eat")
+                if matriz[i][j][0] == "C" and "Cook" not in input_variable:
+                    input_variable.append("Cook")
+                if matriz[i][j][0] == "~" and "Fish" not in input_variable:
+                    input_variable.append("Fish")
+                if matriz[i][j][0] in ("M", "W","S") and "Open" not in input_variable:
+                    input_variable.append("Open")
 
-            matriz = update_map_bl()
+                matriz = update_map_bl()
 
     mapas.actualizar_mapa(matriz)
     return
@@ -118,11 +119,12 @@ command = ""
 #funcion que muestra el inventario actual seleccionado
 current_inventory = funciones.inventario.player_inventory_main
 
+current_map = "main_dict_death_hyrule"
+
 flag_01 = True
 while flag_01:
     #INICIO DE ACCION
 
-    current_map = "main_dict_death_mountain"
 
 
     #verificamos si hay arboles muertos
@@ -142,19 +144,15 @@ while flag_01:
 
 
 
-
-
-
-
-
     #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
     LimpiarPantalla()
     matriz = mapas.agregar_inventario(matriz,current_inventory)
 
     #mapas.actualizar_mapa(matriz)
     addbottomline_update_map(matriz)
+    print(current_map)
 
-    #imprimimos el mapa
+    #imprimimos la posiicion actual
     #print(current_pos)
 
     if len(prompt) != 0:
@@ -225,32 +223,58 @@ while flag_01:
         current_inventory = funciones.inventario.player_inventory_food
     if "hyrule" in current_map:
         if "go to gerudo" in command:
-            current_map = "main_dict_gerudo"
+            funciones.map.current_map = "main_dict_gerudo"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to death mountain" in command:
-            current_map = "main_dict_death_mountain"
+            funciones.map.current_map = "main_dict_death_mountain"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to castle" in command:
-            current_map = "main_dict_castle"
+            funciones.map.current_map = "main_dict_castle"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
+        continue
     elif "death" in current_map:
         if "go to necluda" in command:
-            current_map = "main_dict_necluda"
+            funciones.map.current_map = "main_dict_necluda"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to hyrule" in command:
-            current_map = "main_dict_hyrule"
+            funciones.map.current_map = "main_dict_hyrule"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to castle" in command:
-            current_map = "main_dict_castle"
+            funciones.map.current_map = "main_dict_castle"
     elif "gerudo" in current_map:
         if "go to necluda" in command:
-            current_map = "main_dict_necluda"
+            funciones.map.current_map = "main_dict_necluda"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to hyrule" in command:
-            current_map = "main_dict_hyrule"
+            funciones.map.current_map = "main_dict_hyrule"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to castle" in command:
-            current_map = "main_dict_castle"
+            funciones.map.current_map = "main_dict_castle"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
+        continue
     elif "necluda" in current_map:
         if "go to death mountain" in command:
-            current_map = "main_dict_death_mountain"
+            funciones.map.current_map = "main_dict_death_mountain"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to gerudo" in command:
-            current_map = "main_dict_gerudo"
+            funciones.map.current_map = "main_dict_gerudo"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
         if "go to castle" in command:
-            current_map = "main_dict_castle"
+            funciones.map.current_map = "main_dict_castle"
+            matriz = mapas.change_map()
+            mapas.update_map_pre_start(matriz)
+        continue
+
 
 
 
