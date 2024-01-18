@@ -1,7 +1,16 @@
 import diccionarios
 import inventario
 import funciones.map
+import os
 
+
+
+
+def LimpiarPantalla():
+    if os.name == "posix":
+        os.system("clear")
+    elif os.name == "ce" or os.name == "nt" or os.name == "dos":
+        os.system("cls")
 #MAPAS
 
 
@@ -147,6 +156,20 @@ castle_map = ("\
 * OTX                  \_/_(/| |    |#|    | |    '-//    *                   *\n\
 * OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+show_map = ("\
+* Map * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                                                         *                   *\n\
+*  Hyrule       S0{}                       Death mountain  *                   *\n\
+*                               S2{}                       *                   *\n\
+*        S1{}                                       S3{}    *                   *\n\
+*                                                         *                   *\n\
+*                         Castle                          *                   *\n\
+*                                                         *                   *\n\
+*                 S4{}                                 S5{} *                   *\n\
+*  Gerudo                               S6{}      Necluda  *                   *\n\
+*                                                         *                   *\n\
+* Back  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
 #Ancho mapa:57
 #Ancho inventario:19
@@ -301,3 +324,100 @@ def change_map():
             matriz.append(fila)
 
     return matriz
+
+
+def mostrarMapa(inventario):
+    prompt_add = ""
+    while True:
+        LimpiarPantalla()
+        count = 0
+        matriz = []
+        santuaries = sanctuariesOpened()
+        lineas = show_map.strip().split('\n')
+        for linea in lineas:
+            str = ""
+            if "{}" in linea:
+                for i in range(linea.count("{}")):
+                    if len(matriz) == 4:
+                        if santuaries[count + 1]:
+                            str += " "
+                            count += 1
+                        else:
+                            str += "?"
+                            count += 1
+                    elif len(matriz) == 5:
+                        for j in range(1):
+                            if santuaries[count - 1]:
+                                str += " "
+                                count += 1
+                            else:
+                                str += "?"
+                                count += 1
+                        if santuaries[count]:
+                            str += " "
+                            count += 1
+                        else:
+                            str += "?"
+                            count += 1
+
+                    else:
+
+                        if santuaries[count]:
+                            str += " "
+                            count += 1
+                        else:
+                            str += "?"
+                            count += 1
+                if i == 0:
+                    fila = [[c] for c in linea.format(str)]
+                else:
+                    fila = [[c] for c in linea.format(str[0], str[1])]
+                matriz.append(fila)
+
+
+            else:
+                fila = [[c] for c in linea]
+                matriz.append(fila)
+
+        matriz = agregar_inventario(matriz, inventario)
+
+        for i in range(len(matriz)):
+            for j in range(len(matriz[0])):
+                if j != 78:
+                    print(matriz[i][j][0], end="")
+                else:
+                    print(matriz[i][j][0])
+        if len(prompt_add) > 0:
+            print(prompt_add)
+
+        opc = input("Give an Order:").capitalize()
+        if opc != "Back":
+            if len(prompt_add) != 0:
+                prompt_add = prompt_add + "\nInvalid action"
+            else:
+                prompt_add = "Invalid action"
+        else:
+            prompt_add += "\nBacK"
+            return prompt_add
+
+
+def sanctuariesOpened():
+    count = 0
+    sanctuaries = []
+    for clave, valor in diccionarios.main_dict_hyrule.items():
+        if valor.get(3):
+            sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
+            count += 1
+    for clave, valor in diccionarios.main_dict_death_mountain.items():
+        if valor.get(3):
+            sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
+            count += 1
+    for clave, valor in diccionarios.main_dict_gerudo.items():
+        if valor.get(3):
+            sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
+            count += 1
+    for clave, valor in diccionarios.main_dict_necluda.items():
+        if valor.get(3):
+            sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
+            count += 1
+    return sanctuaries

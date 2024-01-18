@@ -513,22 +513,22 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     if diccionarios.player_dict["food_inventory"][0][1]["quantity"]>= 1 and \
                                             diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
                                         # restamos ingredientes de diccionario
-                                        diccionarios.player_dict["food_inventory"].remove(1)
-                                        diccionarios.player_dict["food_inventory"].remove(6)
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] -= 1
+                                        diccionarios.player_dict["food_inventory"][2][3]["quantity"] -= 1
 
                                         # cocinamos pescatarian
-                                        historialPrompt(prompt, "Pescatarian cooked!")
-                                        diccionarios.player_dict["food_inventory"].append(4)
+                                        historialPrompt(prompt, "Roasted cooked!")
+                                        diccionarios.player_dict["food_inventory"][5][6]["quantity"] += 1
                                     else:
                                         #si no hay ingredientes suficientes se añade al prompt un mensaje
 
-                                        if not diccionarios.player_dict["food_inventory"].count(1)>= 1 and not diccionarios.player_dict["food_inventory"].count(6)>= 1:
+                                        if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and not diccionarios.player_dict["food_inventory"][2][3]["quantity"]>= 1:
                                             historialPrompt(prompt, "Not enough Vegetable and Meat!")
                                         else:
-                                            if not diccionarios.player_dict["food_inventory"].count(1)>= 1:
+                                            if not diccionarios.player_dict["food_inventory"][2][3]["quantity"]>= 1:
                                                 historialPrompt(prompt, "Not enough Meat!")
 
-                                            if not diccionarios.player_dict["food_inventory"].count(6)>= 1:
+                                            if not diccionarios.player_dict["food_inventory"][0][1]["quantity"]>= 1:
                                                 historialPrompt(prompt, "Not enough Vegetable!")
 
                             # FUNCION EQUIP

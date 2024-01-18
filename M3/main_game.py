@@ -255,6 +255,17 @@ while flag_01:
 
     elif "show inventory weapons" in command:
         current_inventory = inventario.player_inventory_weapons
+    elif "show map" in command:
+        eventos.historialPrompt(prompt, "show map")
+        prompt_add = mapas.mostrarMapa(current_inventory)
+        eventos.historialPrompt(prompt, prompt_add)
+
+    elif "back" in command and  "necluda" in last_map:
+        funciones.map.current_map = "main_dict_necluda"
+        matriz = mapas.change_map()
+        mapas.update_map_pre_start(matriz)
+        current_pos = [2, 2]
+        continue
 
     elif "show inventory food" in command:
         current_inventory = inventario.player_inventory_food
@@ -463,6 +474,10 @@ while flag_03: # GANON
 
     elif "show inventory food" in command:
         current_inventory = inventario.player_inventory_food
+    elif "show map" in command:
+        eventos.historialPrompt(prompt, "show map")
+        prompt_add = mapas.mostrarMapa(current_inventory)
+        eventos.historialPrompt(prompt, prompt_add)
 
     elif "back" in command and  "necluda" in last_map:
         funciones.map.current_map = "main_dict_necluda"
@@ -515,7 +530,6 @@ while flag_03: # GANON
 
 
 
-
     # posicion actual del jugador
     matriz[current_pos[0]][current_pos[1]] = [" "]
 
@@ -552,10 +566,18 @@ while flag_03: # GANON
         flag_03 = False
 
 
-while flag_02:#pantalla de muerte
-    LimpiarPantalla()
-    funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end, funciones.dialogos.death_content)
-    prompt = input("Give an Order:")
+while flag_02:  # pantalla de muerte
+            funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end,
+                                            funciones.dialogos.death_content)
+            for i in prompt:
+                print(i)
+            prompt = input("Type 'Continue' to continue: ").capitalize()
+            if prompt != "Continue":
+                eventos.historialPrompt(prompt, "Invalid action")
+            else:
+                eventos.historialPrompt(prompt, prompt)
+                flag_02=False
+                flag_00=True
 
 
 
