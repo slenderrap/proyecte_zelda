@@ -66,8 +66,8 @@ dades = {1 : {"blood_moon_count":25},2 :{"current_map":"main_dict_hyrule"} }
 #Apple = 6
 
 
-#REVISAR WEAPONS INVENTORY, puede ser innecesario
-player_dict = {'game_id':1,'user_name':'Player 1','hearts': 3,"hearts_max": 5, 'region':'Hyrule',
+#PREGUNTAR A SERGIO POR QUE NO CAMBIAN NI WEAPONS INVENTORY NI INVENTORY MAIN AL NORRAR ARMA
+player_dict = {'game_id':1,'user_name':'Player 1','hearts': 5,"hearts_max": 5, 'region':'Hyrule',
                'weapons_equipped': [{1:{'weapon_name':'Wood Sword',"uses_og":5,"uses_left":5}},
                                     {2:{'shield_name':'Shield',"uses_og":9,"uses_left":5}}],
                'weapons_inventory': [{1:{"name":"Wood Sword","quantity":4,'uses':0}},
@@ -102,7 +102,7 @@ main_dict_hyrule = {
     5: {3: {"sanctuary_0": [[6,44],[9,45],[9,45],{"isopen": True}]}},
     6: {3: {"sanctuary_1": [[9,31],[9,32],[9,33],{"isopen": False}]}},
     7: {4: {"enemy_1": [[9,21],[9,22],{"isdead": False,"current_hearts" : 1 }]}},
-    8: {4: {"enemy_2": [[5,36],[5,37],{"isdead": False,"current_hearts" : 9 }]}},
+    8: {4: {"enemy_2": [[5,36],[5,37],{"isdead": False,"current_hearts" : 4 }]}},
     9: {5: {"fox_1": [1,[9,53]]}},
     10: {6: {"already_fished" : False}}
 

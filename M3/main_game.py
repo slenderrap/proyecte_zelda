@@ -64,7 +64,6 @@ def addbottomline_update_map(matriz):
 
                 matriz = update_map_bl()
 
-    mapas.actualizar_mapa(matriz)
     return
 
 # Dividir el mapa en líneas
@@ -126,7 +125,6 @@ while flag_01:
     #INICIO DE ACCION
 
 
-
     #verificamos si hay arboles muertos
     for key, value in getattr(diccionarios,funciones.map.current_map).items():
         if 1 in value:
@@ -147,16 +145,20 @@ while flag_01:
     #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
     LimpiarPantalla()
     matriz = mapas.agregar_inventario(matriz,current_inventory)
+    #fix, agregamos en cada iteracion al jugador en el mapa
+    matriz[current_pos[0]][current_pos[1]] = ["X"]
 
-    #mapas.actualizar_mapa(matriz)
+    mapas.actualizar_mapa(matriz)
     addbottomline_update_map(matriz)
 
-    #imprimimos la posiicion actual
+
+    #imprimimos la posicion actual
     #print(current_pos)
 
     if len(prompt) != 0:
         for i in prompt:
             print(i)
+    print(current_pos)
 
 
 
@@ -176,21 +178,43 @@ while flag_01:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             x -= int(command[command.find(" ", 3) + 1:])
+            #si en el camino a esa casilla hay algun obstaculo, no lo atravesaremos
+            for i in range((current_pos[1] - x)):
+                if matriz[current_pos[0]][current_pos[1]-(i+1)] != [" "]:
+                    x += int(command[command.find(" ", 3) + 1:])
+                    break
+
 
     if "go right" in command:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             x += int(command[command.find(" ", 3) + 1:])
+            # si en el camino a esa casilla hay algun obstaculo, no lo atravesaremos
+            for i in range((x - current_pos[1])):
+                if matriz[current_pos[0]][current_pos[1] + (i+1)] != [" "]:
+                    x -= int(command[command.find(" ", 3) + 1:])
+                    break
 
     if "go up" in command:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             y -= int(command[command.find(" ", 3) + 1:])
+            # si en el camino a esa casilla hay algun obstaculo, no lo atravesaremos
+            for i in range((current_pos[0] - y)):
+                if matriz[current_pos[0] - (i + 1)][current_pos[1]] != [" "]:
+                    y += int(command[command.find(" ", 3) + 1:])
+                    break
 
     if "go down" in command:
         command.replace(" ", "")
         if command[command.find(" ", 3) + 1:].isdigit():
             y += int(command[command.find(" ", 3) + 1:])
+            # si en el camino a esa casilla hay algun obstaculo, no lo atravesaremos
+            for i in range((y - current_pos[0])):
+                if matriz[current_pos[0] + (i + 1)][current_pos[1]] != [" "]:
+                    y -= int(command[command.find(" ", 3) + 1:])
+                    break
+
 
     if "go by water" in command:
         new_pos = eventos.move_to_X(matriz, current_pos,["~"])
@@ -238,6 +262,7 @@ while flag_01:
             matriz = mapas.change_map()
             mapas.update_map_pre_start(matriz)
             continue
+
     elif "death" in funciones.map.current_map:
         if "go to necluda" in command:
             funciones.map.current_map = "main_dict_necluda"
@@ -332,10 +357,9 @@ while flag_01:
     #COMPROBAMOS LA VIDA DEL JUGADOR:
     if diccionarios.player_dict["hearts"] <= 0:
         eventos.historialPrompt(prompt, "You are dead!")
-
-    # AQUI INVOCAMOS PANTALLA DE MUERTE
-    flag_02 = True
-    flag_01 = False
+        # AQUI INVOCAMOS PANTALLA DE MUERTE
+        flag_02 = True
+        flag_01 = False
 
 while flag_02:#pantalla de muerte
     funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end, funciones.dialogos.death_content)

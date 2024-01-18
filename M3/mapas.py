@@ -203,10 +203,16 @@ def actualizar_mapa(matriz):
                     # Cogemos las coordenadas y el número de vidas
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
+                    #si el numero de vidas es mayor a 0, se imprimira el enemigo en el mapa, si no, no
+                    if  int(vidas) <= 0:
+                        # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
+                        matriz[coordenadas[0]][coordenadas[1]] = [" "]
+                        matriz[coordenadas[0]][coordenadas[1] - 1] = [" "]
+                    else:
+                        # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
+                        matriz[coordenadas[0]][coordenadas[1]] = [vidas]
+                        matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
 
-                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
-                    matriz[coordenadas[0]][coordenadas[1]] = [vidas]
-                    matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
 
     # Desempaquetar la matriz e imprimir el mapa original
     for i in range(len(matriz)):

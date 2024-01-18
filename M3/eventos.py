@@ -45,94 +45,83 @@ def move_to_X(matriz, current_position,casilla):
 
 
 #Variable movimiento npcs
-def move_enemy(current_pos,matriz,main_dict,object_id,npc_id, npc_name,prompt):
+def move_enemy(current_pos, matriz, main_dict, object_id, npc_id, npc_name):
     current_positions = main_dict[object_id][npc_id][npc_name][:2]
-    old_pos = current_positions.copy()
 
-    #Derecha = 1
-    #Izquierda = 2
-    #Arriba = 3
-    #Abajo = 4
+    # Derecha = 1
+    # Izquierda = 2
+    # Arriba = 3
+    # Abajo = 4
 
-    directions = ["derecha", "arriba", "izquierda", "abajo"]
-    #print(random.shuffle(directions))
+    #ponemos las posibles direcciones en una lista
+
+    directions = ["derecha","arriba","abajo","izquierda"]
+
+    #mezclamos la lista
     random.shuffle(directions)
-
-
-
     new_positions = current_pos.copy()
+    print(f"posicion antes de cambiar: {new_positions}")
+
     for direction in directions:
         positions_occupied = False
-        # Calcula las nuevas coordenadas según la dirección
+        temp_old_pos = [[current_positions[0][0], current_positions[0][1] + 2],
+                        [current_positions[1][0], current_positions[1][1] + 2]].copy()
 
+        # Calcula las nuevas coordenadas según la dirección
         if direction == "arriba":
             new_positions[0][0] -= 1
             new_positions[1][0] -= 1
-            old_pos = [[new_positions[0][0]+1,new_positions[0][1]],[new_positions[1][0]+1,new_positions[1][1]]]
+            temp_old_pos = [[new_positions[0][0] + 1, new_positions[0][1]],
+                            [new_positions[1][0] + 1, new_positions[1][1]]]
 
         elif direction == "abajo":
             new_positions[0][0] += 1
             new_positions[1][0] += 1
-            old_pos = [[new_positions[0][0]-1,new_positions[0][1]],[new_positions[1][0]-1,new_positions[1][1]]]
+            temp_old_pos = [[new_positions[0][0] - 1, new_positions[0][1]],
+                            [new_positions[1][0] - 1, new_positions[1][1]]]
 
         elif direction == "izquierda":
-            new_positions[0][1] -= 2
-            new_positions[1][1] -= 2
-            old_pos = [[new_positions[0][0],new_positions[0][1]+2],[new_positions[1][0],new_positions[1][1]+2]]
+            new_positions[0][1] -= 1
+            new_positions[1][1] -= 1
+
+            temp_old_pos = [[new_positions[0][0], new_positions[0][1] + 1],
+                            [new_positions[1][0], new_positions[1][1] + 1]]
 
         elif direction == "derecha":
-            new_positions[0][1] += 2
-            new_positions[1][1] += 2
-            old_pos = [[new_positions[0][0],new_positions[0][1]-2],[new_positions[1][0],new_positions[1][1]-2]]
+            new_positions[0][1] += 1
+            new_positions[1][1] += 1
+            print("derecha")
+
+            temp_old_pos = [[new_positions[0][0], new_positions[0][1] - 1],
+                            [new_positions[1][0], new_positions[1][1] - 1]]
+
+        new_positions = [new_positions[0], new_positions[1]]
+        print(f"posicion despues de cambiar: {new_positions}")
 
 
-
-
-        new_positions = [new_positions[0],new_positions[1]]
         # Verifica si alguna de las nuevas posiciones está ocupada
         for pos in new_positions:
-            print("--")
-            if positions_occupied:
-                new_positions = old_pos.copy()
-                continue
-            print(new_positions)
-            if matriz[pos[0]][pos[1]] != [" "] :
-                print("Pos occupied")
+            print("a")
+            print(pos)
+            print(matriz[pos[0]][pos[1]])
+            if matriz[pos[0]][pos[1]] not in (
+            [" "], ["E"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]):
+                print("ocupado")
+                current_pos[0],current_pos[1] = temp_old_pos[0],temp_old_pos[1]
                 positions_occupied = True
-
-
-
+                break
+        #current_pos[0][0],current_pos[0][1],current_pos[1][0],current_pos[1][1], = old_pos[0][0],old_pos[0][1],old_pos[1][0],old_pos[1][1]
 
         # Si no hay posiciones ocupadas, actualiza las coordenadas y sale del bucle
         if not positions_occupied:
-            #print(current_pos[0][0], (current_pos[0][1])-1)
-            #main_dict[7][npc_id][npc_name][:2] = new_positions
-            char_1 = matriz[old_pos[0][0]][old_pos[0][1]]
-            char_2 = matriz[old_pos[1][0]][old_pos[1][1]]
 
-            #imprimimos la nueva posicion del npc en la matriz
-            matriz[new_positions[0][0]][new_positions[0][1]] = char_1
-            matriz[new_positions[1][0]][new_positions[1][1]] = char_2
-
-            print(matriz[old_pos[0][0]][old_pos[0][1]])
-            #borramos las posiciones anteriores
-            matriz[old_pos[0][0]][old_pos[0][1]] = [" "]
-            matriz[old_pos[1][0]][old_pos[1][1]] = [" "]
-
-            historialPrompt(prompt,f"Enemy '{npc_name}' moved to positions {current_positions}")
+            # Borramos las posiciones anteriores
+            matriz[temp_old_pos[0][0]][temp_old_pos[0][1]] = [" "]
+            matriz[temp_old_pos[1][0]][temp_old_pos[1][1]] = [" "]
 
             current_pos[0] = current_positions[0]
             current_pos[1] = current_positions[1]
             return
-
-    # Si todas las posiciones están ocupadas, imprime un mensaje
-    else:
-        print(f"All positions occupied, enemy '{npc_name}' can't move.")
-
-
-
-
-
 
 
 
@@ -265,11 +254,15 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 else:
                                     historialPrompt(prompt, "Enemy encountered!")
-                                    move_enemy(sub_value, matriz, getattr(diccionarios,funciones.map.current_map),int(key), 4, sub_key, prompt)
+                                    move_enemy(sub_value, matriz, getattr(diccionarios,funciones.map.current_map),int(key), 4, sub_key)
 
 
                                     #Restamos la vida del enemigo en el diccionario
                                     sub_value[2]["current_hearts"] -= 1
+                                    #Restamos uno de uso al arma equipada
+                                    diccionarios.player_dict['weapons_equipped'][0][1]['uses_left'] -= 1
+
+
 
                                     #Si la vida del enemigo llega a 0, esta se elimina
                                     if matriz[sub_value[1][0]][sub_value[1][1]][0] == "0":
@@ -432,10 +425,12 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             # FUNCION COFRE
                             if matriz[i][j][0] in ("M", "W") and command.lower() == "open chest":
                                 check_cofre(diccionario, i, j)
+                                return
 
                             # FUNCION ARBOL
                             if (matriz[i][j][0] == "T"  or matriz[i][j][0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) and command.lower() == "attack":
                                 tree_event(diccionario, i, j)
+                                return
 
                             # FUNCION SANTUARIOS
                             if (matriz[i][j][0] == "S" or matriz[i][j][0] in ("0","1","2","3","4","5","6","7","8","9") or matriz[i][j][0] == "?") and command.lower() == "open":
@@ -443,12 +438,15 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     return
 
                             # FUNCION ENEMIGOS
+                            print(f"Coordenadas: {j} {i} Matriz de enemigos:{matriz[i][j][0]}")
                             if (matriz[i][j][0] == "E" or matriz[i][j][0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) and command.lower() == "attack":
                                 enemy_event(diccionario, i, j, matriz, prompt)
+                                return
 
                             # FUNCION FOX
                             if matriz[i][j][0] == "F" and command.lower() == "attack":
                                 fox_event(diccionario, i, j)
+                                return
 
                             # FUNCION PESCAR
                             if matriz[i][j][0] == "~" and command.lower() == "fish":
@@ -531,16 +529,44 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                             if not diccionarios.player_dict["food_inventory"].count(6)>= 1:
                                                 historialPrompt(prompt, "Not enough Vegetable!")
 
+                            # FUNCION EQUIP
+                            if "equip sword" in command.lower():
+                                if random.randint(1,2) == 1:
+                                    # agregamos la espada de madera
+                                    if "wood sword" in diccionarios.player_dict["weapons_inventory"][0][1]["name"].lower():
+                                        diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Sword"
+                                    else:
+                                        historialPrompt(prompt, "You have no Wood Sword to equip")
+                                        return
+
+                                else:
+                                    # agregamos la espada
+                                    diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Sword"
+                                    historialPrompt(prompt, "You have no Sword to equip")
+                                    return
+                                historialPrompt(prompt, "Weapon equipped")
+                                return
+
+                            # FUNCION UNEQUIP
+                            if "unequip sword" in command.lower() and "sword" in diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"].lower():
+                                #eliminamos la espada
+                                diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = " "
+                                historialPrompt(prompt,"Weapon unequipped")
+                                return
+
+                            #Funcion Hierba
+                            if matriz[i][j][0] == " " and "attack grass" in command.lower():
+                                if diccionarios.player_dict["weapons_equipped"]:
+                                    if random.randint(1,10) == 1:
+                                        historialPrompt(prompt, "You got a lizard!")
+                                        diccionarios.player_dict["food_inventory"].append(1)
+                                        #restar 1 a espada
+                                        diccionarios.player_dict["weapons_equipped"][0][1]["uses_left"] -= 1
+                                        return
 
                         except IndexError:
                             pass
-                    #Funcion Hierba
-                    # if matriz[i][j][0] == " " and "attack" in command.lower():
-                    #     if diccionarios.player_dict["weapons_equipped"]:
-                    #         if random.randint(1,10) == 1:
-                    #             historialPrompt(prompt, "You got a lizard!")
-                    #             diccionarios.player_dict["food_inventory"].append(1)
-                    #     return
+
 
 
 
