@@ -121,6 +121,34 @@ necluda_map = ("\
 
 
 
+castle_map_original = ("\
+* Castle  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                                                         *                   *\n\
+*        \ /                            Ganon ♥♥♥♥♥♥♥♥   *                   *\n\
+*      -- O --                                            *                   *\n\
+*        / \                                              *                   *\n\
+*                             |>  v-v-v-v   |>            *                   *\n\
+*                     ,   ,  /_\  |     |  /_\            *                   *\n\
+*                     |\_/|  | |'''''''''''| |            *                   *\n\
+*                     (q p),-| | ||  _  || | |'-._  |\    *                   *\n\
+* OT!                  \_/_(/| |    |#|    | |    '-//    *                   *\n\
+* OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+castle_map = ("\
+* Castle  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                                                         *                   *\n\
+*        \ /                            Ganon ♥♥♥♥♥♥♥♥    *                   *\n\
+*      -- O --                                            *                   *\n\
+*        / \                                              *                   *\n\
+*                             |>  v-v-v-v   |>            *                   *\n\
+*                     ,   ,  /_\  |     |  /_\            *                   *\n\
+*                     |\_/|  | |'''''''''''| |            *                   *\n\
+*                     (q p),-| | ||  _  || | |'-._  |\    *                   *\n\
+* OTX                  \_/_(/| |    |#|    | |    '-//    *                   *\n\
+* OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
 #Ancho mapa:57
 #Ancho inventario:19
 
@@ -245,6 +273,12 @@ def change_map():
 
     elif "hyrule" in funciones.map.current_map:
         lineas = hyrule_map.strip().split('\n')
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+
+    elif "castle" in funciones.map.current_map:
+        lineas = castle_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)

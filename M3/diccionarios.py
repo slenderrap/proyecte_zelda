@@ -67,7 +67,7 @@ dades = {1 : {"blood_moon_count":25},2 :{"current_map":"main_dict_hyrule"} }
 
 
 #PREGUNTAR A SERGIO POR QUE NO CAMBIAN NI WEAPONS INVENTORY NI INVENTORY MAIN AL NORRAR ARMA
-player_dict = {'game_id':1,'user_name':'Player 1','hearts': 5,"hearts_max": 5, 'region':'Hyrule',
+player_dict = {'game_id':1,'user_name':'Player 1','hearts': 9,"hearts_max": 9, 'region':'Hyrule',
                'weapons_equipped': [{1:{'weapon_name':'Wood Sword',"uses_og":5,"uses_left":5}},
                                     {2:{'shield_name':'Shield',"uses_og":9,"uses_left":5}}],
                'weapons_inventory': [{1:{"name":"Wood Sword","quantity":4,'uses':0}},
@@ -159,6 +159,12 @@ main_dict_necluda = {
     16: {4: {"enemy_2": [[6,38],[6,39],{"isdead": False,"current_hearts" : 2 }]}},
     17: {5: {"fox_1": [1,[7,6]]}},
     18: {6: {"already_fished" : False}}
+
+}
+
+main_dict_castle = {
+    "ganon_hearts": 8,
+    "isganon_dead":False
 
 }
 
