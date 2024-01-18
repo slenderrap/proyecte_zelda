@@ -67,17 +67,17 @@ dades = {1 : {"blood_moon_count":25},2 :{"current_map":"main_dict_hyrule"} }
 
 
 #PREGUNTAR A SERGIO POR QUE NO CAMBIAN NI WEAPONS INVENTORY NI INVENTORY MAIN AL NORRAR ARMA
-player_dict = {'game_id':1,'user_name':'Player 1','hearts': 5,"hearts_max": 5, 'region':'Hyrule',
-               'weapons_equipped': [{1:{'weapon_name':'Wood Sword',"uses_og":5,"uses_left":5}},
-                                    {2:{'shield_name':'Shield',"uses_og":9,"uses_left":5}}],
-               'weapons_inventory': [{1:{"name":"Wood Sword","quantity":4,'uses':0}},
-                                     {2:{"name":"Sword","quantity":2,'uses':0}}],
+player_dict = {'game_id':1,'user_name':'Player 1','hearts': 3,"hearts_max":3 , 'region':'Hyrule',
+               'weapons_equipped': [{1:{'weapon_name':'Wood Sword',"uses_og":5,"uses_left_woodsword":5,"uses_left_sword":5}},
+                                    {2:{'shield_name':'Shield',"uses_og":9,"uses_left_woodshield":5,"uses_left_shield":5}}],
+               'weapons_inventory': [{1:{"name":"Wood Sword","quantity":6,'uses':0}},
+                                     {2:{"name":"Sword","quantity":1,'uses':0}}],
                'shields_inventory': [{1:{"name":"Wood Shield","quantity":4,'uses':0}},
                                      {2:{"name":"Shield","quantity":3,'uses':0}}],
                'food_inventory': [{1:{"food_name":"Vegetables","quantity":1,'uses':0}},
                                   {2:{"food_name":"Fish","quantity":2,'uses':0}},
                                   {3:{"food_name":"Meat","quantity":3,'uses':0}},
-                                  {4:{"food_name":"Salad","quantity":4,'uses':0}},
+                                  {4:{"food_name":"Salads","quantity":4,'uses':0}},
                                   {5:{"food_name":"Pescatarian","quantity":5,'uses':0}},
                                   {6:{"food_name":"Roasted","quantity":6,'uses':0}}],
                'blood_moon_countdown': 0, 'blood_moon_appearances':0,}
@@ -164,7 +164,11 @@ main_dict_necluda = {
 
 
 
+main_dict_castle = {
+    1: {1: {"tree_1": [4,[9, 3],10]}},
+    2: { 11 : {"ganon_hearts": 8, "isdead" : False}},
 
+}
 
 
 

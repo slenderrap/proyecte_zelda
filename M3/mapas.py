@@ -1,7 +1,6 @@
-import random
 import diccionarios
-import funciones.inventario
-from funciones.map import current_map
+import inventario
+import funciones.map
 
 #MAPAS
 
@@ -121,6 +120,34 @@ necluda_map = ("\
 
 
 
+castle_map_original = ("\
+* Castle  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                                                         *                   *\n\
+*        \ /                            Ganon ♥♥♥♥♥♥♥♥   *                   *\n\
+*      -- O --                                            *                   *\n\
+*        / \                                              *                   *\n\
+*                             |>  v-v-v-v   |>            *                   *\n\
+*                     ,   ,  /_\  |     |  /_\            *                   *\n\
+*                     |\_/|  | |'''''''''''| |            *                   *\n\
+*                     (q p),-| | ||  _  || | |'-._  |\    *                   *\n\
+* OT!                  \_/_(/| |    |#|    | |    '-//    *                   *\n\
+* OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
+castle_map = ("\
+* Castle  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
+*                                                         *                   *\n\
+*        \ /                            Ganon ♥♥♥♥♥♥♥♥    *                   *\n\
+*      -- O --                                            *                   *\n\
+*        / \                                              *                   *\n\
+*                             |>  v-v-v-v   |>            *                   *\n\
+*                     ,   ,  /_\  |     |  /_\            *                   *\n\
+*                     |\_/|  | |'''''''''''| |            *                   *\n\
+*                     (q p),-| | ||  _  || | |'-._  |\    *                   *\n\
+* OTX                  \_/_(/| |    |#|    | |    '-//    *                   *\n\
+* OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*                   *\n\
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+
 #Ancho mapa:57
 #Ancho inventario:19
 
@@ -169,7 +196,7 @@ def update_map_pre_start(matriz):
                         matriz[coordenadas[0]][coordenadas[1]] = [str(subsubvalue[2])]
 
 
-def agregar_inventario(matriz,inventario):
+def agregar_inventario(matriz,inventario_1):
     map = ""
     for i in range(len(matriz)):
         for j in range(len(matriz[0])):
@@ -178,7 +205,7 @@ def agregar_inventario(matriz,inventario):
             else:
                 map += matriz[i][j][0] + "\n"
 
-    new_map = funciones.inventario.insertar_mapa(map, inventario)
+    new_map = inventario.insertar_mapa(map, inventario_1)
     lineas = new_map.strip().split('\n')
     matriz = []
     for linea in lineas:
@@ -188,6 +215,24 @@ def agregar_inventario(matriz,inventario):
 
 
 def actualizar_mapa(matriz):
+    #actualizamos armas, si se gastan todos los usos de un arma, se sube un uso para la bdd y se suma 5 al nuevo numero de usos si hay otro arma
+    if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
+        if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] > 0:
+            diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] = 5
+        else:
+            if diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] > 0:
+                diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Sword"
+        diccionarios.player_dict["weapons_inventory"][0][1]["uses"] += 1
+    if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] <= 0:
+        if diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] > 0:
+            diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] = 5
+        else:
+            if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] > 0:
+                diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Wood Sword"
+
+
+        diccionarios.player_dict["weapons_inventory"][1][2]["uses"] += 1
+
     #actualizamos vida enemigos en mapa
     for key, value in getattr(diccionarios, funciones.map.current_map).items():
         for subkey, subvalue in value.items():
@@ -249,7 +294,10 @@ def change_map():
             fila = [[c] for c in linea]
             matriz.append(fila)
 
+    elif "castle" in funciones.map.current_map:
+        lineas = castle_map.strip().split('\n')
+        for linea in lineas:
+            fila = [[c] for c in linea]
+            matriz.append(fila)
+
     return matriz
-
-
-

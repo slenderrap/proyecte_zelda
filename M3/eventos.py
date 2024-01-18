@@ -1,6 +1,6 @@
 import diccionarios
 import random
-import funciones
+import funciones.map
 
 
 
@@ -182,13 +182,12 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     historialPrompt(prompt, "You Got a Sword!")
 
                                     # AGREGAR SWORD A PLAYER
-                                    diccionarios.player_dict["weapons_inventory"].append(diccionarios.sword)
+                                    diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] += 1
 
                                 elif sub_value[0] == 2:
                                     historialPrompt(prompt, "You Got a Shield!")
-                                    #prompt.append("You Got a Shield!")
                                     # AGREGAR SHIELD A PLAYER
-                                    diccionarios.player_dict["weapons_inventory"].append(diccionarios.shield)
+                                    diccionarios.player_dict["shields_inventory"][1][2]["quantity"] += 1
                                 matriz[x][y][0] = "W"
                                 sub_value[2]["isopen"] = True
                                 #cuando se abra el cofre, se guarda en la base de datos
@@ -279,6 +278,8 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                             # el enemigo se movera despues de la interaccion
                             diccionarios.player_dict["hearts"] -= 1
+
+                            print(f"{diccionarios.player_dict['hearts']}")
                             # restamos 1 de vida al jugador
                             historialPrompt(prompt, "-1 health!")
                             return
@@ -314,13 +315,13 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                         if random.randint(1,2) == 1:
                                             #prompt.append("Tree dropped a Wood Sword")
                                             historialPrompt(prompt, "You got a Wood Sword")
-                                            diccionarios.player_dict["weapons_inventory"].append(diccionarios.wood_sword)
+                                            diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] += 1
 
                                         else:
                                             #prompt.append("Tree dropped a Wood Shield")
                                             historialPrompt(prompt, "Wood Shield")
                                             #AQUI SE GUARDA EL ESCUDO (Ids en diccionarios.py)
-                                            diccionarios.player_dict["weapons_inventory"].append(diccionarios.wood_sword)
+                                            diccionarios.player_dict["shields_inventory"][0][1]["quantity"] += 1
                                     else:
                                         historialPrompt(prompt, "The tree didn't give you anything")
                                     return
@@ -339,12 +340,13 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     if random.randint(1, 5) == 5:
                                         prompt.append("Tree dropped an Wood Sword")
                                         # Aqui se guardarda el objeto
-                                        diccionarios.player_dict["weapons_inventory"].append(diccionarios.wood_sword)
+                                        diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] += 1
                                         # probabilidad objeto 20%
                                     elif random.randint(1, 5) == 5:
                                         prompt.append("Tree dropped an Wood Shield")
                                         # Aqui se guardaria el objeto
-                                        diccionarios.player_dict["weapons_inventory"].append(diccionarios.wood_shield)
+                                        diccionarios.player_dict["shields_inventory"][0][1]["quantity"] += 1
+
 
                                     else:
 
@@ -470,13 +472,12 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             if matriz[i][j][0] == "C" and "cook" in command.lower():
                                 if command.lower() == "cook salad":
                                     #comprobamos si hay vegetables(apple)
-                                    if diccionarios.player_dict["food_inventory"].count(6)== 2:
+                                    if diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 2:
                                         #restamos ingredientes de diccionario
-                                        diccionarios.player_dict["food_inventory"].remove(6)
-                                        diccionarios.player_dict["food_inventory"].remove(6)
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] -= 2
                                         #cocinamos ensalada
                                         historialPrompt(prompt, "Salad cooked!")
-                                        diccionarios.player_dict["food_inventory"].append(3)
+                                        diccionarios.player_dict["food_inventory"][3][4]["quantity"] += 1
                                     else:
                                         #si no hay ingredientes suficientes se añade al prompt un mensaje
 
@@ -486,30 +487,31 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 elif command.lower() == "cook pescatarian":
                                     # comprobamos si hay vegetables(apple) y fish
-                                    if diccionarios.player_dict["food_inventory"].count(6)>= 1 and diccionarios.player_dict["food_inventory"].count(2)>= 1:
+                                    if diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and diccionarios.player_dict["food_inventory"][1][2]["quantity"] >= 1:
                                         # restamos ingredientes de diccionario
-                                        diccionarios.player_dict["food_inventory"].remove(6)
-                                        diccionarios.player_dict["food_inventory"].remove(2)
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] -= 1
+                                        diccionarios.player_dict["food_inventory"][1][2]["quantity"] -= 1
 
                                         # cocinamos pescatarian
                                         historialPrompt(prompt, "Pescatarian cooked!")
-                                        diccionarios.player_dict["food_inventory"].append(4)
+                                        diccionarios.player_dict["food_inventory"][4][5]["quantity"] += 1
+
                                     else:
                                         #si no hay ingredientes suficientes se añade al prompt un mensaje
 
-                                        if not diccionarios.player_dict["food_inventory"].count(6) >= 1 and not diccionarios.player_dict["food_inventory"].count(2) >= 1:
+                                        if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and not diccionarios.player_dict["food_inventory"][1][2]["quantity"] >= 1:
                                             historialPrompt(prompt, "Not enough Vegetable and fish!")
                                         else:
-                                            if not diccionarios.player_dict["food_inventory"].count(2)>= 1:
+                                            if not diccionarios.player_dict["food_inventory"][1][2]["quantity"] >= 1:
                                                 historialPrompt(prompt, "Not enough Fish!")
 
-                                            if not diccionarios.player_dict["food_inventory"].count(6)>= 1:
+                                            if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1:
                                                 historialPrompt(prompt, "Not enough Vegetable!")
 
                                 elif command.lower() == "cook roasted":
-                                    # comprobamos si hay vegetables(apple) y fish
-                                    if diccionarios.player_dict["food_inventory"].count(1)>= 1 and \
-                                            diccionarios.player_dict["food_inventory"].count(6)>= 1:
+                                    # comprobamos si hay vegetables(apple) y meat
+                                    if diccionarios.player_dict["food_inventory"][0][1]["quantity"]>= 1 and \
+                                            diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
                                         # restamos ingredientes de diccionario
                                         diccionarios.player_dict["food_inventory"].remove(1)
                                         diccionarios.player_dict["food_inventory"].remove(6)
@@ -530,22 +532,32 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                                 historialPrompt(prompt, "Not enough Vegetable!")
 
                             # FUNCION EQUIP
-                            if "equip sword" in command.lower():
-                                if random.randint(1,2) == 1:
-                                    # agregamos la espada de madera
-                                    if "wood sword" in diccionarios.player_dict["weapons_inventory"][0][1]["name"].lower():
+                            if command.lower() == "equip wood sword" :
+                                # agregamos la espada de madera
+                                if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] >= 1:
+                                    diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Wood Sword"
+                                    historialPrompt(prompt, "Weapon equipped")
+                                    return
+
+                                else:
+                                    historialPrompt(prompt, "You have no Wood Sword to equip")
+                                    return
+
+                            if command.lower() == "equip sword" :
+                                print("hola")
+
+                                if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] >= 1:
+
+                                    # agregamos la espada
+                                    if diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] >= 1:
                                         diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Sword"
-                                    else:
-                                        historialPrompt(prompt, "You have no Wood Sword to equip")
+                                        historialPrompt(prompt, "Weapon equipped")
                                         return
 
                                 else:
-                                    # agregamos la espada
-                                    diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Sword"
                                     historialPrompt(prompt, "You have no Sword to equip")
                                     return
-                                historialPrompt(prompt, "Weapon equipped")
-                                return
+
 
                             # FUNCION UNEQUIP
                             if "unequip sword" in command.lower() and "sword" in diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"].lower():
@@ -561,7 +573,16 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                         historialPrompt(prompt, "You got a lizard!")
                                         diccionarios.player_dict["food_inventory"].append(1)
                                         #restar 1 a espada
-                                        diccionarios.player_dict["weapons_equipped"][0][1]["uses_left"] -= 1
+                                        if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
+                                            diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] -= 1
+                                        elif diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Wood Sword":
+                                            diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] -= 1
+                                        #eliminamos las armas si estas se quedan sin usos
+                                        if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
+                                            diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] -= 1
+                                        elif diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] <= 0:
+                                            diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] -= 1
+
                                         return
 
                         except IndexError:
