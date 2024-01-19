@@ -1,7 +1,7 @@
 import diccionarios
 import inventario
-import funciones.map
 import os
+import random
 
 
 
@@ -180,7 +180,7 @@ show_map = ("\
 def update_map_pre_start(matriz):
     # Iterar sobre el diccionario
 
-    for key, value in getattr(diccionarios,funciones.map.current_map).items():
+    for key, value in getattr(diccionarios,diccionarios.dades[2]["current_map"]).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy_" in subsubkey:
@@ -257,7 +257,7 @@ def actualizar_mapa(matriz):
         diccionarios.player_dict["weapons_inventory"][1][2]["uses"] += 1
 
     #actualizamos vida enemigos en mapa
-    for key, value in getattr(diccionarios, funciones.map.current_map).items():
+    for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy_" in subsubkey:
@@ -293,35 +293,45 @@ def actualizar_mapa(matriz):
 
 def change_map():
     matriz = []
-    if "gerudo" in funciones.map.current_map:
+    if "gerudo" in diccionarios.dades[2]["current_map"]:
         lineas = gerudo_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "necluda" in funciones.map.current_map:
+    elif "necluda" in diccionarios.dades[2]["current_map"]:
         lineas = necluda_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "death" in funciones.map.current_map:
+    elif "death" in diccionarios.dades[2]["current_map"]:
         lineas = death_mountain_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "hyrule" in funciones.map.current_map:
+    elif "hyrule" in diccionarios.dades[2]["current_map"]:
         lineas = hyrule_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "castle" in funciones.map.current_map:
+    elif "castle" in diccionarios.dades[2]["current_map"]:
         lineas = castle_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
+
+    # evento Fox
+    # el 50% de las veces, fox desaparecerá del mapa
+    if random.randint(1, 2) == 1:
+        for i in range(len(matriz)):
+            for j in range(len(matriz[i])):
+                if matriz[i][j] == ["F"]:
+                    # Encontrado, actualiza la matriz
+                    matriz[i][j] = [" "]
+                    break
 
     return matriz
 
