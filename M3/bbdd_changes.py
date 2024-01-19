@@ -107,7 +107,7 @@ def insert_data_weapons(game_id):
         weapon_name = weapon_data["name"]
         quantity = weapon_data["quantity"]
         uses = weapon_data["uses"]
-        lives_remaining = 9
+        equipped = 0
 
         # Verificar si la fila ya existe en la tabla
         check_query = "SELECT COUNT(*) FROM game_weapons WHERE weapon_name = %s AND game_id = %s"
@@ -117,16 +117,16 @@ def insert_data_weapons(game_id):
         if row_count > 0:
             update_query = """
                     UPDATE game_weapons
-                    SET quantity = %s, uses = %s, lives_remaining = %s
+                    SET equipped = %s, quantity = %s, uses = %s
                     WHERE weapon_name = %s AND game_id = %s
                 """
-            cursor.execute(update_query, (quantity, uses, lives_remaining, weapon_name, game_id))
+            cursor.execute(update_query, (equipped, quantity, uses, weapon_name, game_id))
         else:
             insert_query = """
-                    INSERT INTO game_weapons (game_id, weapon_name, lives_remaining, quantity, uses)
+                    INSERT INTO game_weapons (game_id, weapon_name, equipped, quantity, uses)
                     VALUES (%s, %s, %s, %s, %s)
                 """
-            cursor.execute(insert_query, (game_id, weapon_name, lives_remaining, quantity, uses))
+            cursor.execute(insert_query, (game_id, weapon_name, equipped, quantity, uses))
 
     connection.commit()
 
@@ -138,7 +138,7 @@ def insert_data_weapons(game_id):
         shield_name = shield_data["name"]
         quantity = shield_data["quantity"]
         uses = shield_data["uses"]
-        lives_remaining = 5
+        equipped = 0
 
         # Verificar si la fila ya existe en la tabla
         check_query = "SELECT COUNT(*) FROM game_weapons WHERE weapon_name = %s AND game_id = %s"
@@ -148,18 +148,49 @@ def insert_data_weapons(game_id):
         if row_count > 0:
             update_query = """
                     UPDATE game_weapons
-                    SET quantity = %s, uses = %s, lives_remaining = %s
+                    SET equipped = %s, quantity = %s, uses = %s
                     WHERE weapon_name = %s AND game_id = %s
                 """
-            cursor.execute(update_query, (quantity, uses, lives_remaining, shield_name, game_id))
+            cursor.execute(update_query, (equipped, quantity, uses, shield_name, game_id))
         else:
             insert_query = """
-                    INSERT INTO game_weapons (game_id, weapon_name, quantity, uses, lives_remaining)
+                    INSERT INTO game_weapons (game_id, weapon_name, equipped, quantity, uses)
                     VALUES (%s, %s, %s, %s, %s)
                 """
-            cursor.execute(insert_query, (game_id, shield_name, quantity, uses, lives_remaining))
-
+            cursor.execute(insert_query, (game_id, shield_name, equipped, quantity, uses))
     connection.commit()
+
+    # Weapon equipped
+    for weapon_slot in diccionarios.player_dict['weapons_equipped']:
+        for slot_id, weapon_info in weapon_slot.items():
+            if 'weapon_name' in weapon_info:
+                weapon_name = weapon_info['weapon_name']
+                uses_left_key = f'uses_left_{weapon_name.lower().replace(" ", "")}'
+                uses_left = weapon_info.get(uses_left_key, 0)
+                equipped = 1
+
+                update_query = """
+                                UPDATE game_weapons
+                                SET equipped = %s, uses_left = %s
+                                WHERE weapon_name = %s AND game_id = %s
+                                """
+                cursor.execute(update_query, (equipped, uses_left, weapon_name, game_id))
+
+            elif 'shield_name' in weapon_info:
+                shield_name = weapon_info['shield_name']
+                uses_left_key = f'uses_left_{shield_name.lower().replace(" ", "")}'
+                uses_left = weapon_info.get(uses_left_key, 0)
+
+                equipped = 1
+
+                update_query = """
+                                    UPDATE game_weapons
+                                    SET equipped = %s, uses_left = %s
+                                    WHERE weapon_name = %s AND game_id = %s
+                                    """
+                cursor.execute(update_query, (equipped, uses_left, shield_name, game_id))
+    connection.commit()
+
 def insert_data_enemies(game_id, region):
     diccionario = region_selector(region)
     records_with_key_4 = {key: value for key, value in diccionario.items() if 4 in value}
@@ -245,7 +276,10 @@ def download_data_mysql(game_id):
 
     game_data = []
     food_data = []
+    weapons_equipped_data = []
+    weapons__uses_equipped_data = []
     weapons_data = []
+    shields_data = []
     enemies_data = []
     chests_data = []
     sanctuaries_data = []
@@ -279,7 +313,6 @@ def download_data_mysql(game_id):
     weapons_query = "SELECT weapon_name,quantity,uses FROM game_weapons WHERE weapon_name LIKE '%Sword%' and game_id = %s"
     cursor.execute(weapons_query, (game_id,))
     weapons_data = cursor.fetchall()
-
     diccionarios.player_dict['weapons_inventory'] = []
     for item in weapons_data:
         weapon_name, quantity, uses = item
@@ -297,6 +330,36 @@ def download_data_mysql(game_id):
             len(diccionarios.player_dict['shields_inventory']) + 1: {"name": weapon_name, "quantity": quantity,
                                                                      "uses": uses}}
         diccionarios.player_dict['shields_inventory'].append(new_shield_entry)
+
+    # weapons_equipped_data
+    weapons_uses_equipped_query = "SELECT weapon_name, uses_left FROM game_weapons WHERE game_id = %s"
+    cursor.execute(weapons_uses_equipped_query, (game_id,))
+    weapons_uses_equipped_data = cursor.fetchall()
+    for item in weapons_uses_equipped_data:
+        weapon_name, uses_left = item
+        if uses_left is None:
+            if "Wood" in weapon_name:
+                uses_left = 5
+            else:
+                uses_left = 9
+        if weapon_name == "Wood Sword":
+            diccionarios.player_dict['weapons_equipped'][0][1]['uses_left_woodsword'] = uses_left
+        elif weapon_name == "Sword":
+            diccionarios.player_dict['weapons_equipped'][0][1]['uses_left_sword'] = uses_left
+        elif weapon_name == "Wood Shield":
+            diccionarios.player_dict['weapons_equipped'][1][2]['uses_left_woodshield'] = uses_left
+        elif weapon_name == "Shield":
+            diccionarios.player_dict['weapons_equipped'][1][2]['uses_left_shield'] = uses_left
+
+    weapons_equipped_query = "SELECT weapon_name FROM game_weapons WHERE equipped = 1 AND game_id = %s"
+    cursor.execute(weapons_equipped_query, (game_id,))
+    weapons_equipped_data = cursor.fetchall()
+    for weapon_equipped_name, in weapons_equipped_data:
+        if "Sword" in weapon_equipped_name:
+            diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] = weapon_equipped_name
+        if "Shield" in weapon_equipped_name:
+            diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] = weapon_equipped_name
+
 
     # game_enemies table
     enemies_query = "SELECT region,enemy_id, xpos, ypos, xpos2, ypos2, is_dead, lives_remaining FROM game_enemies WHERE game_id = %s"
@@ -369,7 +432,8 @@ def download_data_mysql(game_id):
 
 ############################################
 
-
+game_id = 1
+region = "Hyrule"
 # GUARDAR DATOS PARTIDA
 # insert_data_game(game_id, region)
 # insert_data_food(game_id)
@@ -381,5 +445,5 @@ def download_data_mysql(game_id):
 #
 #
 # # CARGAR DATOS PARTIDA
-# download_data_mysql(game_id)
+download_data_mysql(game_id)
 
