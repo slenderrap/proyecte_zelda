@@ -191,6 +191,7 @@ def update_map_pre_start(matriz):
                                 matriz[i][j][0],matriz[i][j+1][0] = " "," "
 
                     # Cogemos las coordenadas y el número de vidas
+
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
 
@@ -217,6 +218,7 @@ def update_map_pre_start(matriz):
                         coordenadas = subsubvalue[1]
                         # Reemplazamos las coordenadas con el numero de turnos del arbol para aparecer
                         matriz[coordenadas[0]][coordenadas[1]] = [str(subsubvalue[2])]
+                return matriz
 
 
 def agregar_inventario(matriz,inventario_1):
@@ -238,6 +240,7 @@ def agregar_inventario(matriz,inventario_1):
 
 
 def actualizar_mapa(matriz):
+
     #actualizamos armas, si se gastan todos los usos de un arma, se sube un uso para la bdd y se suma 5 al nuevo numero de usos si hay otro arma
     if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
         if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] > 0:
@@ -322,6 +325,7 @@ def change_map():
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
+
 
     # evento Fox
     # el 50% de las veces, fox desaparecerá del mapa

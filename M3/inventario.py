@@ -191,9 +191,7 @@ def inv_food(player_id):
     roasted_int = diccionarios.player_dict['food_inventory'][5][6]['quantity']
     inventory = inventory[:202] + f"{roasted_int}".rjust(5) + inventory[202 + 1:]
 
-    for i, char in enumerate(inventory):
-        if char == "X":
-            print(f"Posiciones i: {i}")
+
 
     return inventory
 
