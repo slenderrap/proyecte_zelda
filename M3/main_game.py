@@ -154,7 +154,10 @@ while flag_0:
         matriz = mapas.agregar_inventario(matriz,current_inventory)
         #fix, agregamos en cada iteracion al jugador en el mapa
         matriz[current_pos[0]][current_pos[1]] = ["X"]
+        print(diccionarios.player_dict)
+        print(diccionarios.main_dict_hyrule)
         mapas.actualizar_mapa(matriz)
+
 
 
 
@@ -600,7 +603,117 @@ while flag_0:
         # pedir input
         command = input("Give an Order:")
 
-        if "go left" in command:
+
+
+
+        if "cheat" in command.lower():
+            if "rename player to" in command.lower():
+                if command[command.find("to "):].replace(" ", "").isalnum() and 3 <= len(
+                        command[command.find("to "):].replace(" ", "")) <= 10:
+                    if diccionarios.player_dict["game_id"] == game_id:
+                        diccionarios.player_dict["user_name"] = command[command.find("to "):].title()
+            elif "add vegetable" in command.lower():
+                diccionarios.player_dict.get("food_inventory")[0].get(1)["quantity"] += 1
+            elif "add fish" in command.lower():
+                diccionarios.player_dict.get("food_inventory")[0].get(2)["quantity"] += 1
+            elif "add meat" in command.lower():
+                diccionarios.player_dict.get("food_inventory")[0].get(3)["quantity"] += 1
+            elif "add cook salad" in command.lower():
+                # comprobamos si hay vegetables(apple)
+                if diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 2:
+                    # restamos ingredientes de diccionario
+                    diccionarios.player_dict["food_inventory"][0][1]["quantity"] -= 2
+                    # cocinamos ensalada
+                    eventos.historialPrompt(prompt, "Salad cooked!")
+                    diccionarios.player_dict["food_inventory"][3][4]["quantity"] += 1
+                else:
+                    # si no hay ingredientes suficientes se añade al prompt un mensaje
+
+                    if not diccionarios.player_dict["food_inventory"].count(6) == 1:
+                        eventos.historialPrompt(prompt, "Not enough Vegetable!")
+                diccionarios.player_dict.get("food_inventory")[0].get(1)["quantity"] += 1
+            elif "add cook pescatarian" in command.lower():
+                # comprobamos si hay vegetables(apple) y fish
+                if diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and \
+                        diccionarios.player_dict["food_inventory"][1][2]["quantity"] >= 1:
+                    # restamos ingredientes de diccionario
+                    diccionarios.player_dict["food_inventory"][0][1]["quantity"] -= 1
+                    diccionarios.player_dict["food_inventory"][1][2]["quantity"] -= 1
+
+                    # cocinamos pescatarian
+                    eventos.historialPrompt(prompt, "Pescatarian cooked!")
+                    diccionarios.player_dict["food_inventory"][4][5]["quantity"] += 1
+                else:
+                    # si no hay ingredientes suficientes se añade al prompt un mensaje
+
+                    if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and not \
+                    diccionarios.player_dict["food_inventory"][1][2]["quantity"] >= 1:
+                        eventos.historialPrompt(prompt, "Not enough Vegetable and fish!")
+                    else:
+                        if not diccionarios.player_dict["food_inventory"][1][2]["quantity"] >= 1:
+                            eventos.historialPrompt(prompt, "Not enough Fish!")
+
+                        if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1:
+                            eventos.historialPrompt(prompt, "Not enough Vegetable!")
+            elif "add cook roasted" in command.lower():
+                if diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and \
+                        diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
+                    # restamos ingredientes de diccionario
+                    diccionarios.player_dict["food_inventory"][0][1]["quantity"] -= 1
+                    diccionarios.player_dict["food_inventory"][2][3]["quantity"] -= 1
+
+                    # cocinamos pescatarian
+                    eventos.historialPrompt(prompt, "Roasted cooked!")
+                    diccionarios.player_dict["food_inventory"][5][6]["quantity"] += 1
+                else:
+                    # si no hay ingredientes suficientes se añade al prompt un mensaje
+
+                    if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and not \
+                    diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
+                        eventos.historialPrompt(prompt, "Not enough Vegetable and Meat!")
+                    else:
+                        if not diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
+                            eventos.historialPrompt(prompt, "Not enough Meat!")
+
+                        if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1:
+                            eventos.historialPrompt(prompt, "Not enough Vegetable!")
+            elif "add wood sword" in command.lower():
+                eventos.historialPrompt(prompt, "You got a Wood Sword")
+                diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] += 1
+            elif "add wood shield" in command.lower():
+                eventos.historialPrompt(prompt, "You got a Wood Shield")
+                # AQUI SE GUARDA EL ESCUDO (Ids en diccionarios.py)
+                diccionarios.player_dict["shields_inventory"][0][1]["quantity"] += 1
+            elif "add sword" in command.lower():
+                eventos.historialPrompt(prompt, "You Got a Sword!")
+                # AGREGAR SWORD A PLAYER
+                diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] += 1
+            elif "add shield" in command.lower():
+                eventos.historialPrompt(prompt, "You Got a Sword!")
+                # AGREGAR SHIELD A PLAYER
+                diccionarios.player_dict["shields_inventory"][1][2]["quantity"] += 1
+            elif "open sanctuaries":
+                diccionarios_mapa = [diccionarios.main_dict_hyrule, diccionarios.main_dict_death_mountain,
+                                     diccionarios.main_dict_gerudo, diccionarios.main_dict_necluda]
+                for i in range(4):
+                    diccionario = region_selector(diccionarios_mapa[i])
+                    records_with_key_3 = {key: value for key, value in diccionario.items() if 3 in value}
+                    for key1, value1 in records_with_key_3.items():
+                        for key2, value2 in value1.items():
+                            sanctuary_id = list(value2.keys())[0]
+                            is_open = value2[sanctuary_id][3]['isopen']
+            elif "game over":
+                flag_02 = True
+                flag_01 = False
+            elif "win game":
+                flag_04 = True
+                flag_01 = False
+
+            else:
+                eventos.historialPrompt(prompt, "That cheat don't exist")
+
+
+        elif "go left" in command:
             command.replace(" ", "")
             if command[command.find(" ", 3) + 1:].isdigit():
                 x -= int(command[command.find(" ", 3) + 1:])

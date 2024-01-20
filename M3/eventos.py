@@ -219,7 +219,8 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             else:
                                 historialPrompt(prompt, "You opened the sanctuary!")
 
-                                # AGREGAR RECOMPENSA AL JUGADOR
+                                # AGREGAR VIDA AL JUGADOR
+                                diccionarios.player_dict["hearts_max"] += 1
                                 diccionarios.player_dict["hearts"] += 1
 
 
@@ -436,9 +437,48 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             else:
                                 historialPrompt(prompt, "Fox not attacked, no weapon equipped")
                                 return
+    #FUNCION EAT
+    def eat(food, player_dict):
+        # Verificar si el comando es para comer y el tipo de comida es válido
+        if food.lower() in ["vegetables", "salad", "pescatarian", "roasted", "meat",
+                                                         "fish"]:
+            food_name = food.lower().capitalize()  # Convertir la comida a formato de título (por ejemplo, "vegetables" a "Vegetables")
 
+            # Buscar la comida en el inventario del jugador
+            for item in player_dict['food_inventory']:
+                print(player_dict['food_inventory'])
+                if item.get(1, {}).get('food_name', '').lower() == food_name.lower():
+                    # Verificar si hay suficiente cantidad de esa comida
+                    if item[1]["quantity"] > 0:
+                        # Restar 1 a la cantidad de esa comida
+                        item[1]["quantity"] -= 1
 
+                        # Aumentar los corazones según el tipo de comida
+                        if food_name == "Vegetables":
+                            player_dict['hearts'] += 1
+                        elif food_name == "Salads":
+                            player_dict['hearts'] += 2
+                        elif food_name == "Pescatarian":
+                            player_dict['hearts'] += 3
+                        elif food_name == "Roasted":
+                            player_dict['hearts'] += 4
+                        elif food_name == "Meat":
+                            player_dict['hearts'] += 1
+                        elif food_name == "Fish":
+                            player_dict['hearts'] += 1
 
+                        # Aumentar el uso en el diccionario
+                        item[1]["uses"] += 1
+
+                        # Ponemos mensaje de confirmacion al comer
+                        historialPrompt(prompt, f"You ate {food_name}!")
+                        diccionarios.player_dict["hearts_max"] += 1
+
+                        return player_dict
+
+            # Mostrar mensaje si no se encontró la comida en el inventario
+            historialPrompt(prompt, f"You don't have {food_name}!")
+            return
 
 
 
@@ -479,6 +519,26 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 fox_event(diccionario, i, j)
                                 return
 
+                            # FUNCION EAT
+                            if command.lower() == "eat vegetables":
+                                eat("vegetables", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat fish":
+                                eat("fish", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat meat":
+                                eat("meat", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat salad":
+                                eat("salad", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat pescatarian":
+                                eat("pescatarian", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat roasted":
+                                eat("roasted", diccionarios.player_dict)
+                                return
+
                             # FUNCION PESCAR
                             if matriz[i][j][0] == "~" and command.lower() == "fish":
                                 #el 20% de las veces,si no se ha pescado ya antes se obtendra un pescado
@@ -490,7 +550,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     if random.randint(1,5) == 1:
                                         historialPrompt(prompt, "You got a fish!")
                                         getattr(diccionarios, (diccionarios.dades[2]["current_map"]))[10][6]["already_fished"] = True
-                                        diccionarios.player_dict["food_inventory"][1][2]["quantity"] += 1
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] += 1
 
 
                                     else:

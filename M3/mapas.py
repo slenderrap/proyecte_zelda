@@ -249,6 +249,38 @@ def agregar_inventario(matriz,inventario_1):
 
 
 def actualizar_mapa(matriz):
+    diccionarios_list = [
+        diccionarios.main_dict_hyrule,
+        diccionarios.main_dict_death_mountain,
+        diccionarios.main_dict_gerudo,
+        diccionarios.main_dict_necluda
+    ]
+    # actualizamos cofres si todos los del mundo estan abiertos y no se tienen armas
+    chests_open = True
+
+    for diccionario in diccionarios_list:
+        for mapa in diccionario.values():
+            for value in mapa.values():
+                for subsubkey, subsubvalue in value.items():
+                    if "chest_" in subsubkey:
+                        if isinstance(subsubvalue[2], dict) and not subsubvalue[2].get("isopen", False):
+                            chests_open = False
+                            break
+
+
+    if chests_open and diccionarios.player_dict['weapons_inventory'][1]["quantity"] == 0 and \
+            diccionarios.player_dict['weapons_inventory'][2]["quantity"] == 0:
+        # Realizar acciones cuando todas las condiciones se cumplen
+        for diccionario in diccionarios_list:
+            for mapa in diccionario.values():
+                for value in mapa.values():
+                    for subsubkey, subsubvalue in value.items():
+                        if "chest_" in subsubkey:
+                            if isinstance(subsubvalue[2], dict) and subsubvalue[2].get("isopen", False):
+                                subsubvalue[2]["isopen"] = False
+                                break
+
+
 
     #actualizamos armas, si se gastan todos los usos de un arma, se sube un uso para la bdd y se suma 5 al nuevo numero de usos si hay otro arma
     if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
@@ -264,8 +296,6 @@ def actualizar_mapa(matriz):
         else:
             if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] > 0:
                 diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Wood Sword"
-
-
         diccionarios.player_dict["weapons_inventory"][1][2]["uses"] += 1
 
         # Borramos las posiciones de todos los enemigos en el mapa original

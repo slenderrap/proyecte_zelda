@@ -281,6 +281,10 @@ def download_data_mysql(game_id):
     diccionarios.player_dict['blood_moon_countdown'] = blood_moon_countdown
     diccionarios.player_dict['blood_moon_appearances'] = blood_moon_appearances
     diccionarios.player_dict['hearts'] = hearts
+    game_query = ("select count(*) from game_sanctuaries_opened where game_id = %s and is_open=1")
+    cursor.execute(game_query, (game_id,))
+    hearts_max_data = cursor.fetchone()
+    diccionarios.player_dict['hearts_max'] = hearts + hearts_max_data[0] - 1
     diccionarios.player_dict['region'] = region
 
     # game_food table
@@ -500,5 +504,5 @@ def guardar_datos_new_game(game_id, region):
 #
 #
 # # CARGAR DATOS PARTIDA
-game_id = 1
-download_data_mysql(game_id)
+
+#download_data_mysql(game_id)
