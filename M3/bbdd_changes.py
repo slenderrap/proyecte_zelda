@@ -24,12 +24,12 @@ def region_selector(region):
     elif region == "Necluda":
         diccionario = diccionarios.main_dict_necluda
     elif region == "Castle":
-        diccionario = diccionarios.main_dict_castle
+        diccionario = diccionarios.main_dict_hyrule
 
     return diccionario
 
-
 def insert_data_game(game_id, region):
+
     # Query MYSQL tabla 'game'
     query = """
     UPDATE game
@@ -40,7 +40,7 @@ def insert_data_game(game_id, region):
     WHERE game_id = %s
     """
 
-    # Variables que añadiremos
+    # Variables que aÃ±adiremos
     data = (
         diccionarios.player_dict['blood_moon_countdown'],
         diccionarios.player_dict['blood_moon_appearances'],
@@ -54,12 +54,11 @@ def insert_data_game(game_id, region):
 
     # Guardar cambios en la tabla
     connection.commit()
-
-
 def insert_data_food(game_id):
     for food_item in diccionarios.player_dict['food_inventory']:
         food_id = list(food_item.keys())[0]
         food_data = food_item[food_id]
+
 
         food_name = food_data["food_name"]
         quantity = food_data["quantity"]
@@ -85,9 +84,8 @@ def insert_data_food(game_id):
             cursor.execute(insert_query, (game_id, food_name, quantity, uses))
 
     connection.commit()
-
-
 def insert_data_weapons(game_id):
+
     # Weapons
     for weapon_item in diccionarios.player_dict['weapons_inventory']:
         weapon_id = list(weapon_item.keys())[0]
@@ -179,8 +177,6 @@ def insert_data_weapons(game_id):
                                     """
                 cursor.execute(update_query, (equipped, uses_left, shield_name, game_id))
     connection.commit()
-
-
 def insert_data_enemies(game_id, region):
     diccionario = region_selector(region)
     records_with_key_4 = {key: value for key, value in diccionario.items() if 4 in value}
@@ -193,10 +189,6 @@ def insert_data_enemies(game_id, region):
             xpos2 = value2[enemy_id][1][0]
             ypos2 = value2[enemy_id][1][1]
             is_dead = value2[enemy_id][2]['isdead']
-            if is_dead == True:
-                is_dead = 1
-            else:
-                is_dead = 0
 
             check_query = "DELETE FROM game_enemies WHERE enemy_id = %s AND game_id = %s AND region = %s"
             cursor.execute(check_query, (enemy_id, game_id, region))
@@ -207,8 +199,6 @@ def insert_data_enemies(game_id, region):
             cursor.execute(insert_query, (game_id, region, enemy_id, xpos, ypos, xpos2, ypos2, is_dead, current_hearts))
 
     connection.commit()
-
-
 def insert_data_chests(game_id, region):
     diccionario = region_selector(region)
     records_with_key_2 = {key: value for key, value in diccionario.items() if 2 in value}
@@ -226,8 +216,6 @@ def insert_data_chests(game_id, region):
             cursor.execute(insert_query, (game_id, region, chest_id, is_open))
 
         connection.commit()
-
-
 def insert_data_sanctuaries(game_id, region):
     diccionario = region_selector(region)
     records_with_key_3 = {key: value for key, value in diccionario.items() if 3 in value}
@@ -245,8 +233,6 @@ def insert_data_sanctuaries(game_id, region):
             cursor.execute(insert_query, (game_id, region, sanctuary_id, is_open))
 
         connection.commit()
-
-
 def insert_data_trees_fell(game_id, region):
     diccionario = region_selector(region)
     records_with_key_1 = {key: value for key, value in diccionario.items() if 1 in value}
@@ -255,10 +241,10 @@ def insert_data_trees_fell(game_id, region):
             for sub_key, sub_value in value2.items():
                 tree_id = sub_key
                 durability = sub_value[0]
-                if durability > 4:
-                    is_cutted = 1
+                if durability == 0:
+                    is_cutted = True
                 else:
-                    is_cutted = 0
+                    is_cutted = False
 
                 check_query = "DELETE FROM game_trees_fell WHERE tree_id = %s AND game_id = %s AND region = %s"
                 cursor.execute(check_query, (tree_id, game_id, region))
@@ -273,6 +259,7 @@ def insert_data_trees_fell(game_id, region):
 
 
 def download_data_mysql(game_id):
+
     game_data = []
     food_data = []
     weapons_equipped_data = []
@@ -285,8 +272,7 @@ def download_data_mysql(game_id):
     trees_data = []
 
     # game table
-    game_query = (
-        "SELECT user_name,blood_moon_countdown,blood_moon_appearances,hearts,region FROM game WHERE game_id = %s")
+    game_query = ("SELECT user_name,blood_moon_countdown,blood_moon_appearances,hearts,region FROM game WHERE game_id = %s")
     cursor.execute(game_query, (game_id,))
     game_data = cursor.fetchall()
 
@@ -297,7 +283,6 @@ def download_data_mysql(game_id):
     diccionarios.player_dict['hearts'] = hearts
     diccionarios.player_dict['region'] = region
 
-
     # game_food table
     food_query = "SELECT food_name,quantity,uses FROM game_food WHERE game_id = %s"
     cursor.execute(food_query, (game_id,))
@@ -307,8 +292,7 @@ def download_data_mysql(game_id):
     for item in food_data:
         food_name, quantity, uses = item
         new_food_entry = {
-            len(diccionarios.player_dict['food_inventory']) + 1: {"food_name": food_name, "quantity": quantity,
-                                                                  "uses": uses}}
+            len(diccionarios.player_dict['food_inventory']) + 1: {"food_name": food_name, "quantity": quantity, "uses": uses}}
         diccionarios.player_dict['food_inventory'].append(new_food_entry)
 
     # game_weapons table
@@ -319,8 +303,7 @@ def download_data_mysql(game_id):
     for item in weapons_data:
         weapon_name, quantity, uses = item
         new_weapon_entry = {
-            len(diccionarios.player_dict['weapons_inventory']) + 1: {"name": weapon_name, "quantity": quantity,
-                                                                     "uses": uses}}
+            len(diccionarios.player_dict['weapons_inventory']) + 1: {"name": weapon_name, "quantity": quantity, "uses": uses}}
         diccionarios.player_dict['weapons_inventory'].append(new_weapon_entry)
 
     shields_query = "SELECT weapon_name,quantity,uses FROM game_weapons WHERE weapon_name LIKE '%Shield%' and game_id = %s"
@@ -363,83 +346,129 @@ def download_data_mysql(game_id):
         if "Shield" in weapon_equipped_name:
             diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] = weapon_equipped_name
 
-    # game_enemies table
-    enemies_query = "SELECT region,enemy_id, xpos, ypos, xpos2, ypos2, is_dead, lives_remaining FROM game_enemies WHERE game_id = %s"
-    cursor.execute(enemies_query, (game_id,))
-    enemies_data = cursor.fetchall()
-    for item in enemies_data:
-        region, enemy_id, xpos, ypos, xpos2, ypos2, is_dead, lives_remaining = item
-        diccionario = region_selector(region)
-        for key, value in diccionario.items():
-            if 4 in value:
-                for sub_key, sub_value in value[4].items():
-                    sub_value[0][0] = xpos
-                    sub_value[0][1] = ypos
-                    sub_value[1][0] = xpos2
-                    sub_value[1][1] = ypos2
-                    if is_dead == 1:
-                        is_dead = True
-                    else:
-                        is_dead = False
-                    sub_value[2]["isdead"] = is_dead
-                    sub_value[2]["current_hearts"] = lives_remaining
 
+    # game_enemies table
+    enemies_query = "SELECT enemy_id, xpos, ypos, xpos2, ypos2, is_dead, lives_remaining FROM game_enemies WHERE game_id = %s and region = %s ORDER BY enemy_id"
+    cursor.execute(enemies_query, (game_id, region))
+    enemies_data = cursor.fetchall()
+    diccionario = region_selector(region)
+    # print("Diccionario 1")
+    # print(diccionario)
+    for key, value in diccionario.items():
+        if 4 in value:
+            if isinstance(value[4], dict):
+                for enemy_key, enemy_data in value[4].items():
+                    if enemy_key == "enemy_1":
+                        enemy_data[0][0] = enemies_data[0][1]
+                        enemy_data[0][1] = enemies_data[0][2]
+                        enemy_data[1][0] = enemies_data[0][3]
+                        enemy_data[1][1] = enemies_data[0][4]
+                        if enemies_data[0][5] == 0:
+                            enemy_data[2]["isdead"] = False
+                        else:
+                            enemy_data[2]["isdead"] = True
+                        enemy_data[2]["current_hearts"] = enemies_data[0][6]
+                    elif enemy_key == "enemy_2":
+                        # Datos SQL
+                        enemy_data[0][0] = enemies_data[1][1]
+                        enemy_data[0][1] = enemies_data[1][2]
+                        enemy_data[1][0] = enemies_data[1][3]
+                        enemy_data[1][1] = enemies_data[1][4]
+                        if enemies_data[1][5] == 0:
+                            enemy_data[2]["isdead"] = False
+                        else:
+                            enemy_data[2]["isdead"] = True
+                        enemy_data[2]["current_hearts"] = enemies_data[1][6]
+    # print()
+    # print(diccionario)
+    # input()
 
 
     # game_chests_opened table
-    chests_query = "SELECT region, chest_id, is_open FROM game_chests_opened WHERE game_id = %s"
-    cursor.execute(chests_query, (game_id,))
+    chests_query = "SELECT chest_id, is_open FROM game_chests_opened WHERE game_id = %s and region = %s"
+    cursor.execute(chests_query, (game_id, region))
     chests_data = cursor.fetchall()
-    for item in chests_data:
-        region, chest_id, is_open = item
+    diccionario = region_selector(region)
+
+    # print("Diccionario antes")
+    # print(diccionario)
+    for row in chests_data:
+        chest_id, is_open = row
         if is_open == 1:
             is_open = True
         else:
             is_open = False
-        diccionario = region_selector(region)
         for key, value in diccionario.items():
             if 2 in value:
-                for sub_key, sub_value in value.items():
-                    sub_key2 = next(iter(sub_value))
-                    sub_value[sub_key2][2]['isopen'] = is_open
+                if isinstance(value[2], dict):
+                    for chest_key, chest_value in value[2].items():
+                        if chest_key == chest_id:
+                            chest_value[2]['isopen'] = is_open
+                            if not is_open:
+                                chest_value[0] = 1
+                            else:
+                                chest_value[0] = 0
+    # print("Diccionario despues")
+    # print(diccionario)
+    # input()
+
 
     # game_sanctuaries_opened table
-    sanctuaries_query = "SELECT game_id, region, sanctuary_id, is_open FROM game_sanctuaries_opened WHERE game_id = %s"
-    cursor.execute(sanctuaries_query, (game_id,))
+    sanctuaries_query = "SELECT sanctuary_id, is_open FROM game_sanctuaries_opened WHERE game_id = %s and region = %s"
+    cursor.execute(sanctuaries_query, (game_id, region))
     sanctuaries_data = cursor.fetchall()
-    for item in sanctuaries_data:
-        game_id, region, sanctuary_id, is_open = item
+    diccionario = region_selector(region)
+
+    # print("Diccionario antes")
+    # print(diccionario)
+    for row in sanctuaries_data:
+        sanctuary_id, is_open = row
         if is_open == 1:
             is_open = True
         else:
             is_open = False
-        diccionario = region_selector(region)
         for key, value in diccionario.items():
             if 3 in value:
-                for sub_key, sub_value in value.items():
-                    sub_key2 = next(iter(sub_value))
-                    sub_value[sub_key2][3]['isopen'] = is_open
-    print(diccionarios.player_dict)
+                if isinstance(value[3], dict):
+                    for sanctuary_key, sanctuary_value in value[3].items():
+                        if sanctuary_id ==  sanctuary_key:
+                            sanctuary_value[3]['isopen'] = is_open
+
+
+    # print("Diccionario despues")
+    # print(diccionario)
+    # input()
+
+
+
 
     # game_trees_fell table
-    sanctuaries_query = "SELECT game_id, region, tree_id, is_cutted FROM game_trees_fell WHERE game_id = %s"
-    cursor.execute(sanctuaries_query, (game_id,))
+    sanctuaries_query = "SELECT tree_id, is_cutted FROM game_trees_fell WHERE game_id = %s AND region = %s"
+    cursor.execute(sanctuaries_query, (game_id, region))
     trees_data = cursor.fetchall()
-    for item in trees_data:
-        game_id, region, tree_id, is_cutted = item
-        diccionario = region_selector(region)
+
+    # print("Diccionario antes")
+    # print(diccionario)
+    for row in trees_data:
+        tree_id, is_cutted = row
+        if is_cutted == 1:
+            is_cutted = True
+        else:
+            is_cutted = False
+
         for key, value in diccionario.items():
             if 1 in value:
-                for sub_key, sub_value in value.items():
-                    sub_key2 = next(iter(sub_value))
-                    if is_cutted == 1:
-                        sub_value[sub_key2][0] = 4
-                    else:
-                        sub_value[sub_key2][0] = 0
+                if isinstance(value[1], dict):
+                    for tree_key, tree_value in value[1].items():
+                        if tree_id == tree_key:
+                            if is_cutted:
+                                tree_value[0] = 0
+                            else:
+                                tree_value[0] = 4
 
-
-# recoger objeto, cambiar region, santuari
-
+    # print("Diccionario 2")
+    # print(diccionario)
+    # input()
 def guardar_datos_partida(game_id, region):
     insert_data_game(game_id, region)
     insert_data_food(game_id)
@@ -449,7 +478,16 @@ def guardar_datos_partida(game_id, region):
     insert_data_sanctuaries(game_id, region)
     insert_data_trees_fell(game_id, region)
 
+def guardar_datos_new_game(game_id, region):
+    insert_data_game(game_id, region)
+    insert_data_food(game_id)
+    insert_data_enemies(game_id, region)
+    insert_data_chests(game_id, region)
+    insert_data_sanctuaries(game_id, region)
+    insert_data_trees_fell(game_id, region)
+
 ############################################
+
 
 # GUARDAR DATOS PARTIDA
 # insert_data_game(game_id, region)
@@ -462,4 +500,5 @@ def guardar_datos_partida(game_id, region):
 #
 #
 # # CARGAR DATOS PARTIDA
-# download_data_mysql(game_id)
+game_id = 1
+download_data_mysql(game_id)

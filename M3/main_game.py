@@ -77,6 +77,7 @@ for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
 
+
 last_map = ""
 
 
@@ -87,7 +88,6 @@ mapas.change_map()
 
 current_pos = []
 #actualizamos mapa pre partida
-#matriz = mapas.update_map_pre_start(matriz)
 #funcion para cambiar la posicion inicial del mapa según su ubicacion
 def player_change_pos():
     global current_pos
@@ -155,7 +155,6 @@ while flag_0:
         #fix, agregamos en cada iteracion al jugador en el mapa
         matriz[current_pos[0]][current_pos[1]] = ["X"]
         mapas.actualizar_mapa(matriz)
-        print(getattr(diccionarios, diccionarios.dades[2]["current_map"]))
 
 
 
@@ -360,6 +359,7 @@ while flag_0:
 
         elif "go by tree" in command:
             new_pos = eventos.move_to_X(matriz, current_pos,["T"])
+            eventos.historialPrompt(prompt, str(new_pos))
             y,x = new_pos[0],new_pos[1]
 
         elif "go by chest" in command:
@@ -383,7 +383,6 @@ while flag_0:
             eventos.historialPrompt(prompt, "show map")
             prompt_add = mapas.mostrarMapa(current_inventory)
             eventos.historialPrompt(prompt, prompt_add)
-            eventos.historialPrompt(prompt, "You are dead!")
 
         elif "back" in command and  "necluda" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_necluda"
@@ -396,28 +395,31 @@ while flag_0:
             current_inventory = inventario.player_inventory_food
         elif "hyrule" in diccionarios.dades[2]["current_map"]:
             if "go to gerudo" in command:
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.dades[2]["current_map"] = "main_dict_gerudo"
                 diccionarios.player_dict["region"] = "Gerudo"
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [9,2]
                 continue
             if "go to death mountain" in command:
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Death mountain"
                 diccionarios.dades[2]["current_map"] = "main_dict_death_mountain"
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [9,2]
                 continue
             if "go to castle" in command:
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 current_pos = [9, 4]
                 last_map = diccionarios.dades[2]["current_map"]
-                bbdd_changes.guardar_datos_partida(game_id, region)
                 diccionarios.player_dict["region"] = "Castle"
                 diccionarios.dades[2]["current_map"] = "main_dict_castle"
                 matriz = mapas.change_map()
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 flag_03 = True
                 flag_01 = False
                 continue
@@ -425,16 +427,18 @@ while flag_0:
         elif "death" in diccionarios.dades[2]["current_map"]:
             if "go to necluda" in command:
                 diccionarios.dades[2]["current_map"] = "main_dict_necluda"
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Necluda"
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [2,2]
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 continue
             if "go to hyrule" in command:
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
                 diccionarios.player_dict["region"] = "Hyrule"
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [8,10]
@@ -442,64 +446,71 @@ while flag_0:
             if "go to castle" in command:
                 current_pos = [9, 4]
                 last_map = diccionarios.dades[2]["current_map"]
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Castle"
                 diccionarios.dades[2]["current_map"] = "main_dict_castle"
                 matriz = mapas.change_map()
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 flag_03 = True
                 flag_01 = False
                 continue
         elif "gerudo" in diccionarios.dades[2]["current_map"]:
             if "go to necluda" in command:
                 diccionarios.dades[2]["current_map"] = "main_dict_necluda"
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Necluda"
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [2,2]
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 continue
             if "go to hyrule" in command:
                 diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Hyrule"
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [8,10]
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 continue
             if "go to castle" in command:
                 current_pos = [9, 4]
                 last_map = diccionarios.dades[2]["current_map"]
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Castle"
                 diccionarios.dades[2]["current_map"] = "main_dict_castle"
                 matriz = mapas.change_map()
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 flag_03 = True
                 flag_01 = False
                 continue
         elif "necluda" in diccionarios.dades[2]["current_map"]:
             if "go to death mountain" in command:
                 diccionarios.dades[2]["current_map"] = "main_dict_death_mountain"
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Death mountain"
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [9,2]
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 continue
             if "go to gerudo" in command:
                 diccionarios.dades[2]["current_map"] = "main_dict_gerudo"
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Gerudo"
                 matriz = mapas.change_map()
                 matriz = mapas.update_map_pre_start(matriz)
                 current_pos = [9,2]
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 continue
             if "go to castle" in command:
                 current_pos = [9, 4]
                 last_map = diccionarios.dades[2]["current_map"]
-                bbdd_changes.guardar_datos_partida(game_id, region)
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 diccionarios.player_dict["region"] = "Castle"
                 diccionarios.dades[2]["current_map"] = "main_dict_castle"
                 matriz = mapas.change_map()
+                bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
                 flag_03 = True
                 flag_01 = False
                 continue
@@ -725,7 +736,6 @@ while flag_0:
                 if prompt != "Continue":
                     eventos.historialPrompt(prompt, "Invalid action")
                 else:
-                    eventos.historialPrompt(prompt, prompt)
                     flag_02=False
                     flag_00=True
 
@@ -747,6 +757,7 @@ while flag_0:
         else:
             bbdd_changes.download_data_mysql(game_id)
             matriz = mapas.update_map_pre_start(matriz)
+            prompt = []
             flag_00 = False
             flag_01 = True
 

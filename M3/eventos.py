@@ -8,31 +8,45 @@ import bbdd_changes
 
 
 
-#mover jugador a water
-def move_to_X(matriz, current_position,casilla):
+def move_to_X(matriz, current_position, casilla):
     x, y = current_position
-    position = None
+    target_positions = []
 
-    # Buscar la posición de la casilla con "~"
+    # Buscar la posición de la casilla con "T"
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             if matriz[i][j] == casilla:
-                position = (i, j)
-                break
+                target_positions.append((i, j))
 
-    # Verificar si se encontró una posición con "~"
-    if position:
+    # Verificar si se encontró una posición con "T"
+    if target_positions:
         # Buscar la posición vacía más cercana
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                new_x, new_y = position[0] + i, position[1] + j
-                if 0 <= new_x < len(matriz) and 0 <= new_y < len(matriz[new_x]) and matriz[new_x][new_y] == [" "]:
-                    return (new_x, new_y)
+        min_distance = float('inf')
+        closest_empty_position = (x, y)
 
-        # Si no se encuentra una posición vacía, devolvemos la posición original
-        return (x, y)
+        for target_position in target_positions:
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    new_x, new_y = target_position[0] + i, target_position[1] + j
+                    if (
+                        0 <= new_x < len(matriz)
+                        and 0 <= new_y < len(matriz[new_x])
+                        and matriz[new_x][new_y] == [" "]
+                    ):
+                        distance = abs(new_x - x) + abs(new_y - y)
+                        if distance < min_distance:
+                            min_distance = distance
+                            closest_empty_position = (new_x, new_y)
+
+        return closest_empty_position
     else:
         return (x, y)
+
+
+
+
+
+
 
 
 
@@ -457,7 +471,6 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             # FUNCION ENEMIGOS
                             #print(f"Coordenadas: {j} {i} Matriz de enemigos:{matriz[i][j][0]}")
                             if (matriz[i][j][0] == "E" or matriz[i][j][0] == "4" ) and command.lower() == "attack":
-                                print("inicio evento enemy")
                                 enemy_event(diccionario, i, j, matriz, prompt)
                                 return
 

@@ -1,3 +1,6 @@
+import bbdd_changes
+
+
 def PantallaPrincipal():
     def menu_principal(figura, opciones, prompt):
         print("*" + " *" * 38 + " *")
@@ -387,6 +390,10 @@ def PantallaPrincipal():
                             for i in partida:
                                 game_id = i
 
+                            # Insertar datos en tablas para comenzar partida
+                            bbdd_changes.guardar_datos_new_game(game_id, "Hyrule")
+
+                            # Insertar armas
                             for i in range(2):
                                 if i == 0:
                                     value = ("{},'Wood Sword', 0,0,0,5").format(game_id)

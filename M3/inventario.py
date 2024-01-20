@@ -115,10 +115,13 @@ def inv_weapons(player_id):
         total_woodsword = diccionarios.player_dict['weapons_inventory'][0][1]['quantity']
         inventory = inventory[:75] + f"{lives_current_woodsword}/{total_woodsword}".rjust(6) + inventory[75 + 1:]
         inventory = inventory[:86] + "(equiped)".ljust(16) + inventory[86 + 1:]
-    if not diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Wood Sword":
+    elif not diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Wood Sword" and diccionarios.player_dict['weapons_inventory'][0][1]['quantity'] > 0:
         lives_current_woodsword = diccionarios.player_dict['weapons_equipped'][0][1]['uses_left_woodsword']
         total_woodsword = diccionarios.player_dict['weapons_inventory'][0][1]['quantity']
         inventory = inventory[:75] + f"{lives_current_woodsword}/{total_woodsword}".rjust(6) + inventory[75 + 1:]
+        inventory = inventory[:86] + "".ljust(16) + inventory[86 + 1:]
+    elif diccionarios.player_dict['weapons_inventory'][0][1]['quantity'] == 0:
+        inventory = inventory[:75] + "0/0".rjust(6) + inventory[75 + 1:]
         inventory = inventory[:86] + "".ljust(16) + inventory[86 + 1:]
 
 
@@ -130,10 +133,13 @@ def inv_weapons(player_id):
         total_sword = diccionarios.player_dict['weapons_inventory'][1][2]['quantity']
         inventory = inventory[:112] + f"{lives_current_sword}/{total_sword}".rjust(11) + inventory[112 + 1:]
         inventory = inventory[:128] + "(equiped)".ljust(16) + inventory[128 + 1:]
-    if not diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
+    elif not diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword" and diccionarios.player_dict['weapons_inventory'][1][2]['quantity'] > 0:
         lives_current_sword = diccionarios.player_dict['weapons_equipped'][0][1]['uses_left_sword']
         total_sword = diccionarios.player_dict['weapons_inventory'][1][2]['quantity']
         inventory = inventory[:112] + f"{lives_current_sword}/{total_sword}".rjust(11) + inventory[112 + 1:]
+        inventory = inventory[:128] + "".ljust(16) + inventory[128 + 1:]
+    elif diccionarios.player_dict['weapons_inventory'][1][2]['quantity'] == 0:
+        inventory = inventory[:112] + "0/0".rjust(11) + inventory[112 + 1:]
         inventory = inventory[:128] + "".ljust(16) + inventory[128 + 1:]
 
 
@@ -144,10 +150,13 @@ def inv_weapons(player_id):
         total_woodshield = diccionarios.player_dict['shields_inventory'][0][1]['quantity']
         inventory = inventory[:160] + f"{lives_current_woodshield}/{total_woodshield}".rjust(5) + inventory[160 + 1:]
         inventory = inventory[:170] + "(equiped)".ljust(16) + inventory[170 + 1:]
-    if not diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Wood Shield":
+    elif not diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Wood Shield" and diccionarios.player_dict['shields_inventory'][0][1]['quantity'] > 0:
         lives_current_woodshield = diccionarios.player_dict['weapons_equipped'][1][2]['uses_left_woodshield']
         total_woodshield = diccionarios.player_dict['shields_inventory'][0][1]['quantity']
         inventory = inventory[:160] + f"{lives_current_woodshield}/{total_woodshield}".rjust(5) + inventory[160 + 1:]
+        inventory = inventory[:170] + "".ljust(16) + inventory[170 + 1:]
+    elif diccionarios.player_dict['shields_inventory'][0][1]['quantity'] == 0:
+        inventory = inventory[:160] + "0/0".rjust(5) + inventory[160 + 1:]
         inventory = inventory[:170] + "".ljust(16) + inventory[170 + 1:]
 
 
@@ -158,10 +167,13 @@ def inv_weapons(player_id):
         total_shield = diccionarios.player_dict['shields_inventory'][1][2]['quantity']
         inventory = inventory[:197] + f"{lives_current_shield}/{total_shield}".rjust(10) + inventory[197 + 1:]
         inventory = inventory[:212] + "(equiped)".ljust(16) + inventory[212 + 1:]
-    if not diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Shield":
+    if not diccionarios.player_dict['weapons_equipped'][1][2]['shield_name'] == "Shield" and diccionarios.player_dict['shields_inventory'][1][2]['quantity'] > 0:
         lives_current_shield = diccionarios.player_dict['weapons_equipped'][1][2]['uses_left_shield']
         total_shield = diccionarios.player_dict['shields_inventory'][1][2]['quantity']
         inventory = inventory[:197] + f"{lives_current_shield}/{total_shield}".rjust(10) + inventory[197 + 1:]
+        inventory = inventory[:212] + "".ljust(16) + inventory[212 + 1:]
+    elif diccionarios.player_dict['shields_inventory'][1][2]['quantity'] == 0:
+        inventory = inventory[:197] + "0/0".rjust(10) + inventory[197 + 1:]
         inventory = inventory[:212] + "".ljust(16) + inventory[212 + 1:]
 
 

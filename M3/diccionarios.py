@@ -75,7 +75,7 @@ player_dict = {'game_id':0,'user_name':'Player 1','hearts': 3,"hearts_max":3 , '
                                   {4:{"food_name":"Salads","quantity":0,'uses':0}},
                                   {5:{"food_name":"Pescatarian","quantity":0,'uses':0}},
                                   {6:{"food_name":"Roasted","quantity":0,'uses':0}}],
-               'blood_moon_countdown': 0, 'blood_moon_appearances':0,}
+               'blood_moon_countdown': 25, 'blood_moon_appearances':0,}
 
 #composicion diccionarios:
 #primera clave: ID General (Unica),

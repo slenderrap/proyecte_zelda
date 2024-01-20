@@ -25,7 +25,7 @@ hyrule_map_original = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * 
 *                                           S0            *                   *\n\
 *                                                         *                   *\n\
 *         X                                     T         *                   *\n\
-* OO    OOOO         E1        S1?            T M    F    *                   *\n\
+* OO    OOOO         E2        S1?            T M    F    *                   *\n\
 *OOOOOOOOOOO                                              *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
@@ -40,7 +40,7 @@ hyrule_map = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *                                           S0            *                   *\n\
 *                                                         *                   *\n\
 *         X                                     T         *                   *\n\
-* OO    OOOO         E1        S1?            T M    F    *                   *\n\
+* OO    OOOO         E2        S1?            T M    F    *                   *\n\
 *OOOOOOOOOOO                                              *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
@@ -76,7 +76,7 @@ gerudo_map_original = ("\
 *OOOOOOOOOOOOOOOO                                   M     *                   *\n\
 *  OOOOO  OOOOO              TTT                          *                   *\n\
 *                              TT             S4?        O*                   *\n\
-*  E1          C                                        OO*                   *\n\
+*  E2          C                                        OO*                   *\n\
 *                                                       OO*                   *\n\
 *             AAAAAA                  E2                  *                   *\n\
 *             AAAAAAAA                                    *                   *\n\
@@ -90,7 +90,7 @@ gerudo_map = ("\
 *OOOOOOOOOOOOOOOO                                   M     *                   *\n\
 *  OOOOO  OOOOO              TTT                          *                   *\n\
 *                              TT             S4?        O*                   *\n\
-*  E1          C                                        OO*                   *\n\
+*  E2          C                                        OO*                   *\n\
 *                                                       OO*                   *\n\
 *             AAAAAA                  E2                  *                   *\n\
 *             AAAAAAAA                                    *                   *\n\
@@ -102,7 +102,7 @@ gerudo_map = ("\
 necluda_map_original = ("\
 * Necluda * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
 *                     M                                   *                   *\n\
-* X       E1                         TT            M      *                   *\n\
+* X       E2                         TT            M      *                   *\n\
 *OO                C               TT                ~~~~~*                   *\n\
 *OOOOO                                           ~~~~~~~~~*                   *\n\
 *OOOO                                              ~~~~~~~*                   *\n\
@@ -116,7 +116,7 @@ necluda_map_original = ("\
 necluda_map = ("\
 * Necluda * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
 *                     M                                   *                   *\n\
-* X       E1                         TT            M      *                   *\n\
+* X       E2                         TT            M      *                   *\n\
 *OO                C               TT                ~~~~~*                   *\n\
 *OOOOO                                           ~~~~~~~~~*                   *\n\
 *OOOO                                              ~~~~~~~*                   *\n\
@@ -178,37 +178,40 @@ show_map = ("\
 # eventos pre-partida
 
 def update_map_pre_start(matriz):
-    # Iterar sobre el diccionario
+    # Borramos las posiciones de todos los enemigos en el mapa original
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            if matriz[i][j][0] == "E":
+                matriz[i][j][0], matriz[i][j+1][0] = " ", " "
 
-    for key, value in getattr(diccionarios,diccionarios.dades[2]["current_map"]).items():
+
+
+
+    # Iterar sobre el diccionario
+    for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy_" in subsubkey:
-                    #antes de nada, borramos las posiciones del enemigo en el mapa original
-                    for i in range(len(matriz)):
-                        for j in range(len(matriz[0])):
-                            if matriz[i][j][0] == "E":
-                                matriz[i][j][0],matriz[i][j+1][0] = " "," "
-
                     # Cogemos las coordenadas y el número de vidas
-
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
 
                     # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
                     matriz[coordenadas[0]][coordenadas[1]] = [vidas]
                     matriz[coordenadas[0]][coordenadas[1]-1] = ["E"]
+
+
                 if "chest_" in subsubkey:
                     # Cogemos las coordenadas
                     coordenadas = subsubvalue[1]
-                    if subsubvalue [2]["isopen"]:
+                    if subsubvalue[2]["isopen"]:
                         # Reemplazamos las coordenadas con el cofre abierto
                         matriz[coordenadas[0]][coordenadas[1]] = ["W"]
 
                 if "sanctuary_" in subsubkey:
                     # Cogemos las coordenadas
                     coordenadas = subsubvalue[2]
-                    if subsubvalue [3]["isopen"]:
+                    if subsubvalue[3]["isopen"]:
                         # Reemplazamos las coordenadas con el cofre abierto
                         matriz[coordenadas[0]][coordenadas[1]] = [" "]
 
@@ -218,7 +221,13 @@ def update_map_pre_start(matriz):
                         coordenadas = subsubvalue[1]
                         # Reemplazamos las coordenadas con el numero de turnos del arbol para aparecer
                         matriz[coordenadas[0]][coordenadas[1]] = [str(subsubvalue[2])]
-                return matriz
+
+
+    # Devolvemos la matriz resultante después de las modificaciones
+    return matriz
+
+
+
 
 
 def agregar_inventario(matriz,inventario_1):
@@ -259,30 +268,27 @@ def actualizar_mapa(matriz):
 
         diccionarios.player_dict["weapons_inventory"][1][2]["uses"] += 1
 
-    #actualizamos vida enemigos en mapa
+        # Borramos las posiciones de todos los enemigos en el mapa original
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            #si las casillas e pertenecen al tablero y no fuera:
+            if i >=10 and j >=57:
+                if matriz[i][j][0] == "E":
+                    matriz[i][j][0], matriz[i][j + 1][0] = " ", " "
+
+        # Iterar sobre el diccionario
     for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy_" in subsubkey:
-                    # antes de nada, borramos las posiciones del enemigo en el mapa original
-                    for i in range(len(matriz)):
-                        for j in range(len(matriz[0])):
-                            if i < 11 and j < 58:
-                                if matriz[i][j][0] == "E":
-                                    matriz[i][j][0], matriz[i][j + 1][0] = " ", " "
-
                     # Cogemos las coordenadas y el número de vidas
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
-                    #si el numero de vidas es mayor a 0, se imprimira el enemigo en el mapa, si no, no
-                    if  int(vidas) <= 0:
-                        # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
-                        matriz[coordenadas[0]][coordenadas[1]] = [" "]
-                        matriz[coordenadas[0]][coordenadas[1] - 1] = [" "]
-                    else:
-                        # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
-                        matriz[coordenadas[0]][coordenadas[1]] = [vidas]
-                        matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
+
+                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
+                    matriz[coordenadas[0]][coordenadas[1]] = [vidas]
+                    matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
+
 
 
     # Desempaquetar la matriz e imprimir el mapa original
