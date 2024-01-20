@@ -48,7 +48,7 @@ Steps: Clone, Navigate, Install, and Run
 To get started, clone this repository to your local machine. Open your terminal and run the following commands:
 
 ```bash
-git clone https://github.com/your-username/project-zelda.git
+git clone https://github.com/slenderrap/proyecte_zelda/project-zelda.git
 cd project-zelda
 Next, install the required dependencies by executing:
 pip install -r requirements.txt
@@ -62,9 +62,7 @@ You are now good to go, Enjoy!!
 
 ## Roadmap
 
-See the [open issues](https://github.com/Slenderrap,Erikpr04,Sergiofdce/proyecte_zelda/issues) for a list of proposed features (and known issues).
-
-## Contributing
+See the [open issues](https://github.com/Slenderrap/proyecte_zelda/issues) for a list of proposed features (and known issues).
 
 
 
@@ -82,8 +80,4 @@ See the [open issues](https://github.com/Slenderrap,Erikpr04,Sergiofdce/proyecte
 * **Erik Pinto** - ** - [Erik Pinto](https://github.com/Erikpr04/) - **
 * **Sergio Fernandez** - ** - [Sergio Fernandez](https://github.com/sergiofdez/) - **
 
-## Acknowledgements
 
-* []()
-* []()
-* []()
