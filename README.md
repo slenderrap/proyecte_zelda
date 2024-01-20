@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/Slenderrap,Erikpr04,Sergiofdce/proyecte_zelda">
-    <img src="https://i.pinimg.com/originals/74/c2/3b/74c23b71034896412bb62d307a6e0437.png" alt="Logo" width="80" height="80">
+    <img src="https://zelda.nintendo.com/breath-of-the-wild/assets/icons/BOTW-Share_icon.jpg" alt="Image" width="1200" height="530">
   </a>
 
   <h3 align="center">The Legend Of Zelda™: Breath Of The Wild</h3>
@@ -13,7 +13,7 @@
   </p>
 </p>
 
-![Downloads](https://img.shields.io/github/downloads/Slenderrap,Erikpr04,Sergiofdce/proyecte_zelda/total) 
+![Downloads](https://img.shields.io/github/downloads/Slenderrap/proyecte_zelda/total) 
 
 
 ## Table Of Contents
@@ -22,10 +22,7 @@
 * [Built With](#built-with)
 * [Getting Started](#getting-started)
   * [Installation](#installation)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
 * [Authors](#authors)
-* [Acknowledgements](#acknowledgements)
 
 ## About The Project
 
@@ -52,9 +49,12 @@ Steps: Clone, Navigate, Install, and Run
 
 To get started, clone this repository to your local machine. Open your terminal and run the following commands:
 
-```bash
+bash
+
 git clone https://github.com/slenderrap/proyecte_zelda/project-zelda.git
+
 cd project-zelda
+
 Next, install the required dependencies by executing:
 pip install -r requirements.txt
 
@@ -80,9 +80,8 @@ See the [open issues](https://github.com/Slenderrap/proyecte_zelda/issues) for a
 5. Open a Pull Request
 
 ## Authors
-
-* ** Oriol Arribas** - ** - [ Oriol Arribas](https://github.com/slenderrap/) - **
-* **Erik Pinto** - ** - [Erik Pinto](https://github.com/Erikpr04/) - **
-* **Sergio Fernandez** - ** - [Sergio Fernandez](https://github.com/sergiofdez/) - **
+* *Oriol Arribas*  - [ Oriol Arribas](https://github.com/slenderrap/) 
+* *Erik Pinto* -  [Erik Pinto](https://github.com/Erikpr04/) 
+* *Sergio Fernandez* - [Sergio Fernandez](https://github.com/sergiofdez/) 
 
 
