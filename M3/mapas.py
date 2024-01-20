@@ -251,16 +251,16 @@ def agregar_inventario(matriz,inventario_1):
 def actualizar_mapa(matriz):
 
 
-    diccionarios_list = [
-        diccionarios.main_dict_hyrule,
-        diccionarios.main_dict_death_mountain,
-        diccionarios.main_dict_gerudo,
-        diccionarios.main_dict_necluda
-    ]
+    diccionarios_mapa = {
+        "main_dict_hyrule": diccionarios.main_dict_hyrule,
+        "main_dict_death_mountain": diccionarios.main_dict_death_mountain,
+        "main_dict_gerudo": diccionarios.main_dict_gerudo,
+        "main_dict_necluda": diccionarios.main_dict_necluda
+    }
     # actualizamos cofres si todos los del mundo estan abiertos y no se tienen armas
     chests_open = True
 
-    for diccionario in diccionarios_list:
+    for diccionario in diccionarios_mapa.values():
         for mapa in diccionario.values():
             for value in mapa.values():
                 for subsubkey, subsubvalue in value.items():
@@ -273,7 +273,7 @@ def actualizar_mapa(matriz):
     if chests_open and diccionarios.player_dict['weapons_inventory'][1]["quantity"] == 0 and \
             diccionarios.player_dict['weapons_inventory'][2]["quantity"] == 0:
         # Realizar acciones cuando todas las condiciones se cumplen
-        for diccionario in diccionarios_list:
+        for diccionario in diccionarios_mapa.values():
             for mapa in diccionario.values():
                 for value in mapa.values():
                     for subsubkey, subsubvalue in value.items():
@@ -284,21 +284,22 @@ def actualizar_mapa(matriz):
 
     #actualizamos santuarios del mundo(cheats)
 
-
-        for diccionario in diccionarios_list:
-            for mapa in diccionario.values():
-                for value in mapa.values():
-                    for subsubkey, subsubvalue in value.items():
-                        if "sanctuary_" in subsubkey and not subsubvalue[3].get("isopen", True):
-                            y,x = subsubvalue[2]
-                            # Borramos el interrogante del mapa
-                            if matriz[x][y][0] == "S":
-                                matriz[x][y + 2][0] = " "
-                            elif str(matriz[x][y][0]).isdigit():
-                                matriz[x][y + 1][0] = " "
-                            elif matriz[x][y][0] == "?":
-                                matriz[x][y][0] = " "
-
+    for nombre_mapa, diccionario in diccionarios_mapa.items():
+        if nombre_mapa == diccionarios.dades[2]['current_map']:
+            print(diccionario.items())
+            for key_outer, value_outer in diccionario.items():
+                for key_inner, value_inner in value_outer.items():
+                    for subkey, subvalue in value_inner.items():
+                        if "sanctuary_" in subkey:
+                            if subvalue[3]["isopen"]:
+                                y, x = subvalue[0][0], subvalue[0][1]
+                                # Realiza las operaciones con el santuario aquí
+                                if matriz[y][x][0] == "S":
+                                    matriz[y][x + 2][0] = " "
+                                elif str(matriz[y][x][0]).isdigit():
+                                    matriz[y][x + 1][0] = " "
+                                elif matriz[y][x][0] == "?":
+                                    matriz[y][x][0] = " "
 
 
     #actualizamos armas, si se gastan todos los usos de un arma, se sube un uso para la bdd y se suma 5 al nuevo numero de usos si hay otro arma

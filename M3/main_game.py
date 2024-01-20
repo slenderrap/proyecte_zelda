@@ -149,7 +149,8 @@ while flag_0:
 
 
         #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
-        LimpiarPantalla()
+        #LimpiarPantalla()
+        print(diccionarios.dades[2]["current_map"])
         matriz = addbottomline_update_map(matriz)
         matriz = mapas.agregar_inventario(matriz,current_inventory)
         #fix, agregamos en cada iteracion al jugador en el mapa
@@ -301,10 +302,14 @@ while flag_0:
                             for subsubkey, subsubvalue in value.items():
                                 if "sanctuary_" in subsubkey and not subsubvalue[3].get("isopen", False):
                                     subsubvalue[3]["isopen"] = True
+                                    #guardamos region antigua
+                                    old_region = diccionarios.player_dict["region"]
                                     #guardamos region en diccionario
                                     diccionarios.player_dict["region"] = region_name
                                     #guardamos partida con la nueva region
                                     bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
+                                    diccionarios.player_dict["region"] = old_region
+
 
                 # AGREGAR VIDA AL JUGADOR
                 diccionarios.player_dict["hearts_max"] = 9
@@ -883,8 +888,9 @@ while flag_0:
             flag_0 = False
         else:
             bbdd_changes.download_data_mysql(game_id)
+            load_all_data(game_id)
             matriz = mapas.update_map_pre_start(matriz)
-            prompt = []
+
             flag_00 = False
             flag_01 = True
 

@@ -100,8 +100,7 @@ def move_enemy(current_pos, matriz, main_dict, object_id, npc_id, npc_name):
 
         # Verifica si alguna de las nuevas posiciones está ocupada
         for pos in new_positions:
-            if matriz[pos[0]][pos[1]] not in (
-            [" "], ["E"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]):
+            if matriz[pos[0]][pos[1]] not in ([" "], ["E"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]):
                 current_pos[0],current_pos[1] = temp_old_pos[0],temp_old_pos[1]
                 positions_occupied = True
                 break
@@ -209,7 +208,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 # AGREGAR VIDA AL JUGADOR
                                 diccionarios.player_dict["hearts_max"] += 1
-                                diccionarios.player_dict["hearts"] += 1
+                                diccionarios.player_dict["hearts"] = diccionarios.player_dict["hearts_max"]
 
 
 
@@ -240,7 +239,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                         # Comprobamos si el jugador está cerca del enemigo
                         if (x == sub_value[0][0] and y == sub_value[0][1]) or (
                                 x == sub_value[1][0] and y == sub_value[1][1]):
-                            if not diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"].isspace():
+                            if diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] != "":
                                 if sub_value[2]["isdead"]:
                                     historialPrompt(prompt, "Enemy killed!")
 
@@ -276,7 +275,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                             else:
                                 historialPrompt(prompt, "You have no Sword!")
-                                move_enemy(sub_value, matriz, getattr(diccionarios,diccionario_mapa), int(key), 4, "enemy_1", prompt)
+                                move_enemy(sub_value, matriz,getattr(diccionarios, diccionarios.dades[2]["current_map"]), int(key), 4,sub_key)
 
                             # el enemigo se movera despues de la interaccion, y atacara al jugador, si se tiene escudo, se restara 1 a escudos
                             if diccionarios.player_dict["weapons_equipped"][1][2]["shield_name"] == "Shield":
@@ -460,7 +459,6 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                         # Ponemos mensaje de confirmacion al comer
                         historialPrompt(prompt, f"You ate {food_name}!")
-                        diccionarios.player_dict["hearts"] += 1
 
                         return player_dict
 
