@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/Slenderrap,Erikpr04,Sergiofdce/proyecte_zelda">
-    <img src="https://zelda.nintendo.com/breath-of-the-wild/assets/icons/BOTW-Share_icon.jpg" alt="Image" width="1000" height="530">
+    <img src="https://zelda.nintendo.com/breath-of-the-wild/assets/icons/BOTW-Share_icon.jpg" alt="Image" width="850" height="530">
   </a>
 
   <h3 align="center">The Legend Of Zelda™: Breath Of The Wild</h3>
