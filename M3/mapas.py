@@ -239,6 +239,7 @@ def agregar_inventario(matriz,inventario_1):
             else:
                 map += matriz[i][j][0] + "\n"
 
+
     new_map = inventario.insertar_mapa(map, inventario_1)
     lineas = new_map.strip().split('\n')
     matriz = []

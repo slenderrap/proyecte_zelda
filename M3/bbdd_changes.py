@@ -609,8 +609,7 @@ def download_all_data_mysql(game_id, region):
     cursor.execute(enemies_query, (game_id, region))
     enemies_data = cursor.fetchall()
     diccionario = region_selector(region)
-    # print("Diccionario 1")
-    # print(diccionario)
+
     for key, value in diccionario.items():
         if 4 in value:
             if isinstance(value[4], dict):
@@ -636,9 +635,7 @@ def download_all_data_mysql(game_id, region):
                         else:
                             enemy_data[2]["isdead"] = True
                         enemy_data[2]["current_hearts"] = enemies_data[1][6]
-    # print()
-    # print(diccionario)
-    # input()
+
 
 
     # game_chests_opened table
@@ -671,7 +668,7 @@ def download_all_data_mysql(game_id, region):
 
 
     # game_sanctuaries_opened table
-    sanctuaries_query = "SELECT sanctuary_id, is_open FROM game_sanctuaries_opened WHERE game_id = %s and region = %s"
+    sanctuaries_query = "SELECT sanctuary_id, is_open FROM game_sanctuaries_opened WHERE game_id = %s"
     cursor.execute(sanctuaries_query, (game_id,))
     sanctuaries_data = cursor.fetchall()
     diccionario = region_selector(region)

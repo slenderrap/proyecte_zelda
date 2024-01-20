@@ -1,4 +1,3 @@
-import random
 import inventario
 import bbdd_changes
 import mapas
@@ -65,28 +64,25 @@ def addbottomline_update_map(matriz):
 
     return matriz
 
-# Dividimos el mapa en líneas
+
+# Definimos las variables principales
+matriz = []
+
+#creamos la matriz por primera vez
 lineas = getattr(mapas,(diccionarios.dades[2]["current_map"][10:]+"_map")).strip().split('\n')
 
-# Crear una lista de listas
-matriz = []
-prompt = []
-
-# Procesar cada línea y agregarla a la matriz como una lista de caracteres
+# Procesamos cada línea y la agregamos a la matriz como una lista de caracteres
 for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
 
-
+prompt = []
 last_map = ""
-
-
-
+current_pos = []
 
 mapas.change_map()
 
 
-current_pos = []
 #actualizamos mapa pre partida
 #funcion para cambiar la posicion inicial del mapa según su ubicacion
 def player_change_pos():
@@ -103,18 +99,11 @@ def player_change_pos():
         current_pos = [9,4]
 
 
+#por primera vez y dependiendo del mapa,ubicamos al jugador en su mapa
 player_change_pos()
 
 
 
-
-
-
-
-
-
-
-command = ""
 
 #funcion que muestra el inventario actual seleccionado
 current_inventory = inventario.player_inventory_main
@@ -149,8 +138,7 @@ while flag_0:
 
 
         #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
-        #LimpiarPantalla()
-        print(diccionarios.dades[2]["current_map"])
+        LimpiarPantalla()
         matriz = addbottomline_update_map(matriz)
         matriz = mapas.agregar_inventario(matriz,current_inventory)
         #fix, agregamos en cada iteracion al jugador en el mapa
@@ -797,30 +785,32 @@ while flag_0:
             continue
         elif current_pos[0] == 9 and current_pos[1] == 20:
             if command.lower() == "attack":
-                if diccionarios.main_dict_castle[2][11]["ganon_hearts"] >= 0:
-                    #si atacamos, quitaremos un corazon a ganon
-                    diccionarios.main_dict_castle[2][11]["ganon_hearts"] -= 1
-                    for i in range(len(matriz)):
-                        for j in range(len(matriz[i])):
-                            if matriz[i][j] == ['♥']:
-                                matriz[i][j] = [' ']
-                                break
-                    #bajamos tambien los corazones del jugador
-                    diccionarios.player_dict["hearts"] -= 1
-                    if diccionarios.main_dict_castle[2][11]["ganon_hearts"] <= 0:
+                #si tenemos un arma equipada, podremos atacar
+                if diccionarios.player_dict['weapons_equipped'][1]["weapon_name"] != ("" or " "):
+                    if diccionarios.main_dict_castle[2][11]["ganon_hearts"] >= 0:
+                        #si atacamos, quitaremos un corazon a ganon
+                        diccionarios.main_dict_castle[2][11]["ganon_hearts"] -= 1
+                        for i in range(len(matriz)):
+                            for j in range(len(matriz[i])):
+                                if matriz[i][j] == ['♥']:
+                                    matriz[i][j] = [' ']
+                                    break
+                        #bajamos tambien los corazones del jugador
+                        diccionarios.player_dict["hearts"] -= 1
+                        if diccionarios.main_dict_castle[2][11]["ganon_hearts"] <= 0:
+                            diccionarios.main_dict_castle[2][11]["isdead"] = True
+                            flag_04 = True
+                            flag_03 = False
+
+
+                    #si ganon tiene menos de 0 vidas, se gana la partida
+                    else:
                         diccionarios.main_dict_castle[2][11]["isdead"] = True
                         flag_04 = True
                         flag_03 = False
-
-
-                #si ganon tiene menos de 0 vidas, se gana la partida
+                #si no tienes arma equipada, sale el siguiente mensaje
                 else:
-                    diccionarios.main_dict_castle[2][11]["isdead"] = True
-                    flag_04 = True
-                    flag_03 = False
-
-
-
+                    eventos.historialPrompt(prompt, "You have no weapon equipped!")
 
         # posicion actual del jugador
         matriz[current_pos[0]][current_pos[1]] = [" "]
@@ -888,7 +878,7 @@ while flag_0:
             flag_0 = False
         else:
             bbdd_changes.download_data_mysql(game_id)
-            load_all_data(game_id)
+            bbdd_changes.load_all_data(game_id)
             matriz = mapas.update_map_pre_start(matriz)
 
             flag_00 = False
