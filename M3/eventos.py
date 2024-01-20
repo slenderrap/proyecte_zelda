@@ -46,18 +46,6 @@ def move_to_X(matriz, current_position, casilla):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #Variable movimiento npcs
 def move_enemy(current_pos, matriz, main_dict, object_id, npc_id, npc_name):
     current_positions = main_dict[object_id][npc_id][npc_name][:2]
@@ -472,7 +460,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                         # Ponemos mensaje de confirmacion al comer
                         historialPrompt(prompt, f"You ate {food_name}!")
-                        diccionarios.player_dict["hearts_max"] += 1
+                        diccionarios.player_dict["hearts"] += 1
 
                         return player_dict
 

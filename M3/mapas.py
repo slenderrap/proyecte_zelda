@@ -291,13 +291,12 @@ def actualizar_mapa(matriz):
                     for subsubkey, subsubvalue in value.items():
                         if "sanctuary_" in subsubkey and not subsubvalue[3].get("isopen", True):
                             y,x = subsubvalue[2]
-
                             # Borramos el interrogante del mapa
                             if matriz[x][y][0] == "S":
                                 matriz[x][y + 2][0] = " "
                             elif str(matriz[x][y][0]).isdigit():
                                 matriz[x][y + 1][0] = " "
-                            else:
+                            elif matriz[x][y][0] == "?":
                                 matriz[x][y][0] = " "
 
 

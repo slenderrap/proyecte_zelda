@@ -391,7 +391,10 @@ def PantallaPrincipal():
                                 game_id = i
 
                             # Insertar datos en tablas para comenzar partida
-                            bbdd_changes.guardar_datos_new_game(game_id, "Hyrule")
+                            region_create = ('Hyrule', 'Death mountain', 'Gerudo', 'Necluda', 'Castle')
+                            for i in range(4):
+                                bbdd_changes.region_selector(region_create[i])
+                                bbdd_changes.guardar_datos_new_game(game_id, region_create[i])
 
                             # Insertar armas
                             for i in range(2):

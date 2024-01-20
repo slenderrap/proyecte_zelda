@@ -288,15 +288,23 @@ while flag_0:
                 # AGREGAR SHIELD A PLAYER
                 diccionarios.player_dict["shields_inventory"][1][2]["quantity"] += 1
             elif "open sanctuaries":
-                diccionarios_mapa = [diccionarios.main_dict_hyrule, diccionarios.main_dict_death_mountain,
-                                     diccionarios.main_dict_gerudo, diccionarios.main_dict_necluda]
+                diccionarios_mapa = {
+                    "Hyrule": diccionarios.main_dict_hyrule,
+                    "Death mountain": diccionarios.main_dict_death_mountain,
+                    "Gerudo": diccionarios.main_dict_gerudo,
+                    "Necluda": diccionarios.main_dict_necluda
+                }
 
-                for diccionario in diccionarios_mapa:
+                for region_name, diccionario in diccionarios_mapa.items():
                     for mapa in diccionario.values():
                         for value in mapa.values():
                             for subsubkey, subsubvalue in value.items():
                                 if "sanctuary_" in subsubkey and not subsubvalue[3].get("isopen", False):
                                     subsubvalue[3]["isopen"] = True
+                                    #guardamos region en diccionario
+                                    diccionarios.player_dict["region"] = region_name
+                                    #guardamos partida con la nueva region
+                                    bbdd_changes.guardar_datos_partida(game_id, diccionarios.player_dict["region"])
 
                 # AGREGAR VIDA AL JUGADOR
                 diccionarios.player_dict["hearts_max"] = 9
