@@ -1,16 +1,25 @@
+use zelda;
+
 /* Create the database */
 CREATE DATABASE IF NOT EXISTS zelda;
 
-/* Switch to the classicmodels database */
-USE zelda;
+/* Drop tables */
+DROP TABLE IF EXISTS game_food;
+DROP TABLE IF EXISTS game_weapons;
+DROP TABLE IF EXISTS game_enemies;
+DROP TABLE IF EXISTS game_sanctuaries_opened;
+DROP TABLE IF EXISTS game_chests_opened;
+DROP TABLE IF EXISTS game_trees_fell;
+DROP TABLE IF EXISTS game;
+
 
 /* Create the tables */
 CREATE TABLE IF NOT EXISTS game (
 	game_id INT,
 	user_name CHAR(50),
-	date_started DATE,
     blood_moon_countdown INT,
     blood_moon_appearances INT,
+    hearts INT,
     region CHAR(20),
     created_at TIMESTAMP,
     changed_at TIMESTAMP
@@ -19,7 +28,8 @@ CREATE TABLE IF NOT EXISTS game (
 CREATE TABLE IF NOT EXISTS game_food (
 	game_id INT,
 	food_name CHAR(15),
-    quantity_remaining INT,
+    quantity INT,
+    uses INT,
     created_at TIMESTAMP,
     changed_at TIMESTAMP
 );
@@ -27,8 +37,10 @@ CREATE TABLE IF NOT EXISTS game_food (
 CREATE TABLE IF NOT EXISTS game_weapons (
 	game_id INT,
 	weapon_name CHAR(15),
-    equiped BOOLEAN,
-    lives_remaining INT,
+    equipped BOOLEAN,
+    quantity INT,
+    uses INT,
+    uses_left INT,
     created_at TIMESTAMP,
     changed_at TIMESTAMP
 );
@@ -36,10 +48,13 @@ CREATE TABLE IF NOT EXISTS game_weapons (
 CREATE TABLE IF NOT EXISTS game_enemies (
 	game_id INT,
 	region CHAR(20),
-    num INT,
+    enemy_id CHAR(7),
     xpos INT,
     ypos INT,
-    lifes_remaining INT,
+    xpos2 INT,
+    ypos2 INT,
+    is_dead BOOLEAN,
+    lives_remaining INT,
     created_at TIMESTAMP,
     changed_at TIMESTAMP
 );
@@ -47,9 +62,8 @@ CREATE TABLE IF NOT EXISTS game_enemies (
 CREATE TABLE IF NOT EXISTS game_sanctuaries_opened (
 	game_id INT,
 	region CHAR(20),
-    num INT,
-    xpos INT,
-    ypos INT,
+    sanctuary_id CHAR(11),
+    is_open BOOLEAN,
     created_at TIMESTAMP,
     changed_at TIMESTAMP
 );
@@ -57,9 +71,17 @@ CREATE TABLE IF NOT EXISTS game_sanctuaries_opened (
 CREATE TABLE IF NOT EXISTS game_chests_opened (
 	game_id INT,
 	region CHAR(20),
-    num INT,
-    xpos INT,
-    ypos INT,
+    chest_id CHAR(7),
+    is_open BOOLEAN,
+    created_at TIMESTAMP,
+    changed_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS game_trees_fell (
+	game_id INT,
+	region CHAR(20),
+    tree_id CHAR(6),
+    is_cutted BOOLEAN,
     created_at TIMESTAMP,
     changed_at TIMESTAMP
 );
