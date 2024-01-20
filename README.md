@@ -1,5 +1,9 @@
 <br/>
 <p align="center">
+  <a href="https://github.com/Slenderrap,Erikpr04,Sergiofdce/proyecte_zelda">
+    <img src="https://i.pinimg.com/originals/74/c2/3b/74c23b71034896412bb62d307a6e0437.png" alt="Logo" width="80" height="80">
+  </a>
+
   <h3 align="center">The Legend Of Zelda™: Breath Of The Wild</h3>
 
   <p align="center">
@@ -10,6 +14,7 @@
 </p>
 
 ![Downloads](https://img.shields.io/github/downloads/Slenderrap,Erikpr04,Sergiofdce/proyecte_zelda/total) 
+
 
 ## Table Of Contents
 
