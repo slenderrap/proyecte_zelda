@@ -249,6 +249,8 @@ def agregar_inventario(matriz,inventario_1):
 
 
 def actualizar_mapa(matriz):
+
+
     diccionarios_list = [
         diccionarios.main_dict_hyrule,
         diccionarios.main_dict_death_mountain,
@@ -279,6 +281,24 @@ def actualizar_mapa(matriz):
                             if isinstance(subsubvalue[2], dict) and subsubvalue[2].get("isopen", False):
                                 subsubvalue[2]["isopen"] = False
                                 break
+
+    #actualizamos santuarios del mundo(cheats)
+
+
+        for diccionario in diccionarios_list:
+            for mapa in diccionario.values():
+                for value in mapa.values():
+                    for subsubkey, subsubvalue in value.items():
+                        if "sanctuary_" in subsubkey and not subsubvalue[3].get("isopen", True):
+                            y,x = subsubvalue[2]
+
+                            # Borramos el interrogante del mapa
+                            if matriz[x][y][0] == "S":
+                                matriz[x][y + 2][0] = " "
+                            elif str(matriz[x][y][0]).isdigit():
+                                matriz[x][y + 1][0] = " "
+                            else:
+                                matriz[x][y][0] = " "
 
 
 

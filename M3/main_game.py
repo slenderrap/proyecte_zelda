@@ -154,8 +154,6 @@ while flag_0:
         matriz = mapas.agregar_inventario(matriz,current_inventory)
         #fix, agregamos en cada iteracion al jugador en el mapa
         matriz[current_pos[0]][current_pos[1]] = ["X"]
-        print(diccionarios.player_dict)
-        print(diccionarios.main_dict_hyrule)
         mapas.actualizar_mapa(matriz)
 
 
@@ -292,13 +290,18 @@ while flag_0:
             elif "open sanctuaries":
                 diccionarios_mapa = [diccionarios.main_dict_hyrule, diccionarios.main_dict_death_mountain,
                                      diccionarios.main_dict_gerudo, diccionarios.main_dict_necluda]
-                for i in range(4):
-                    diccionario = region_selector(diccionarios_mapa[i])
-                    records_with_key_3 = {key: value for key, value in diccionario.items() if 3 in value}
-                    for key1, value1 in records_with_key_3.items():
-                        for key2, value2 in value1.items():
-                            sanctuary_id = list(value2.keys())[0]
-                            is_open = value2[sanctuary_id][3]['isopen']
+
+                for diccionario in diccionarios_mapa:
+                    for mapa in diccionario.values():
+                        for value in mapa.values():
+                            for subsubkey, subsubvalue in value.items():
+                                if "sanctuary_" in subsubkey and not subsubvalue[3].get("isopen", False):
+                                    subsubvalue[3]["isopen"] = True
+
+                # AGREGAR VIDA AL JUGADOR
+                diccionarios.player_dict["hearts_max"] = 9
+                diccionarios.player_dict["hearts"] = 9
+
             elif "game over":
                 flag_02 = True
                 flag_01 = False
@@ -696,7 +699,7 @@ while flag_0:
                 diccionarios_mapa = [diccionarios.main_dict_hyrule, diccionarios.main_dict_death_mountain,
                                      diccionarios.main_dict_gerudo, diccionarios.main_dict_necluda]
                 for i in range(4):
-                    diccionario = region_selector(diccionarios_mapa[i])
+                    diccionario = bbdd_changes.region_selector(diccionarios_mapa[i])
                     records_with_key_3 = {key: value for key, value in diccionario.items() if 3 in value}
                     for key1, value1 in records_with_key_3.items():
                         for key2, value2 in value1.items():
@@ -858,6 +861,9 @@ while flag_0:
         LimpiarPantalla()
         funciones.dialogos.generador_menus(funciones.dialogos.zelda_saved_top, funciones.dialogos.zelda_saved_end, funciones.dialogos.zelda_saved_content)
         prompt = input("Give an Order:")
+        if prompt == "continue":
+            flag_00 = True
+            flag04 = False
 
     while flag_00:
         game_id, region = prepartida.PantallaPrincipal()
