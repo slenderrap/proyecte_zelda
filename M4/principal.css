@@ -1,0 +1,130 @@
+body{
+    background-color: bisque;
+    max-width: 80%;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url(fondo_body.jpg);    
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+
+    
+}
+
+nav{
+    
+    overflow: hidden;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: black;
+    width: 100%;
+    flex-direction: column;
+    position:sticky;
+    top: 0px;
+    height: 2rem;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    z-index: 1;
+    
+    margin: auto;
+    
+}
+
+
+nav a{
+    font-size: 1rem;
+    color:white;
+    
+    justify-content: space-arround;
+    text-align: center;
+    text-decoration: none;
+    width: 15rem;
+    
+    margin: 0.5rem;
+    flex-wrap: nowrap;
+}
+nav a:last-child{
+    justify-content: start;
+
+    float: left;
+}
+
+nav a:first-child{
+    justify-content: start;
+
+    float: left;
+}
+
+nav a:nth-child(2){
+    
+    float: right;
+}
+
+nav a:hover{
+    color: blueviolet;
+}
+div{
+    
+    opacity: 80%;
+    border-radius: 3px;
+    
+    display: flex;
+}
+.hijo{
+    color: brown;
+    
+    flex-wrap: wrap;
+    
+}
+#contenedor_padre{
+    background-image: url(fondo_contenido.jpg);
+    background-repeat:round;
+    opacity: 90%;
+    padding: 1rem;
+    flex-direction: column;
+    border-radius: 12px;
+    background-size: cover;
+}
+.juntos{
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    z-index: 1;
+}
+#fotoTitulo{
+    filter:brightness(110%);
+    width: 500px;
+    
+}
+#fotoTitulo:hover{
+    animation: mymove 5s;
+    
+}
+.hijo h2{
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+@keyframes mymove {
+    from {top: 0px;}
+    to {top: 1200px;}
+  }
+.hijo p{
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+}  
+footer{
+    background-color: burlywood;
+
+}
