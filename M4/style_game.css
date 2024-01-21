@@ -1,0 +1,296 @@
+html{
+    width: 100%;    
+    margin: 0;
+    font-family: 'Bitter', serif;
+    line-height: 1.6em;
+    padding: 0 10px;
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+/* HEADER - NAVBAR */
+
+
+
+
+
+
+
+
+
+
+
+/* BODY */
+body{    
+    /* Margenes */
+    margin: 0;
+    padding: 0;
+    /* Centrar todo horizontalmente */
+    justify-content: center;
+    align-items: center;
+    background-repeat: repeat;
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
+}
+
+
+/* BODY - HEADER */
+@font-face {
+    font-family: 'The Wild Breath of Zelda';
+    src: url('text-font/The Wild Breath of Zelda.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+#header_content h1 {
+    font-family: 'The Wild Breath of Zelda';
+    src: url('text-font/The Wild Breath of Zelda.otf') format('opentype');
+    color: #F3EFE6;
+}
+#header_content p {
+    font-family: 'Bitter', serif;
+    color: #F4EFE5;
+    text-align: center;
+    font-size: 1.125rem;
+    font-style: italic;
+    padding: 0 10px;
+    text-shadow: 0 1px 2px #000;
+    line-height: 1.6em;
+    margin-bottom: 50px;
+}
+
+#game_header {
+    margin: 0 auto;
+    position: relative;
+    height: 450px;
+    color: #fff;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+}
+#background_video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+    z-index: -1;
+    box-shadow: 0 2.5rem 5rem 0 rgba(0,0,0,0.5);
+}
+
+#header_content a {
+    margin: 50px;
+    text-decoration: none;
+    color: #fff;
+    text-shadow: 0 1px 2px #000;
+    line-height: 1.6em;
+    margin-bottom: 50px;
+    
+}
+
+#header_content h1, #header_content img {
+    margin-bottom: 20px;
+    filter: drop-shadow(1px 1px 8px #000);
+    
+}
+
+
+
+
+
+
+/* BODY - DIV */
+#game_content {
+    /* Tamaño y margenes */
+    margin: 0px 0px;
+    padding: 50px 100px;
+    border-radius: 0px;
+    /* Propiedades para centrar */
+    display: flex;
+    align-items: center; 
+    align-items: flex-start;
+    justify-content: center;
+    /* Imagen de fondo */
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
+}
+
+#game_content div{
+    margin: 0px 50px;
+}
+#game_content div h1{
+    color: #C7AC84;
+    text-align: center;
+    text-transform: uppercase;
+}
+#game_content div h3{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+    color: #C7AC84;
+    
+}
+#game_content div p{
+    text-align: justify;
+    line-height: 1.6em;
+    padding: 0 10px;
+    font-size: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* BODY - Carousel */
+.characters-carousel {
+    /* Centrar imagenes */
+    justify-content: center;
+    align-items: center;
+    /* Ajustar tamaño marcos */
+    width: 80%;
+    max-width: 500px; 
+    margin: 0 auto;
+    padding: 30px;
+    /* Bordes */
+    border-radius: 20px;
+    background-color: #F3EFE6;
+    /* Comportamiento */
+    display: flex;  
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* Scroll horizontal por divs */
+    
+}
+
+.characters-carousel div {
+
+    border-radius: 20px;
+    width: 500px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    margin: 0 20px;
+    white-space: normal;
+
+
+}
+.carousel {
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel img {
+    max-width: 100%;
+    margin-right: 20px; /* Espacio entre las imágenes */
+}
+
+.carousel p {
+    text-align: center;
+    margin-top: 10px; /* Espacio entre la imagen y el texto */
+}
+
+
+/* BODY - CONTROLES  */
+
+#img_controles {
+    display: flex;
+    margin: 0 auto;
+}
+
+
+/* BODY - Download */
+
+#game_download {
+    
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    text-decoration: justify;
+    width: 100%;
+    color: #b99f65;
+    background-image: url('assets_game/game_download_background.jpeg');
+    background-repeat: repeat;
+}
+
+#game_download h1{
+    text-align: center;
+}
+#download_content{
+    padding:50px 100px 50px 100px;
+}
+
+.button_download {
+    /* Centrar */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    /* Color texto */
+    color:white;
+    margin-bottom: 50px;
+  }
+
+.button_download p {
+    position: absolute;
+    /* Poner texto por encima */
+    text-align: center;
+    z-index: 1; 
+    /* Color */
+    color: #F9F7DF;
+}
+
+.button_download img {
+    width: 20%; 
+    height: auto; 
+}
+
+
+
+
+
+/* ANIMACIONES  HEADER */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#header_content {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+    animation-delay: 2s; 
+}
+
+#background_video {
+    opacity: 1;
+}
+
+#game_content, #game_download {
+    opacity: 0;
+}
+
+#game_content, #game_download {
+    animation: fadeIn 2s forwards;
+    animation-delay: 0.5s;
+}
+
+
+
