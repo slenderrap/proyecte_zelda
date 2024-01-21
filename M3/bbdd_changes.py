@@ -609,8 +609,7 @@ def download_all_data_mysql(game_id, region):
     cursor.execute(enemies_query, (game_id, region))
     enemies_data = cursor.fetchall()
     diccionario = region_selector(region)
-    # print("Diccionario 1")
-    # print(diccionario)
+
     for key, value in diccionario.items():
         if 4 in value:
             if isinstance(value[4], dict):
@@ -636,9 +635,6 @@ def download_all_data_mysql(game_id, region):
                         else:
                             enemy_data[2]["isdead"] = True
                         enemy_data[2]["current_hearts"] = enemies_data[1][6]
-    # print()
-    # print(diccionario)
-    # input()
 
 
     # game_chests_opened table
@@ -688,7 +684,10 @@ def download_all_data_mysql(game_id, region):
             if 3 in value:
                 if isinstance(value[3], dict):
                     for sanctuary_key, sanctuary_value in value[3].items():
-                        if sanctuary_id ==  sanctuary_key:
+
+
+                        if sanctuary_id == sanctuary_key:
+
                             sanctuary_value[3]['isopen'] = is_open
 
 
@@ -732,7 +731,8 @@ def download_all_data_mysql(game_id, region):
 
 def load_all_data(game_id):
     regiones = ['Hyrule', 'Death mountain', 'Gerudo', 'Necluda', 'Castle']
+
     for i in range(5):
-        #print(regiones[i])
+
         region = regiones[i]
         download_all_data_mysql(game_id, region)

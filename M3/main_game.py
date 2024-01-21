@@ -1,4 +1,3 @@
-import random
 import inventario
 import bbdd_changes
 import mapas
@@ -23,7 +22,9 @@ def addbottomline_update_map(matriz):
         for z in range(len(input_variable)):
             show_inputs += input_variable[z] + ", "
         show_inputs = show_inputs[:-2] + " "
-        new_map = inventario.insertar_mapa( map, current_inventory)
+
+        new_map = inventario.insertar_mapa(map, current_inventory)
+
         if len(show_inputs) % 2 == 0:
             show_inputs += " "
 
@@ -43,7 +44,13 @@ def addbottomline_update_map(matriz):
             else:
                 map += matriz[i][j][0] + "\n"
     x, y = current_pos
-    input_variable = ["Exit", "Attack", "Go"]
+
+    if "castle" in diccionarios.dades[2]["current_map"]:
+        input_variable = [ "Attack", "Go", "Back"]
+    else:
+        input_variable = ["Exit", "Attack", "Go"]
+
+
     for j in range(y - 1, y + 2):
         for i in range(x - 1, x + 2):
             if (i == x and j != y) or (i != x and j == y):
@@ -65,57 +72,25 @@ def addbottomline_update_map(matriz):
 
     return matriz
 
-# Dividimos el mapa en líneas
+
+
+# Definimos las variables principales
+matriz = []
+
+#creamos la matriz por primera vez
 lineas = getattr(mapas,(diccionarios.dades[2]["current_map"][10:]+"_map")).strip().split('\n')
 
-# Crear una lista de listas
-matriz = []
-prompt = []
+# Procesamos cada línea y la agregamos a la matriz como una lista de caracteres
 
-# Procesar cada línea y agregarla a la matriz como una lista de caracteres
 for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
 
 
-last_map = ""
-
-
-
-
-mapas.change_map()
-
-
+prompt = []
+last_map = "main_dict_hyrule"
 current_pos = []
-#actualizamos mapa pre partida
-#funcion para cambiar la posicion inicial del mapa según su ubicacion
-def player_change_pos():
-    global current_pos
-    if "hyrule" in diccionarios.dades[2]["current_map"]:
-        current_pos = [8, 10]
-    elif "death" in diccionarios.dades[2]["current_map"]:
-        current_pos = [9,2]
-    elif "gerudo" in diccionarios.dades[2]["current_map"]:
-        current_pos = [9,2]
-    elif "necluda" in diccionarios.dades[2]["current_map"]:
-        current_pos = [2,2]
-    elif "castle" in diccionarios.dades[2]["current_map"]:
-        current_pos = [9,4]
-
-
-player_change_pos()
-
-
-
-
-
-
-
-
-
-
-command = ""
-
+mapas.change_map()
 #funcion que muestra el inventario actual seleccionado
 current_inventory = inventario.player_inventory_main
 flag_0 = True #Flag principal
@@ -124,6 +99,40 @@ flag_01 = False #main game
 flag_02 = False #death screen
 flag_03 = False #castle
 flag_04 = False #win screen
+
+
+
+#actualizamos mapa pre partida
+#funcion para cambiar la posicion inicial del mapa según su ubicacion
+def player_change_pos():
+    global current_pos
+
+    if "hyrule" in diccionarios.player_dict["region"].lower():
+        current_pos = [8, 10]
+        diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
+    elif "death" in diccionarios.player_dict["region"].lower():
+        current_pos = [9,2]
+        diccionarios.dades[2]["current_map"] = "main_dict_death_mountain"
+    elif "gerudo" in diccionarios.player_dict["region"].lower():
+        current_pos = [9,2]
+        diccionarios.dades[2]["current_map"] = "main_dict_gerudo"
+    elif "necluda" in diccionarios.player_dict["region"].lower():
+        current_pos = [2,2]
+        diccionarios.dades[2]["current_map"] = "main_dict_necluda"
+    elif "castle" in diccionarios.player_dict["region"].lower():
+        current_pos = [9,4]
+        diccionarios.dades[2]["current_map"] = "main_dict_castle"
+
+
+
+#por primera vez y dependiendo del mapa,ubicamos al jugador en su mapa
+player_change_pos()
+
+
+
+
+
+
 
 while flag_0:
 
@@ -149,8 +158,9 @@ while flag_0:
 
 
         #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
-        #LimpiarPantalla()
-        #print(diccionarios.dades[2]["current_map"])
+
+        LimpiarPantalla()
+
         matriz = addbottomline_update_map(matriz)
         matriz = mapas.agregar_inventario(matriz,current_inventory)
         #fix, agregamos en cada iteracion al jugador en el mapa
@@ -188,7 +198,6 @@ while flag_0:
         if len(prompt) != 0:
             for i in prompt:
                 print(i)
-        #print(current_pos)
 
 
 
@@ -589,20 +598,31 @@ while flag_0:
         # INICIO DE ACCION
 
 
+        # verificamos si hay arboles muertos
+        for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
+            if 1 in value:
+                for sub_key, sub_value in value[1].items():
+                    if sub_key.startswith("tree_"):
+                        if matriz[sub_value[1][0]][sub_value[1][1]][0] != "T":
+                            if sub_value[2] == 0:
+                                matriz[sub_value[1][0]][sub_value[1][1]][0] = "T"
+                                sub_value[0] = 4
+                                sub_value[2] = 10
+                            else:
+                                if sub_value[0] == 0:
+                                    sub_value[2] -= 1
+                                    matriz[sub_value[1][0]][sub_value[1][1]][0] = str(sub_value[2])
+
+
         # Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
         LimpiarPantalla()
+        matriz = addbottomline_update_map(matriz)
         matriz = mapas.agregar_inventario(matriz, current_inventory)
         # fix, agregamos en cada iteracion al jugador en el mapa
         matriz[current_pos[0]][current_pos[1]] = ["X"]
+        mapas.actualizar_mapa(matriz)
 
-        # Desempaquetar la matriz e imprimir el mapa original
-        for i in range(len(matriz)):
-            for j in range(len(matriz[0])):
-                if j != 78:
-                    print(matriz[i][j][0], end="")
-                else:
-                    print(matriz[i][j][0])
-        addbottomline_update_map(matriz)
+
 
 
         if len(prompt) != 0:
@@ -776,50 +796,62 @@ while flag_0:
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [2, 2]
-            continue
+
+            flag_01 = True
+            flag_03 = False
+
         elif "back" in command and "hyrule" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [8, 10]
-            continue
+
+            flag_01 = True
+            flag_03 = False
+
         elif "back" in command and "death" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_death_mountain"
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [9, 2]
-            continue
+
+            flag_01 = True
+            flag_03 = False
+
         elif "back" in command and "gerudo" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_gerudo"
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [9, 2]
-            continue
+
+            flag_01 = True
+            flag_03 = False
+
+
         elif current_pos[0] == 9 and current_pos[1] == 20:
             if command.lower() == "attack":
-                if diccionarios.main_dict_castle[2][11]["ganon_hearts"] >= 0:
-                    #si atacamos, quitaremos un corazon a ganon
-                    diccionarios.main_dict_castle[2][11]["ganon_hearts"] -= 1
-                    for i in range(len(matriz)):
-                        for j in range(len(matriz[i])):
-                            if matriz[i][j] == ['♥']:
-                                matriz[i][j] = [' ']
-                                break
-                    #bajamos tambien los corazones del jugador
-                    diccionarios.player_dict["hearts"] -= 1
-                    if diccionarios.main_dict_castle[2][11]["ganon_hearts"] <= 0:
-                        diccionarios.main_dict_castle[2][11]["isdead"] = True
-                        flag_04 = True
-                        flag_03 = False
+                #si tenemos un arma equipada, podremos atacar
+                if diccionarios.player_dict['weapons_equipped'][0][1]["weapon_name"] != "" :
+                    if diccionarios.main_dict_castle[2][11]["ganon_hearts"] >= 0:
+                        #si atacamos, quitaremos un corazon a ganon
+                        diccionarios.main_dict_castle[2][11]["ganon_hearts"] -= 1
+                        for i in range(len(matriz)):
+                            for j in range(len(matriz[i])):
+                                if matriz[i][j] == ['♥']:
+                                    matriz[i][j] = [' ']
+                                    break
 
+                        if diccionarios.main_dict_castle[2][11]["ganon_hearts"] <= 0:
+                            diccionarios.main_dict_castle[2][11]["isdead"] = True
+                            flag_04 = True
+                            flag_03 = False
 
-                #si ganon tiene menos de 0 vidas, se gana la partida
+                        #bajamos tambien los corazones del jugador
+                        diccionarios.player_dict["hearts"] -= 1
+
+                #si no tienes arma equipada, sale el siguiente mensaje
                 else:
-                    diccionarios.main_dict_castle[2][11]["isdead"] = True
-                    flag_04 = True
-                    flag_03 = False
-
-
+                    eventos.historialPrompt(prompt, "You have no weapon equipped!")
 
 
         # posicion actual del jugador
@@ -858,6 +890,9 @@ while flag_0:
 
 
     while flag_02:  # pantalla de muerte
+
+                LimpiarPantalla()
+
                 funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end,funciones.dialogos.death_content)
                 for i in prompt:
                     print(i)
@@ -865,6 +900,9 @@ while flag_0:
                 if prompt != "Continue":
                     eventos.historialPrompt(prompt, "Invalid action")
                 else:
+
+                    LimpiarPantalla()
+
                     flag_02=False
                     flag_00=True
 
@@ -887,12 +925,19 @@ while flag_0:
             flag_00 = False
             flag_0 = False
         else:
+
+            LimpiarPantalla()
             bbdd_changes.download_data_mysql(game_id)
             bbdd_changes.load_all_data(game_id)
-            matriz = mapas.update_map_pre_start(matriz)
-
-            flag_00 = False
-            flag_01 = True
+            player_change_pos()
+            matriz = mapas.update_map_pre_start(mapas.change_map())
+            eventos.historialPrompt(prompt,str(diccionarios.player_dict["region"]))
+            if "castle" in diccionarios.dades[2]["current_map"]:
+                flag_00 = False
+                flag_03 = True
+            else:
+                flag_00 = False
+                flag_01 = True
 
 
 
