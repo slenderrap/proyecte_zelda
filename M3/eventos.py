@@ -210,7 +210,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 return True
                             else:
 
-                                historialPrompt(prompt, "You opened the sanctuary!")
+                                historialPrompt(prompt, "You opened the sanctuary, your maximum health has increased by 1")
 
                                 # AGREGAR VIDA AL JUGADOR
                                 diccionarios.player_dict["hearts_max"] += 1
@@ -251,7 +251,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     historialPrompt(prompt, "Enemy killed!")
 
                                 else:
-                                    historialPrompt(prompt, "Enemy encountered!")
+                                    historialPrompt(prompt, "Brave, keep fighting Link")
                                     move_enemy(sub_value, matriz, getattr(diccionarios,diccionarios.dades[2]["current_map"]),int(key), 4, sub_key)
 
 
@@ -300,7 +300,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             else:
                                 diccionarios.player_dict["hearts"] -= 1
                                 # restamos 1 de vida al jugador
-                                historialPrompt(prompt, "-1 health!")
+                                historialPrompt(prompt,f"Be careful Link, you only have {diccionarios.player_dict['hearts']} hearts ")
                             return
 
 
@@ -500,15 +500,18 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             # FUNCION COFRE
                             if matriz[i][j][0] in ("M", "W") and command.lower() == "open chest":
                                 check_cofre(diccionario, i, j)
+                                bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"], diccionarios.player_dict["region"])
                                 return
 
                             # FUNCION ARBOL
                             if (matriz[i][j][0] == "T"  or matriz[i][j][0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) and command.lower() == "attack":
                                 tree_event(diccionario, i, j)
+                                bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"], diccionarios.player_dict["region"])
+                                return
 
 
                             # FUNCION SANTUARIOS
-                            if (matriz[i][j][0] == "S" or matriz[i][j][0] in ("0","1","2","3","4","5","6","7","8","9") or matriz[i][j][0] == "?") and command.lower() == "open":
+                            if (matriz[i][j][0] == "S" or (matriz[i][j][0] == "S" and matriz[i][j+1][0]  in ("0","1","2","3","4","5","6","7","8","9")) or matriz[i][j][0] == "?") and command.lower() == "open sanctuary":
                                 if sanctuary_event(diccionario, i, j, matriz, prompt):
                                     return
 
@@ -522,6 +525,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             # FUNCION FOX
                             if matriz[i][j][0] == "F" and command.lower() == "attack":
                                 fox_event(diccionario, i, j)
+                                bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"], diccionarios.player_dict["region"])
                                 return
 
 
@@ -551,7 +555,6 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 #el 20% de las veces,si no se ha pescado ya antes se obtendra un pescado
                                 if getattr(diccionarios,(diccionarios.dades[2]["current_map"]))[10][6]["already_fished"]:
                                     historialPrompt(prompt, "You have already fished in this area")
-
                                     return
 
                                 else:
@@ -561,8 +564,8 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                         getattr(diccionarios, (diccionarios.dades[2]["current_map"]))[10][6]["already_fished"] = True
                                         diccionarios.player_dict["food_inventory"][0][1]["quantity"] += 1
-
-
+                                        bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"],
+                                                                           diccionarios.player_dict["region"])
 
                                     else:
                                         historialPrompt(prompt, "You didn't get a fish!")
@@ -596,6 +599,8 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                         # cocinamos pescatarian
                                         historialPrompt(prompt, "Pescatarian cooked!")
                                         diccionarios.player_dict["food_inventory"][4][5]["quantity"] += 1
+                                        bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"],
+                                                                           diccionarios.player_dict["region"])
 
                                     else:
                                         #si no hay ingredientes suficientes se añade al prompt un mensaje
@@ -620,16 +625,19 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                         # cocinamos pescatarian
                                         historialPrompt(prompt, "Roasted cooked!")
                                         diccionarios.player_dict["food_inventory"][5][6]["quantity"] += 1
+                                        bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"],
+                                                                           diccionarios.player_dict["region"])
+
                                     else:
                                         #si no hay ingredientes suficientes se añade al prompt un mensaje
 
-                                        if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and not diccionarios.player_dict["food_inventory"][2][3]["quantity"]>= 1:
+                                        if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1 and not diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
                                             historialPrompt(prompt, "Not enough Vegetable and Meat!")
                                         else:
-                                            if not diccionarios.player_dict["food_inventory"][2][3]["quantity"]>= 1:
+                                            if not diccionarios.player_dict["food_inventory"][2][3]["quantity"] >= 1:
                                                 historialPrompt(prompt, "Not enough Meat!")
 
-                                            if not diccionarios.player_dict["food_inventory"][0][1]["quantity"]>= 1:
+                                            if not diccionarios.player_dict["food_inventory"][0][1]["quantity"] >= 1:
                                                 historialPrompt(prompt, "Not enough Vegetable!")
 
                             # FUNCION EQUIP
@@ -682,6 +690,9 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                         historialPrompt(prompt, "You got a lizard!")
 
                                         diccionarios.player_dict["food_inventory"][2][3]["quantity"] += 1
+                                        bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"],
+                                                                           diccionarios.player_dict["region"])
+
 
                                         #restar 1 a espada
                                         if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
@@ -698,6 +709,5 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                         except IndexError:
                             pass
-
 
     event_caller(matriz, current_pos, command, diccionario_mapa)

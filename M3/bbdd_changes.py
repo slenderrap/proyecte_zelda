@@ -245,6 +245,7 @@ def insert_data_sanctuaries(game_id, region):
                             """
             cursor.execute(insert_query, (game_id, region, sanctuary_id, is_open))
 
+
         connection.commit()
 def insert_data_trees_fell(game_id, region):
     diccionario = region_selector(region)
@@ -569,7 +570,9 @@ def download_all_data_mysql(game_id, region):
     game_query = ("select count(*) from game_sanctuaries_opened where game_id = %s and is_open=1")
     cursor.execute(game_query, (game_id,))
     hearts_max_data = cursor.fetchone()
-    diccionarios.player_dict['hearts_max'] = hearts_max_data[0] +2
+    diccionarios.player_dict['hearts_max'] = hearts_max_data[0] + 2
+    if diccionarios.player_dict['hearts_max'] > 9:
+        diccionarios.player_dict['hearts_max'] = 9
 
 
     # game_food table
@@ -704,9 +707,7 @@ def download_all_data_mysql(game_id, region):
     cursor.execute(sanctuaries_query, (game_id,))
     sanctuaries_data = cursor.fetchall()
     diccionario = region_selector(region)
-    # print(diccionario)
-    # print("Diccionario antes")
-    # print(diccionario)
+
     for row in sanctuaries_data:
         sanctuary_id, is_open = row
         if is_open == 1:
@@ -724,9 +725,7 @@ def download_all_data_mysql(game_id, region):
                             sanctuary_value[3]['isopen'] = is_open
 
 
-    # print("Diccionario despues")
-    # print(diccionario)
-    # input()
+
 
 
 
@@ -758,7 +757,6 @@ def download_all_data_mysql(game_id, region):
     # print("Diccionario 2")
     # print(diccionario)
     # input()
-
 
 
 
