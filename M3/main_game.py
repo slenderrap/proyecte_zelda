@@ -22,7 +22,9 @@ def addbottomline_update_map(matriz):
         for z in range(len(input_variable)):
             show_inputs += input_variable[z] + ", "
         show_inputs = show_inputs[:-2] + " "
+
         new_map = inventario.insertar_mapa(map, current_inventory)
+
         if len(show_inputs) % 2 == 0:
             show_inputs += " "
 
@@ -42,10 +44,12 @@ def addbottomline_update_map(matriz):
             else:
                 map += matriz[i][j][0] + "\n"
     x, y = current_pos
+
     if "castle" in diccionarios.dades[2]["current_map"]:
         input_variable = [ "Attack", "Go", "Back"]
     else:
         input_variable = ["Exit", "Attack", "Go"]
+
 
     for j in range(y - 1, y + 2):
         for i in range(x - 1, x + 2):
@@ -69,6 +73,7 @@ def addbottomline_update_map(matriz):
     return matriz
 
 
+
 # Definimos las variables principales
 matriz = []
 
@@ -76,9 +81,11 @@ matriz = []
 lineas = getattr(mapas,(diccionarios.dades[2]["current_map"][10:]+"_map")).strip().split('\n')
 
 # Procesamos cada línea y la agregamos a la matriz como una lista de caracteres
+
 for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
+
 
 prompt = []
 last_map = "main_dict_hyrule"
@@ -94,10 +101,12 @@ flag_03 = False #castle
 flag_04 = False #win screen
 
 
+
 #actualizamos mapa pre partida
 #funcion para cambiar la posicion inicial del mapa según su ubicacion
 def player_change_pos():
     global current_pos
+
     if "hyrule" in diccionarios.player_dict["region"].lower():
         current_pos = [8, 10]
         diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
@@ -118,6 +127,7 @@ def player_change_pos():
 
 #por primera vez y dependiendo del mapa,ubicamos al jugador en su mapa
 player_change_pos()
+
 
 
 
@@ -148,7 +158,9 @@ while flag_0:
 
 
         #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
+
         LimpiarPantalla()
+
         matriz = addbottomline_update_map(matriz)
         matriz = mapas.agregar_inventario(matriz,current_inventory)
         #fix, agregamos en cada iteracion al jugador en el mapa
@@ -186,7 +198,6 @@ while flag_0:
         if len(prompt) != 0:
             for i in prompt:
                 print(i)
-        print(current_pos)
 
 
 
@@ -586,6 +597,7 @@ while flag_0:
 
         # INICIO DE ACCION
 
+
         # verificamos si hay arboles muertos
         for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
             if 1 in value:
@@ -609,6 +621,7 @@ while flag_0:
         # fix, agregamos en cada iteracion al jugador en el mapa
         matriz[current_pos[0]][current_pos[1]] = ["X"]
         mapas.actualizar_mapa(matriz)
+
 
 
 
@@ -783,27 +796,34 @@ while flag_0:
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [2, 2]
+
             flag_01 = True
             flag_03 = False
+
         elif "back" in command and "hyrule" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [8, 10]
+
             flag_01 = True
             flag_03 = False
+
         elif "back" in command and "death" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_death_mountain"
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [9, 2]
+
             flag_01 = True
             flag_03 = False
+
         elif "back" in command and "gerudo" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_gerudo"
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [9, 2]
+
             flag_01 = True
             flag_03 = False
 
@@ -832,6 +852,7 @@ while flag_0:
                 #si no tienes arma equipada, sale el siguiente mensaje
                 else:
                     eventos.historialPrompt(prompt, "You have no weapon equipped!")
+
 
         # posicion actual del jugador
         matriz[current_pos[0]][current_pos[1]] = [" "]
@@ -869,7 +890,9 @@ while flag_0:
 
 
     while flag_02:  # pantalla de muerte
+
                 LimpiarPantalla()
+
                 funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end,funciones.dialogos.death_content)
                 for i in prompt:
                     print(i)
@@ -877,7 +900,9 @@ while flag_0:
                 if prompt != "Continue":
                     eventos.historialPrompt(prompt, "Invalid action")
                 else:
+
                     LimpiarPantalla()
+
                     flag_02=False
                     flag_00=True
 
@@ -900,6 +925,7 @@ while flag_0:
             flag_00 = False
             flag_0 = False
         else:
+
             LimpiarPantalla()
             bbdd_changes.download_data_mysql(game_id)
             bbdd_changes.load_all_data(game_id)

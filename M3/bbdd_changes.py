@@ -637,7 +637,6 @@ def download_all_data_mysql(game_id, region):
                         enemy_data[2]["current_hearts"] = enemies_data[1][6]
 
 
-
     # game_chests_opened table
     chests_query = "SELECT chest_id, is_open FROM game_chests_opened WHERE game_id = %s and region = %s"
     cursor.execute(chests_query, (game_id, region))
@@ -685,7 +684,10 @@ def download_all_data_mysql(game_id, region):
             if 3 in value:
                 if isinstance(value[3], dict):
                     for sanctuary_key, sanctuary_value in value[3].items():
+
+
                         if sanctuary_id == sanctuary_key:
+
                             sanctuary_value[3]['isopen'] = is_open
 
 
@@ -729,6 +731,8 @@ def download_all_data_mysql(game_id, region):
 
 def load_all_data(game_id):
     regiones = ['Hyrule', 'Death mountain', 'Gerudo', 'Necluda', 'Castle']
-    for i in range (4):
+
+    for i in range(5):
+
         region = regiones[i]
         download_all_data_mysql(game_id, region)

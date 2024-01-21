@@ -1,0 +1,107 @@
+html{
+    margin: 0;
+}
+
+/* HEADER - NAVBAR */
+
+
+/* BODY */
+body{    
+    /* Margenes */
+    margin: 0;
+    padding: 0;
+    /* Centrar todo horizontalmente */
+    justify-content: center;
+    align-items: center;
+}
+
+#game_header {
+    margin: 0 auto;
+    height: 100%;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+}
+
+
+
+/* GAME.HTML */
+.game_content{
+    border: 1px solid #000000;
+    margin: 50px;
+    text-decoration: justify;
+    padding: 20px;
+}
+
+.game_content h1{
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+/* BODY - History - Carousel */
+.characters-carousel {
+    /* Centrar imagenes */
+    justify-content: center;
+    align-items: center;
+    /* Ajustar tamaño marcos */
+    width: 80%;
+    max-width: 500px; 
+    margin: 0 auto;
+    padding: 30px;
+    /* Bordes */
+    border: 1px solid #000000;
+    /* Comportamiento */
+    display: flex;  
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* Scroll horizontal por divs */
+    
+}
+
+.characters-carousel div {
+
+    border-radius: 20px;
+    width: 500px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    margin: 0 20px;
+    white-space: normal;
+
+
+}
+.carousel {
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel img {
+    max-width: 100%;
+    margin-right: 20px; /* Espacio entre las imágenes */
+}
+
+.carousel p {
+    text-align: center;
+    margin-top: 10px; /* Espacio entre la imagen y el texto */
+}
+
+
+
+/* BODY - Download */ 
+
+#download {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}

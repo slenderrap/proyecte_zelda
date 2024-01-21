@@ -287,7 +287,7 @@ def actualizar_mapa(matriz):
 
     for nombre_mapa, diccionario in diccionarios_mapa.items():
         if nombre_mapa == diccionarios.dades[2]['current_map']:
-            print(diccionario.items())
+
             for key_outer, value_outer in diccionario.items():
                 for key_inner, value_inner in value_outer.items():
                     for subkey, subvalue in value_inner.items():
@@ -353,6 +353,7 @@ def actualizar_mapa(matriz):
 
 def change_map():
 
+
     #cada vez que se cambie de mapa, se reinicia la posibilidad de pescar
 
     diccionarios_mapa = {
@@ -404,7 +405,9 @@ def change_map():
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
+
     return matriz
+
 
 
 
