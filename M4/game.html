@@ -14,45 +14,64 @@
             <a href="index.html">About us</a>
             <a href="index.html">Game</a>
         </nav>
+        
         <div id="game_header">
-            <h1>Serpyro</h1>
-            <img src="img/game_logo.png" alt="Logotipo Zelda">
-            <p>Adentrate al universo de Zelda: Breath of The Wild en una versión del juego creada por el grupo Serpyro para el proyecto: Zelda en Python. </p>
-            <a href="#seccion1">Historia</a>
-            <a href="#seccion1">Empieza tu aventura!</a>
-            <a href="#seccion1">Como jugar</a>
+            
+            <video autoplay muted id="background_video">
+                <source src="assets_game/game_header_video.mp4" type="video/mp4">
+            </video>
+            <div id="header_content">
+                <h1>SERPYRO</h1>
+                <img src="assets_game/game_logo.png" alt="Logotipo Zelda">
+                <p>Adéntrate al universo de Zelda: Breath of The Wild en una versión del juego creada por el grupo Serpyro para el proyecto: Zelda en Python.</p>
+                <a href="#game_content">Historia y Controles</a>
+                <a href="#game_download">Descargar Juego</a>
+            </div>
         </div>
 
-        <div class = "game_content">
-            <h1>Historia</h1>
-            <p>
-                La historia comienza con Link, el protagonista, despertándose después de un sueño profundo de cien años. Descubre que Hyrule, el reino en el que se desarrolla la saga, está en ruinas y asolado por la calamidad conocida como "Ganon".
-            </p>
-            <p>
-                El reino de Hyrule había estado en paz hasta que Ganon, una antigua fuerza malévola, resurge y sume el mundo en el caos. La Princesa Zelda, junto con un grupo de sabios, intentó sellar a Ganon, pero no lograron contener completamente su poder. Como medida desesperada, la Princesa Zelda toma la decisión de poner a Link en un sueño profundo para preservar su vida hasta que pueda despertar en el momento adecuado y enfrentar la amenaza de Ganon.
-            </p>
-            <!-- Carrusel de imagenes -->
-            <div class="characters-carousel">
-                <div class="carousel">
-                    <div>
-                        <img src="img/game_carousel_link.png" alt="Link">
-                        <p>Link, el joven héroe valiente que lleva la marca de La Trifuerza del Coraje.</p>
-                    </div>
-                    <div>
-                        <img src="img/game_carousel_zelda.png" alt="Zelda">
-                        <p>Zelda, la noble princesa de Hyrule, que porta la Trifuerza de la Sabiduría.</p>
-                    </div>
-                    <div>
-                        <img src="img/game_carousel_ganon.png" alt="Ganon">
-                        <p>Ganondorf, el señor oscuro que busca derrocar a Hyrule, posee la Trifuerza del Poder.</p>
+        
+        
+
+        <div id="game_content">
+            <div>
+                <h1>Historia</h1>
+                <p>
+                    La historia comienza con Link, el protagonista, despertándose después de un sueño profundo de cien años. Descubre que Hyrule, el reino en el que se desarrolla la saga, está en ruinas y asolado por la calamidad conocida como "Ganon".
+                </p>
+                <p>
+                    El reino de Hyrule había estado en paz hasta que Ganon, una antigua fuerza malévola, resurge y sume el mundo en el caos. La Princesa Zelda, junto con un grupo de sabios, intentó sellar a Ganon, pero no lograron contener completamente su poder. Como medida desesperada, la Princesa Zelda toma la decisión de poner a Link en un sueño profundo para preservar su vida hasta que pueda despertar en el momento adecuado y enfrentar la amenaza de Ganon.
+                </p>
+                <!-- Carrusel de imagenes -->
+                <div class="characters-carousel">
+                    <div class="carousel">
+                        <div>
+                            <img src="assets_game/game_carousel_link.png" alt="Link">
+                            <p>Link, el joven héroe valiente que lleva la marca de La Trifuerza del Coraje.</p>
+                        </div>
+                        <div>
+                            <img src="assets_game/game_carousel_zelda.png" alt="Zelda">
+                            <p>Zelda, la noble princesa de Hyrule, que porta la Trifuerza de la Sabiduría.</p>
+                        </div>
+                        <div>
+                            <img src="assets_game/game_carousel_ganon.png" alt="Ganon">
+                            <p>Ganondorf, el señor oscuro que busca derrocar a Hyrule, posee la Trifuerza del Poder.</p>
+                        </div>
                     </div>
                 </div>
+                <h3>Desliza para ver otros personajes!</h3>
+ 
             </div>
             
+            <div>
+                <h1>Como jugar</h1>
+                <img id="img_controles"" src="assets_game/game_letter.jpeg" alt="Controles">
+            </div>
 
-        </div>  
+        </div>
 
-        <div class = "game_content">
+
+
+        <div id="game_download">
             <h1>Juega Ahora</h1>
             <p>
                 ¡Embárcate en una aventura épica como nunca antes! Descarga ahora nuestro emocionante juego inspirado en el clásico favorito, "The Legend of Zelda: Breath of the Wild". Sumérgete en un vasto mundo lleno de misterios, desafíos y descubrimientos.
@@ -72,21 +91,14 @@
             <p>
                 ¡Es fácil unirte a la aventura! Simplemente haz clic en el botón de descarga a continuación y prepárate para sumergirte en un mundo lleno de magia, peligros y descubrimientos asombrosos.
             </p>
-            <h1>[Descargar Ahora]</h1>
-            <a id="download"
-                href="https://www.google.es/" download>
-                <button>Descargar</button>
-            </a>
+            <div class="button_download">
+                <p>Descargar Juego</p>
+                <img src="assets_game/game_button_download.jpeg" alt="Download">
+            </div>
             
         </div>
-        
-        <div class="game_content">
-            <h1>Como jugar</h1>
-            Imagen editada con los comandos principales del juego
-        </div>
-
-
     </body>
     <footer>
+
     </footer>
 </html>

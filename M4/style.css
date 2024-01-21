@@ -1,6 +1,9 @@
 html{
     margin: 0;
+    font-family: Helvetica;
 }
+
+
 
 /* HEADER - NAVBAR */
 
@@ -13,32 +16,110 @@ body{
     /* Centrar todo horizontalmente */
     justify-content: center;
     align-items: center;
+    background-repeat: repeat;
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
+}
+
+
+/* BODY - HEADER */
+@font-face {
+    font-family: 'The Wild Breath of Zelda';
+    src: url('text-font/The Wild Breath of Zelda.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+#header_content h1 {
+    font-family: 'The Wild Breath of Zelda';
+    src: url('text-font/The Wild Breath of Zelda.otf') format('opentype');
+    color: #F3EFE6;
+}
+#header_content p {
+    font-family: 'Bitter', serif;
+    color: #F4EFE5;
+    text-align: center;
+    font-size: 1.125rem;
+    font-style: italic;
+    padding: 0 10px;
+    text-shadow: 0 1px 2px #000;
+    line-height: 1.6em;
+    margin-bottom: 50px;
 }
 
 #game_header {
     margin: 0 auto;
-    height: 100%;
-    background-color: #000;
+    position: relative;
+    height: 450px;
     color: #fff;
     text-align: center;
     font-size: 1.5rem;
     font-weight: bold;
     padding: 1rem;
 }
+#background_video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+    z-index: -1;
+}
+
+#header_content a {
+    margin: 50px;
+    text-decoration: none;
+}
+
+
+
+
 
 
 
 /* GAME.HTML */
-.game_content{
-    border: 1px solid #000000;
-    margin: 50px;
-    text-decoration: justify;
-    padding: 20px;
+#game_content {
+    /* Tamaño y margenes */
+    margin: 0px 0px;
+    padding: 50px 100px;
+    border-radius: 0px;
+    /* Propiedades para centrar */
+    display: flex;
+    align-items: center; 
+    align-items: flex-start;
+    justify-content: center;
+    /* Imagen de fondo */
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
 }
 
-.game_content h1{
+#game_content div{
+    margin: 0px 50px;
+}
+#game_content div h1{
     text-align: center;
 }
+#game_content div h3{
+    text-align: center;
+}
+#game_content div p{
+    text-align: justify;
+}
+
+#game_download {
+    border: 1px solid #000000;
+    width: 100%;
+    text-decoration: justify;
+    padding: 20px;
+    color: #b99f65;
+    background-image: url('assets_game/game_download_background.jpeg');
+    background-repeat: repeat;
+}
+
+#game_download h1{
+    text-align: center;
+}
+
 
 
 
@@ -60,7 +141,8 @@ body{
     margin: 0 auto;
     padding: 30px;
     /* Bordes */
-    border: 1px solid #000000;
+    border-radius: 20px;
+    background-color: #F3EFE6;
     /* Comportamiento */
     display: flex;  
     flex-direction: row;
@@ -97,11 +179,69 @@ body{
 }
 
 
+/* BODY - CONTROLES  */
+
+#img_controles {
+    display: flex;
+    margin: 0 auto;
+}
+
 
 /* BODY - Download */ 
+.button_download {
+    /* Centrar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    /* Color texto */
+    color:white
+  }
 
-#download {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
+.button_download p {
+    position: absolute;
+    /* Poner texto por encima */
+    z-index: 1; 
+    /* Color */
+    color: #F9F7DF;
 }
+
+.button_download img {
+    width: 20%; 
+    height: auto; 
+}
+
+
+
+
+/* ANIMACIONES  HEADER */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#header_content {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+    animation-delay: 2s; 
+}
+
+#background_video {
+    opacity: 1;
+}
+
+#game_content, #game_download {
+    opacity: 0;
+}
+
+#game_content, #game_download {
+    animation: fadeIn 2s forwards;
+    animation-delay: 0.5s;
+}
+
