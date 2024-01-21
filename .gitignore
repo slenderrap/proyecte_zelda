@@ -5,3 +5,4 @@ M3/pruebas bbdd.py
 M3/funciones/__pycache__/dialogos.cpython-39.pyc
 M3/funciones/__pycache__/dialogos.cpython-310.pyc
 *.pyc
+*.xml
