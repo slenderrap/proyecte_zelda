@@ -519,3 +519,4 @@ def sanctuariesOpened():
             sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
             count += 1
     return sanctuaries
+

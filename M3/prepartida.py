@@ -1,9 +1,11 @@
+
 import bbdd_changes
 
 
 def PantallaPrincipal():
     def menu_principal(figura, opciones, prompt):
         print("*" + " *" * 38 + " *")
+
 
         count = 0
         # iteramos sobre las skins
@@ -13,17 +15,21 @@ def PantallaPrincipal():
                 print("*" + "  Zelda,Breath Of The Wild" + " " * 31 + i + "*")
                 continue
             print("*" + " " * 57 + i + "*")
+
         print("*", end=" ")
         for i in opciones:
             if i != "Exit":
                 print(i, end=", ")
             else:
                 print(i, end="  ")
+
         if len(opciones) == 6:
             print("* " * 16)
         else:
             print("* " * 21)
+
         if len(prompt) != 0:
+
             for i in prompt:
                 print(i)
         try:
@@ -31,14 +37,17 @@ def PantallaPrincipal():
             assert opc.title() in opciones
             return opc
         except AssertionError:
+
             historialPrompt(prompt, "Invalid action")
             return "Invalid action"
 
     def historialPrompt(prompt, NewLine, name=""):
+
         if "\n" in NewLine:
             NewLine.index("\n")
             NewLine += "\n"
             for i in range(NewLine.count("\n")):
+
                 if i == 0:
                     inicio = 0
                     final = NewLine.index("\n")
@@ -52,21 +61,26 @@ def PantallaPrincipal():
                 else:
                     prompt.append(NewLine.capitalize())
         elif NewLine.lower() == "new game":
+
             if len(prompt) == 8:
                 prompt[0], prompt[1], prompt[2], prompt[3], prompt[4], prompt[5], prompt[6], prompt[7] = \
                     prompt[1], prompt[2], prompt[3], prompt[4], prompt[5], prompt[6], prompt[7], NewLine.title()
             else:
                 prompt.append(NewLine.title())
+
         elif name != "":
+
             if len(prompt) == 8:
                 prompt[0], prompt[1], prompt[2], prompt[3], prompt[4], prompt[5], prompt[6], prompt[7] = \
                     prompt[1], prompt[2], prompt[3], prompt[4], prompt[5], prompt[6], prompt[7], NewLine
             else:
                 prompt.append(NewLine)
 
+
         elif len(prompt) == 8:
             prompt[0], prompt[1], prompt[2], prompt[3], prompt[4], prompt[5], prompt[6], prompt[7] = \
                 prompt[1], prompt[2], prompt[3], prompt[4], prompt[5], prompt[6], prompt[7], NewLine.capitalize()
+
         else:
             prompt.append(NewLine.capitalize())
         LimpiarPantalla()
@@ -76,6 +90,7 @@ def PantallaPrincipal():
             os.system("clear")
         elif os.name == "ce" or os.name == "nt" or os.name == "dos":
             os.system("cls")
+
 
     def saveGames(lista):  # esta funcion se encarga de pasarle la lista de las ultimas partidas guardadas +
         historial = [("")]  # a la funcion dialogos.generador_menus
@@ -115,6 +130,7 @@ def PantallaPrincipal():
         # el diccionario para cuando queramos jugar o eliminar una partida
 
     def opcionesPlantilla(opciones, prompt, dicc):
+
         for i in prompt:
             print(i)
         opc = input("What to do now ? ").capitalize()
@@ -126,6 +142,7 @@ def PantallaPrincipal():
             elif opc[i].isdigit():
                 opc_numero += opc[i]
         if opc_numero != "":
+
             opc = opc.replace(opc_numero, "X")
 
         if opc in opciones:
@@ -137,11 +154,13 @@ def PantallaPrincipal():
                     partida, region = dicc.get(int(opc_numero)).get("id"), dicc.get(int(opc_numero)).get("region")
                     return partida, region
 
+
                 else:
                     cursor.execute("set FOREIGN_KEY_CHECKS=0")
                     cursor.execute("delete from game where game_id='{}'".format(dicc.get(int(opc_numero)).get("id")))
                     connection.commit()
                     cursor.execute("set FOREIGN_KEY_CHECKS=1")
+
             elif opc_texto == "Help":
                 historialPrompt(prompt, opc_texto)
                 soloBack(dialogos.help_saved_games_top, dialogos.help_saved_games_end,
@@ -161,6 +180,7 @@ def PantallaPrincipal():
                 print(i)
             opt = input("What to do now ?").capitalize()
             if opt != "Back":
+
                 historialPrompt(prompt, "Invalid action")
             else:
                 historialPrompt(prompt, "Back")
@@ -180,6 +200,7 @@ def PantallaPrincipal():
                 print("| {} | {} |".format(i[0].ljust(10), i[1].ljust(17)))  # imprimos las filas que la consulta
             print("+------------+-------------------+")
         elif consulta == 2:
+
             cursor.execute("select * from games_played")
             rows = cursor.fetchall()
             print("+------------+--------------+")  # creamos la cabecera
@@ -194,9 +215,11 @@ def PantallaPrincipal():
             print("+------------+--------------+")
         elif consulta == 3:
 
+
             cursor.execute("select * from acquired_weapons")
             rows = cursor.fetchall()
             print("+------------+-------------+----------------+---------------------+")  # creamos la cabecera
+
             print("| {} | {} | {} | {} |".format("user_name".ljust(10), "weapon_name".ljust(11),
                                                  "times_achieved".ljust(14), \
                                                  "game_most_used".ljust(19)))
@@ -213,15 +236,18 @@ def PantallaPrincipal():
         elif consulta == 4:
             print("+------------+-------------+-------------+---------------------+")  # creamos la cabecera
             print("| {} | {} | {} | {} |".format("user_name".ljust(10), "food_name".ljust(11), "times_eated".ljust(11), \
+
                                                  "game_most_used".ljust(19)))
             print("+------------+-------------+-------------+---------------------+")
             cursor.execute("select * from food_eaten")
             rows = cursor.fetchall()
 
+
             for i in range(len(rows)):  # usamos bubble sort para ordenar por las veces que más se ha comido
                 for j in range(len(rows) - 1):
                     if rows[j][2] < rows[j + 1][2]:
                         rows[j], rows[j + 1] = rows[j + 1], rows[j]
+
             for i in rows:
                 print("| {} | {} | {} | {} |".format(i[0].ljust(10), i[1].ljust(11), str(i[2]).rjust(11),
                                                      str(i[3]).ljust(19)))
@@ -229,6 +255,7 @@ def PantallaPrincipal():
         else:
 
             print("+------------+---------------------+------------------------+--------------------------------+")
+
             print("| {} | {} | {} | {} |".format("user_name".ljust(10), "changed_at".ljust(19),
                                                  "blood_moon_appearances".ljust(22), \
                                                  "average_blood_moon_appearances".ljust(30)))
@@ -245,14 +272,17 @@ def PantallaPrincipal():
                     print("| {} | {} | {} | {} |".format(rows[i][1].ljust(10), str(rows[i][0]).ljust(19),
                                                          str(rows[i][2]).rjust(22), str(rows[-1][0]).rjust(30)))
 
+
             print("+------------+---------------------+------------------------+--------------------------------+")
         input("Press 'Enter' to continue")
         LimpiarPantalla()
 
     # " "*76 seria todo el contenido
+
     # 56 seria la parte antes de la figura
     # 15 lo que ocupa la figura
     # 5 espacios derecha
+
 
     import random
     import os
@@ -269,6 +299,7 @@ def PantallaPrincipal():
     )
 
     cursor = connection.cursor()
+
 
     flag_0 = True
     flag_00 = True
@@ -317,14 +348,18 @@ def PantallaPrincipal():
                2: skin_2,
                3: skin_3}
 
+
     cursor.execute("select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s'), hearts from game")
     rows = cursor.fetchall()
 
+
     if len(rows) == 0:
+
         opciones = ("New Game", "Help", "About", "Query", "Exit")
 
     else:
         opciones = ("Continue", "New Game", "Help", "About", "Query", "Exit")
+
         opciones_guardadas = ("Play X", "Erase X", "Help", "Back")
         contenido = "X"
 
@@ -332,10 +367,12 @@ def PantallaPrincipal():
         while flag_00:
             opcion = menu_principal(figuras[random.randint(1, len(figuras))], opciones, prompt).title()
 
+
             if opcion == "Continue":
 
                 if len(rows) == 1:
                     cursor.execute("select game_id, region from game")
+
                     partida, region = cursor.fetchone()
                     return partida, region
 
@@ -355,6 +392,7 @@ def PantallaPrincipal():
                                 "select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s'), hearts from game")
                             rows = cursor.fetchall()
                             if len(rows) == 1:
+
                                 break
 
 
@@ -369,6 +407,7 @@ def PantallaPrincipal():
 
                     if opc == "Back":
                         historialPrompt(prompt, opc)
+
                     elif opc == "Help":
                         historialPrompt(prompt, opc)
                         soloBack(dialogos.help_new_game_top, dialogos.help_new_game_end, dialogos.help_new_game_content)
@@ -406,10 +445,12 @@ def PantallaPrincipal():
 
                                 else:
                                     value = ("{},'Sword', 0,0,0,9").format(game_id)
+
                                 insert_query = "INSERT INTO game_weapons (game_id, weapon_name, equipped, quantity, uses,uses_left)\
                             VALUES ({})".format(value)
                                 cursor.execute(insert_query)
                                 connection.commit()
+
 
                             for i in range(2):
                                 if i == 0:
@@ -423,6 +464,7 @@ def PantallaPrincipal():
 
                                 connection.commit()
 
+
                             cursor.execute("select * from game where game_id = (select max(game_id) from game)")
                             rows = cursor.fetchall()
                             break
@@ -430,18 +472,22 @@ def PantallaPrincipal():
 
                             historialPrompt(prompt, "'{}' is not a valid name".format(opc))
 
+
                 if opc != "Back":
                     opt = ""
                     while opt != "Continue":
                         # mostrar legend
                         dialogos.generador_menus(dialogos.legend_top, dialogos.legend_end, dialogos.legend_content)
+
                         for i in prompt:
                             print(i)
                         opt = input("Type 'Continue' to continue: ").capitalize()
                         if opt != "Continue":
+
                             historialPrompt(prompt, "Invalid action")
                         else:
                             historialPrompt(prompt, opt)
+
                     opt = ""
                     while opt != "Continue":
                         dialogos.generador_menus(dialogos.plot_top, dialogos.plot_end, dialogos.plot_content)
@@ -452,10 +498,12 @@ def PantallaPrincipal():
                             historialPrompt(prompt, "Invalid action")
                         else:
                             historialPrompt(prompt, opt)
+
                             cursor.execute(
                                 "select game_id,region from game where game_id = (select max(game_id) from game)")
                             partida, region = cursor.fetchone()
                             return partida, region
+
 
 
             elif opcion == "Help":
@@ -464,7 +512,9 @@ def PantallaPrincipal():
 
             elif opcion == "About":
                 historialPrompt(prompt, opcion)
+
                 soloBack(dialogos.about_top, dialogos.about_end, dialogos.about_content)
+
 
             elif opcion == "Query":
                 opc = ""
@@ -474,12 +524,16 @@ def PantallaPrincipal():
                     for i in prompt:
                         print(i)
                     opc = input("What to do now ? ").title()
+
                     if opc == "Back":
+
                         historialPrompt(prompt, opc)
                     else:
                         try:
                             assert opc.startswith("Select ") and opc[7:].isdigit() and 1 <= int(opc[7:]) <= 5
+
                             historialPrompt(prompt, opc)
+
                             queries(int(opc[-1]))
                         except AssertionError:
                             historialPrompt(prompt, "Invalid action")
@@ -489,4 +543,6 @@ def PantallaPrincipal():
             elif opcion == "Exit":
                 flag_00 = False
                 flag_0 = False
+
                 return flag_0, flag_00
+
