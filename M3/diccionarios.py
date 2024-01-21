@@ -2,6 +2,7 @@ import os
 import mysql.connector
 
 
+
 config = {
     'user': 'zelda',
     'password': 'link',
@@ -65,21 +66,21 @@ dades = {1 : {"blood_moon_count":25},2 :{"current_map":"main_dict_hyrule"} }
 #Apple = 6
 
 
-#REVISAR WEAPONS INVENTORY, puede ser innecesario
-player_dict = {'game_id':1,'user_name':'Player 1','hearts': 3,"hearts_max": 5, 'region':'Hyrule',
-               'weapons_equipped': [{1:{'weapon_name':'Wood Sword',"uses_og":5,"uses_left":5}},
-                                    {2:{'shield_name':'Shield',"uses_og":9,"uses_left":5}}],
-               'weapons_inventory': [{1:{"name":"Wood Sword","quantity":4,'uses':0}},
-                                     {2:{"name":"Sword","quantity":2,'uses':0}}],
-               'shields_inventory': [{1:{"name":"Wood Shield","quantity":4,'uses':0}},
-                                     {2:{"name":"Shield","quantity":3,'uses':0}}],
-               'food_inventory': [{1:{"food_name":"Vegetables","quantity":1,'uses':0}},
-                                  {2:{"food_name":"Fish","quantity":2,'uses':0}},
-                                  {3:{"food_name":"Meat","quantity":3,'uses':0}},
-                                  {4:{"food_name":"Salad","quantity":4,'uses':0}},
-                                  {5:{"food_name":"Pescatarian","quantity":5,'uses':0}},
-                                  {6:{"food_name":"Roasted","quantity":6,'uses':0}}],
-               'blood_moon_countdown': 0, 'blood_moon_appearances':0,}
+#PREGUNTAR A SERGIO POR QUE NO CAMBIAN NI WEAPONS INVENTORY NI INVENTORY MAIN AL NORRAR ARMA
+player_dict = {'game_id':0,'user_name':'','hearts': 3,"hearts_max":3 , 'region':'Hyrule',
+               'weapons_equipped': [{1:{'weapon_name':'',"uses_og":5,"uses_left_woodsword":5,"uses_left_sword":9}},
+                                    {2:{'shield_name':'',"uses_og":9,"uses_left_woodshield":5,"uses_left_shield":9}}],
+               'weapons_inventory': [{1:{"name":"Wood Sword","quantity":0,'uses':0}},
+                                     {2:{"name":"Sword","quantity":0,'uses':0}}],
+               'shields_inventory': [{1:{"name":"Wood Shield","quantity":0,'uses':0}},
+                                     {2:{"name":"Shield","quantity":0,'uses':0}}],
+               'food_inventory': [{1:{"food_name":"Vegetables","quantity":0,'uses':0}},
+                                  {2:{"food_name":"Fish","quantity":0,'uses':0}},
+                                  {3:{"food_name":"Meat","quantity":0,'uses':0}},
+                                  {4:{"food_name":"Salads","quantity":0,'uses':0}},
+                                  {5:{"food_name":"Pescatarian","quantity":0,'uses':0}},
+                                  {6:{"food_name":"Roasted","quantity":0,'uses':0}}],
+               'blood_moon_countdown': 25, 'blood_moon_appearances':0,}
 
 #composicion diccionarios:
 #primera clave: ID General (Unica),
@@ -101,7 +102,7 @@ main_dict_hyrule = {
     5: {3: {"sanctuary_0": [[6,44],[9,45],[9,45],{"isopen": True}]}},
     6: {3: {"sanctuary_1": [[9,31],[9,32],[9,33],{"isopen": False}]}},
     7: {4: {"enemy_1": [[9,21],[9,22],{"isdead": False,"current_hearts" : 1 }]}},
-    8: {4: {"enemy_2": [[5,36],[5,37],{"isdead": False,"current_hearts" : 9 }]}},
+    8: {4: {"enemy_2": [[5,36],[5,37],{"isdead": False,"current_hearts" : 4 }]}},
     9: {5: {"fox_1": [1,[9,53]]}},
     10: {6: {"already_fished" : False}}
 
@@ -131,10 +132,11 @@ main_dict_gerudo = {
     7: {2: {"chest_1": [1,[1,51], {"isopen": False}]}},
     8: {2: {"chest_2": [1,[9,8], {"isopen": False}]}},
     9: {3: {"sanctuary_4": [[3,45],[3,46],[3,47],{"isopen": False}]}},
-    10: {4: {"enemy_1": [[4,3],[4,4],{"isdead": False,"current_hearts" : 1 }]}},
-    11: {4: {"enemy_2": [[6,37],[6,38],{"isdead": False,"current_hearts" : 2 }]}},
-    12: {5: {"fox_1": [1,[8,47]]}},
-    13: {6: {"already_fished" : False}}
+    10: {6: {"already_fished" : False}},
+    11: {4: {"enemy_1": [[4,3],[4,4],{"isdead": False,"current_hearts" : 1 }]}},
+    12: {4: {"enemy_2": [[6,37],[6,38],{"isdead": False,"current_hearts" : 2 }]}},
+    13: {5: {"fox_1": [1,[8,47]]}},
+
 
 }
 
@@ -149,14 +151,23 @@ main_dict_necluda = {
     7: {1: {"tree_7": [4,[7, 15],10]}},
     8: {1: {"tree_8": [4,[8, 15],10]}},
     9: {1: {"tree_9": [4,[8, 16],10]}},
-    10: {2: {"chest_1": [2,[1, 22], {"isopen": False}]}},
-    11: {2: {"chest_2": [2,[2, 51], {"isopen": False}]}},
-    12: {2: {"chest_3": [2,[9, 23], {"isopen": False}]}},
-    13: {3: {"sanctuary_5": [[6, 51],[6, 52],[6, 53],{"isopen": False}]}},
-    14: {3: {"sanctuary_6": [[9, 33],[9, 34],[9, 33],{"isopen": False}]}},
-    15: {4: {"enemy_1": [[2,10],[2,11],{"isdead": False,"current_hearts" : 2 }]}},
-    16: {4: {"enemy_2": [[6,38],[6,39],{"isdead": False,"current_hearts" : 2 }]}},
-    17: {5: {"fox_1": [1,[7,6]]}},
-    18: {6: {"already_fished" : False}}
+    10: {6: {"already_fished" : False}},
+    11: {2: {"chest_1": [2,[1, 22], {"isopen": False}]}},
+    12: {2: {"chest_2": [2,[2, 51], {"isopen": False}]}},
+    13: {2: {"chest_3": [2,[9, 23], {"isopen": False}]}},
+    14: {3: {"sanctuary_5": [[6, 51],[6, 52],[6, 53],{"isopen": False}]}},
+    15: {3: {"sanctuary_6": [[9, 33],[9, 34],[9, 33],{"isopen": False}]}},
+    16: {4: {"enemy_1": [[2,10],[2,11],{"isdead": False,"current_hearts" : 2 }]}},
+    17: {4: {"enemy_2": [[6,38],[6,39],{"isdead": False,"current_hearts" : 2 }]}},
+    18: {5: {"fox_1": [1,[7,6]]}},
+
+
+}
+
+
+
+main_dict_castle = {
+    1: {1: {"tree_1": [4,[9, 3],10]}},
+    2: { 11 : {"ganon_hearts": 8, "isdead" : False}},
 
 }

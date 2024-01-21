@@ -80,10 +80,10 @@ def PantallaPrincipal():
         diccionari_jugadors={}  #cursor.execute("select game_id, user_name, region , date_format(changed_at,'%d/%m/%Y %H:%i:%s'), hearts from game")
         corazones_maximos=[]
         for i in range(len(lista)):
-            cursor.execute("select count(*) from game_sanctuaries_opened where game_id = {} ".format(lista[i][0]))
+            cursor.execute("select count(*) from game_sanctuaries_opened where game_id = {} and is_open=1 ".format(lista[i][0]))
             corazones_maximos.append(cursor.fetchone())
         for i in range(len(lista)):#agreagamos los resultados de la query anterior en un diccionario con el id de partida
-            diccionari_jugadors[i] = {"id":lista[i][0],"data_partida":lista[i][3],"player":lista[i][1],"region":lista[i][2], "corazones_actuales":lista[i][4], "corazones_maximos":corazones_maximos[i][0]+3}
+            diccionari_jugadors[i] = {"id":lista[i][0],"data_partida":lista[i][3],"player":lista[i][1],"region":lista[i][2], "corazones_actuales":lista[i][4], "corazones_maximos":corazones_maximos[i][0]+2}
 
         for i in range(len(diccionari_jugadors.keys())):
             for j in range(len(diccionari_jugadors.keys())-1):#ordenamos con bubble sort
@@ -128,7 +128,7 @@ def PantallaPrincipal():
                 else:
                     cursor.execute("set FOREIGN_KEY_CHECKS=0")
                     cursor.execute("delete from game where game_id='{}'".format(dicc.get(int(opc_numero)).get("id")))
-                    mi_conexion.commit()
+                    connection.commit()
                     cursor.execute("set FOREIGN_KEY_CHECKS=1")
             elif opc_texto=="Help":
                 historialPrompt(prompt, opc_texto)
@@ -237,9 +237,10 @@ def PantallaPrincipal():
 
     import random
     import os
+    import diccionarios
     import mysql.connector
     from funciones import dialogos
-    mi_conexion = mysql.connector.connect(
+    connection = mysql.connector.connect(
         host="4.231.10.226",
         user="zelda",
         port="3306",
@@ -248,7 +249,7 @@ def PantallaPrincipal():
 
     )
 
-    cursor = mi_conexion.cursor()
+    cursor = connection.cursor()
 
 
 
@@ -364,10 +365,46 @@ def PantallaPrincipal():
                                 opc= "Link"
                             historialPrompt(prompt,"Welcome to the game, {}".format(opc),opc)
                             name=opc
+                            diccionarios.player_dict["user_name"]= name
                             values = ("0,'{}', 0,0,3,'Hyrule',now(),now()").format(name)
                             sql = "insert into game (game_id,user_name,blood_moon_countdown,blood_moon_appearances,hearts,region,created_at,changed_at) values ({})".format(values)
                             cursor.execute(sql)
-                            mi_conexion.commit()
+                            connection.commit()
+                            
+                            
+                            cursor.execute("select game_id from game where game_id = (select max(game_id) from game)")
+                            partida = cursor.fetchone()
+                            for i in partida:
+                                game_id=i
+
+
+                            
+                            for i in range (2):
+                                if i ==0:
+                                    value=("{},'Wood Sword', 0,0,0,5").format(game_id)
+                                    
+                                else:
+                                    value=("{},'Sword', 0,0,0,9").format(game_id)
+                                insert_query = "INSERT INTO game_weapons (game_id, weapon_name, equipped, quantity, uses,uses_left)\
+                            VALUES ({})".format(value)
+                                cursor.execute(insert_query)
+                                connection.commit()
+                            
+                            
+                            
+                            for i in range (2):
+                                if i ==0:
+                                    value=("{},'Wood Shield', 0,0,0,5").format(game_id)
+                                    
+                                else:
+                                    value=("{},'Shield', 0,0,0,9").format(game_id)
+                                insert_query = "INSERT INTO game_weapons (game_id, weapon_name, equipped, quantity, uses,uses_left)\
+                            VALUES ({})".format(value)
+                                cursor.execute(insert_query)
+                                
+                                connection.commit()
+
+
                             cursor.execute("select * from game where game_id = (select max(game_id) from game)")
                             rows = cursor.fetchall()
                             break
