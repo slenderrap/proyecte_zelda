@@ -1,6 +1,6 @@
 import diccionarios
 import random
-import funciones.map
+import bbdd_changes
 
 
 
@@ -8,39 +8,40 @@ import funciones.map
 
 
 
-#mover jugador a water
-def move_to_X(matriz, current_position,casilla):
+def move_to_X(matriz, current_position, casilla):
     x, y = current_position
-    position = None
+    target_positions = []
 
-    # Buscar la posición de la casilla con "~"
+    # Buscar la posición de la casilla con "T"
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             if matriz[i][j] == casilla:
-                position = (i, j)
-                break
+                target_positions.append((i, j))
 
-    # Verificar si se encontró una posición con "~"
-    if position:
+    # Verificar si se encontró una posición con "T"
+    if target_positions:
         # Buscar la posición vacía más cercana
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                new_x, new_y = position[0] + i, position[1] + j
-                if 0 <= new_x < len(matriz) and 0 <= new_y < len(matriz[new_x]) and matriz[new_x][new_y] == [" "]:
-                    return (new_x, new_y)
+        min_distance = float('inf')
+        closest_empty_position = (x, y)
 
-        # Si no se encuentra una posición vacía, devolvemos la posición original
-        return (x, y)
+        for target_position in target_positions:
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    new_x, new_y = target_position[0] + i, target_position[1] + j
+                    if (
+                        0 <= new_x < len(matriz)
+                        and 0 <= new_y < len(matriz[new_x])
+                        and matriz[new_x][new_y] == [" "]
+                    ):
+                        distance = abs(new_x - x) + abs(new_y - y)
+                        if distance < min_distance:
+                            min_distance = distance
+                            closest_empty_position = (new_x, new_y)
+
+        return closest_empty_position
+
     else:
         return (x, y)
-
-
-
-
-
-
-
-
 
 
 
@@ -60,7 +61,7 @@ def move_enemy(current_pos, matriz, main_dict, object_id, npc_id, npc_name):
     #mezclamos la lista
     random.shuffle(directions)
     new_positions = current_pos.copy()
-    print(f"posicion antes de cambiar: {new_positions}")
+
 
     for direction in directions:
         positions_occupied = False
@@ -90,23 +91,18 @@ def move_enemy(current_pos, matriz, main_dict, object_id, npc_id, npc_name):
         elif direction == "derecha":
             new_positions[0][1] += 1
             new_positions[1][1] += 1
-            print("derecha")
+
 
             temp_old_pos = [[new_positions[0][0], new_positions[0][1] - 1],
                             [new_positions[1][0], new_positions[1][1] - 1]]
 
         new_positions = [new_positions[0], new_positions[1]]
-        print(f"posicion despues de cambiar: {new_positions}")
+
 
 
         # Verifica si alguna de las nuevas posiciones está ocupada
         for pos in new_positions:
-            print("a")
-            print(pos)
-            print(matriz[pos[0]][pos[1]])
-            if matriz[pos[0]][pos[1]] not in (
-            [" "], ["E"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]):
-                print("ocupado")
+            if matriz[pos[0]][pos[1]] not in ([" "], ["E"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]):
                 current_pos[0],current_pos[1] = temp_old_pos[0],temp_old_pos[1]
                 positions_occupied = True
                 break
@@ -173,12 +169,12 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                         # Comprobamos si el jugador está cerca del cofre
                         if x == sub_value[1][0] and y == sub_value[1][1]:
                             if sub_value[2]["isopen"]:
-                                #prompt.append(f"{sub_key} is already open.")
+
                                 historialPrompt(prompt,f"{sub_key} is already open." )
                                 return True
                             else:
                                 if sub_value[0] == 1:
-                                    #prompt.append("You Got a Sword!")
+
                                     historialPrompt(prompt, "You Got a Sword!")
 
                                     # AGREGAR SWORD A PLAYER
@@ -208,16 +204,18 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 x == sub_value[1][0] and y == sub_value[1][1]) or (
                                 x == sub_value[2][0] and y == sub_value[2][1]):
                             if sub_value[3]["isopen"]:
-                                #prompt.append(f"{sub_key} is already open.")
+
                                 historialPrompt(prompt, f"{sub_key} is already open.")
 
                                 return True
                             else:
-                                #prompt.append("You opened the sanctuary!")
+
                                 historialPrompt(prompt, "You opened the sanctuary!")
 
-                                # AGREGAR RECOMPENSA AL JUGADOR
-                                diccionarios.player_dict["hearts"] += 1
+                                # AGREGAR VIDA AL JUGADOR
+                                diccionarios.player_dict["hearts_max"] += 1
+                                diccionarios.player_dict["hearts"] = diccionarios.player_dict["hearts_max"]
+
 
 
 
@@ -232,6 +230,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 sub_value[3]["isopen"] = True
                                 #cuando se abra el santuario, se guarda en la base de datos
 
+                                bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"], diccionarios.player_dict["region"])
                                 return True
 
 
@@ -247,19 +246,31 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                         # Comprobamos si el jugador está cerca del enemigo
                         if (x == sub_value[0][0] and y == sub_value[0][1]) or (
                                 x == sub_value[1][0] and y == sub_value[1][1]):
-                            if diccionarios.player_dict["weapons_equipped"]:
+                            if diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] != "":
                                 if sub_value[2]["isdead"]:
                                     historialPrompt(prompt, "Enemy killed!")
 
                                 else:
                                     historialPrompt(prompt, "Enemy encountered!")
-                                    move_enemy(sub_value, matriz, getattr(diccionarios,funciones.map.current_map),int(key), 4, sub_key)
+                                    move_enemy(sub_value, matriz, getattr(diccionarios,diccionarios.dades[2]["current_map"]),int(key), 4, sub_key)
+
 
 
                                     #Restamos la vida del enemigo en el diccionario
                                     sub_value[2]["current_hearts"] -= 1
                                     #Restamos uno de uso al arma equipada
-                                    diccionarios.player_dict['weapons_equipped'][0][1]['uses_left'] -= 1
+
+                                    # restar 1 a espada
+                                    if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
+                                        diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] -= 1
+                                    elif diccionarios.player_dict['weapons_equipped'][0][1][
+                                        'weapon_name'] == "Wood Sword":
+                                        diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] -= 1
+                                    # eliminamos las armas si estas se quedan sin usos
+                                    if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
+                                        diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] -= 1
+                                    elif diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] <= 0:
+                                        diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] -= 1
 
 
 
@@ -274,14 +285,22 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                             else:
                                 historialPrompt(prompt, "You have no Sword!")
-                                move_enemy(sub_value, matriz, getattr(diccionarios,diccionario_mapa), int(key), 4, "enemy_1", prompt)
 
-                            # el enemigo se movera despues de la interaccion
-                            diccionarios.player_dict["hearts"] -= 1
+                                move_enemy(sub_value, matriz,getattr(diccionarios, diccionarios.dades[2]["current_map"]), int(key), 4,sub_key)
 
-                            print(f"{diccionarios.player_dict['hearts']}")
-                            # restamos 1 de vida al jugador
-                            historialPrompt(prompt, "-1 health!")
+                            # el enemigo se movera despues de la interaccion, y atacara al jugador, si se tiene escudo, se restara 1 a escudos
+                            if diccionarios.player_dict["weapons_equipped"][1][2]["shield_name"] == "Shield":
+                                diccionarios.player_dict["weapons_equipped"][1][2]["uses_left_shield"] -= 1
+                                historialPrompt(prompt, "-1 health to shield!")
+
+                            elif diccionarios.player_dict["weapons_equipped"][1][2]["shield_name"] == "Wood_Shield":
+                                diccionarios.player_dict["weapons_equipped"][1][2]["uses_left_woodshield"] -= 1
+                                historialPrompt(prompt, "-1 health to woodshield!")
+
+                            else:
+                                diccionarios.player_dict["hearts"] -= 1
+                                # restamos 1 de vida al jugador
+                                historialPrompt(prompt, "-1 health!")
                             return
 
 
@@ -294,7 +313,6 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                 for sub_key, sub_value in value[1].items():
                     # Verificar si la clave es un arbol
                     if sub_key.startswith("tree_"):
-                        print(sub_value)
                         # Comprobar si el jugador está cerca del arbol
                         if x == sub_value[1][0] and y == sub_value[1][1]:
                             #comprobamos si el arbol tiene vida
@@ -302,26 +320,29 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                                 #comprobamos si el jugador tiene armas equipadas
                                 historialPrompt(prompt, "Tree Attacked")
-                                if not diccionarios.player_dict["weapons_equipped"]:
 
+                                if diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"].isspace():
                                     #probabilidad manzana 20%
                                     if random.randint(1, 10) <= 4:
-                                        #prompt.append("Tree dropped an Apple")
                                         historialPrompt(prompt, "Tree dropped an Apple")
-                                        diccionarios.player_dict["food_inventory"].append(6)
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] += 1
                                         #Aqui se guardaria la manzana
+                                        bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"],
+                                                                           diccionarios.player_dict["region"])
+
                                     #probabilidad que caigan objetos 10%
                                     if random.randint(1,10) == 10:
                                         if random.randint(1,2) == 1:
-                                            #prompt.append("Tree dropped a Wood Sword")
                                             historialPrompt(prompt, "You got a Wood Sword")
                                             diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] += 1
 
                                         else:
-                                            #prompt.append("Tree dropped a Wood Shield")
+
                                             historialPrompt(prompt, "Wood Shield")
                                             #AQUI SE GUARDA EL ESCUDO (Ids en diccionarios.py)
                                             diccionarios.player_dict["shields_inventory"][0][1]["quantity"] += 1
+                                        bbdd_changes.guardar_datos_partida(diccionarios.player_dict["game_id"],
+                                                                           diccionarios.player_dict["region"])
                                     else:
                                         historialPrompt(prompt, "The tree didn't give you anything")
                                     return
@@ -332,18 +353,24 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     if random.randint(1, 10) <= 4:
                                         historialPrompt(prompt, "Tree Attacked")
                                         # Aqui se guarda la manzana
-                                        diccionarios.player_dict["food_inventory"].append(6)
+
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] += 1
+
 
 
                                     # probabilidad manzana
                                     #probabilidad objeto 20%
                                     if random.randint(1, 5) == 5:
-                                        prompt.append("Tree dropped an Wood Sword")
+
+                                        historialPrompt(prompt, "Tree dropped a Wood Sword")
+
+
                                         # Aqui se guardarda el objeto
                                         diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] += 1
                                         # probabilidad objeto 20%
                                     elif random.randint(1, 5) == 5:
-                                        prompt.append("Tree dropped an Wood Shield")
+                                        historialPrompt(prompt, "Tree dropped a Wood Shield")
+
                                         # Aqui se guardaria el objeto
                                         diccionarios.player_dict["shields_inventory"][0][1]["quantity"] += 1
 
@@ -379,19 +406,25 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                         if x == sub_value[1][0] and y == sub_value[1][1]:
 
                             # comprobamos si el jugador tiene armas equipadas
-                            # prompt.append("Tree Attacked")
 
-                            if diccionarios.player_dict["weapons_equipped"]:
+                            if not diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"].isspace():
                                 historialPrompt(prompt, "Fox Attacked")
-                                prompt.append("You got meat")
+                                historialPrompt(prompt, "You got meat!")
+
                                 # Aqui se guarda el objeto
-                                diccionarios.player_dict["food_inventory"].append(1)
+                                diccionarios.player_dict["food_inventory"][2][3]["quantity"] += 1
 
                                 # AQUI DESGASTAMOS EL/LAS ARMAS EQUIPADA EN UN USO
-                                for weapon in diccionarios.player_dict['weapons_equipped']:
-                                    # Iterar sobre las armas equipadas y restar uno a uses_left
-                                    for key, value in weapon.items():
-                                        value['uses_left'] -= 1
+                                if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
+                                    diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] -= 1
+                                elif diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Wood Sword":
+                                    diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] -= 1
+                                    # eliminamos las armas si estas se quedan sin usos
+                                if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
+                                    diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] -= 1
+                                elif diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] <= 0:
+                                    diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] -= 1
+
 
                                 # restamos uno de vida al fox
                                 sub_value[0] -= 1
@@ -407,7 +440,47 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 historialPrompt(prompt, "Fox not attacked, no weapon equipped")
                                 return
 
+    #FUNCION EAT
+    def eat(food, player_dict):
+        # Verificar si el comando es para comer y el tipo de comida es válido
+        if food.lower() in ["vegetables", "salad", "pescatarian", "roasted", "meat",
+                                                         "fish"]:
+            food_name = food.lower().capitalize()  # Convertir la comida a formato de título (por ejemplo, "vegetables" a "Vegetables")
 
+            # Buscar la comida en el inventario del jugador
+            for item in player_dict['food_inventory']:
+                print(player_dict['food_inventory'])
+                if item.get(1, {}).get('food_name', '').lower() == food_name.lower():
+                    # Verificar si hay suficiente cantidad de esa comida
+                    if item[1]["quantity"] > 0:
+                        # Restar 1 a la cantidad de esa comida
+                        item[1]["quantity"] -= 1
+
+                        # Aumentar los corazones según el tipo de comida
+                        if food_name == "Vegetables":
+                            player_dict['hearts'] += 1
+                        elif food_name == "Salads":
+                            player_dict['hearts'] += 2
+                        elif food_name == "Pescatarian":
+                            player_dict['hearts'] += 3
+                        elif food_name == "Roasted":
+                            player_dict['hearts'] += 4
+                        elif food_name == "Meat":
+                            player_dict['hearts'] += 1
+                        elif food_name == "Fish":
+                            player_dict['hearts'] += 1
+
+                        # Aumentar el uso en el diccionario
+                        item[1]["uses"] += 1
+
+                        # Ponemos mensaje de confirmacion al comer
+                        historialPrompt(prompt, f"You ate {food_name}!")
+
+                        return player_dict
+
+            # Mostrar mensaje si no se encontró la comida en el inventario
+            historialPrompt(prompt, f"You don't have {food_name}!")
+            return
 
 
 
@@ -432,7 +505,7 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                             # FUNCION ARBOL
                             if (matriz[i][j][0] == "T"  or matriz[i][j][0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) and command.lower() == "attack":
                                 tree_event(diccionario, i, j)
-                                return
+
 
                             # FUNCION SANTUARIOS
                             if (matriz[i][j][0] == "S" or matriz[i][j][0] in ("0","1","2","3","4","5","6","7","8","9") or matriz[i][j][0] == "?") and command.lower() == "open":
@@ -440,8 +513,9 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     return
 
                             # FUNCION ENEMIGOS
-                            print(f"Coordenadas: {j} {i} Matriz de enemigos:{matriz[i][j][0]}")
-                            if (matriz[i][j][0] == "E" or matriz[i][j][0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) and command.lower() == "attack":
+
+                            #print(f"Coordenadas: {j} {i} Matriz de enemigos:{matriz[i][j][0]}")
+                            if (matriz[i][j][0] == "E" or matriz[i][j][0] == "4" ) and command.lower() == "attack":
                                 enemy_event(diccionario, i, j, matriz, prompt)
                                 return
 
@@ -450,18 +524,45 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 fox_event(diccionario, i, j)
                                 return
 
+
+                            # FUNCION EAT
+                            if command.lower() == "eat vegetables":
+                                eat("vegetables", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat fish":
+                                eat("fish", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat meat":
+                                eat("meat", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat salad":
+                                eat("salad", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat pescatarian":
+                                eat("pescatarian", diccionarios.player_dict)
+                                return
+                            elif command.lower() == "eat roasted":
+                                eat("roasted", diccionarios.player_dict)
+                                return
+
+
                             # FUNCION PESCAR
                             if matriz[i][j][0] == "~" and command.lower() == "fish":
                                 #el 20% de las veces,si no se ha pescado ya antes se obtendra un pescado
                                 if getattr(diccionarios,(diccionarios.dades[2]["current_map"]))[10][6]["already_fished"]:
                                     historialPrompt(prompt, "You have already fished in this area")
+
+                                    return
+
                                 else:
 
                                     if random.randint(1,5) == 1:
                                         historialPrompt(prompt, "You got a fish!")
-                                        getattr(diccionarios, (diccionarios.dades[2]["current_map"]))[10][6][
-                                            "already_fished"] = True
-                                        diccionarios.player_dict["food_inventory"].append(2)
+
+                                        getattr(diccionarios, (diccionarios.dades[2]["current_map"]))[10][6]["already_fished"] = True
+                                        diccionarios.player_dict["food_inventory"][0][1]["quantity"] += 1
+
+
 
                                     else:
                                         historialPrompt(prompt, "You didn't get a fish!")
@@ -544,9 +645,10 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                     return
 
                             if command.lower() == "equip sword" :
-                                print("hola")
 
-                                if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] >= 1:
+
+                                if diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] >= 1:
+
 
                                     # agregamos la espada
                                     if diccionarios.player_dict["weapons_inventory"][1][2]["quantity"] >= 1:
@@ -566,12 +668,21 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
                                 historialPrompt(prompt,"Weapon unequipped")
                                 return
 
+                            if "unequip shield" in command.lower() and "shield" in diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"].lower():
+                                #eliminamos el escudo
+                                diccionarios.player_dict["weapons_equipped"][1][2]["weapon_name"] = " "
+                                historialPrompt(prompt,"Weapon unequipped")
+                                return
+
+
                             #Funcion Hierba
                             if matriz[i][j][0] == " " and "attack grass" in command.lower():
                                 if diccionarios.player_dict["weapons_equipped"]:
                                     if random.randint(1,10) == 1:
                                         historialPrompt(prompt, "You got a lizard!")
-                                        diccionarios.player_dict["food_inventory"].append(1)
+
+                                        diccionarios.player_dict["food_inventory"][2][3]["quantity"] += 1
+
                                         #restar 1 a espada
                                         if diccionarios.player_dict['weapons_equipped'][0][1]['weapon_name'] == "Sword":
                                             diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_sword"] -= 1
@@ -587,8 +698,6 @@ def interactable_events(matriz,current_pos,prompt,command,diccionario_mapa):
 
                         except IndexError:
                             pass
-
-
 
 
     event_caller(matriz, current_pos, command, diccionario_mapa)

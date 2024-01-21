@@ -1,7 +1,7 @@
 import diccionarios
 import inventario
-import funciones.map
 import os
+import random
 
 
 
@@ -25,7 +25,7 @@ hyrule_map_original = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * 
 *                                           S0            *                   *\n\
 *                                                         *                   *\n\
 *         X                                     T         *                   *\n\
-* OO    OOOO         E1        S1?            T M    F    *                   *\n\
+* OO    OOOO         E2        S1?            T M    F    *                   *\n\
 *OOOOOOOOOOO                                              *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
@@ -40,7 +40,7 @@ hyrule_map = ("*Hyrule * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *                                           S0            *                   *\n\
 *                                                         *                   *\n\
 *         X                                     T         *                   *\n\
-* OO    OOOO         E1        S1?            T M    F    *                   *\n\
+* OO    OOOO         E2        S1?            T M    F    *                   *\n\
 *OOOOOOOOOOO                                              *                   *\n\
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
@@ -76,7 +76,7 @@ gerudo_map_original = ("\
 *OOOOOOOOOOOOOOOO                                   M     *                   *\n\
 *  OOOOO  OOOOO              TTT                          *                   *\n\
 *                              TT             S4?        O*                   *\n\
-*  E1          C                                        OO*                   *\n\
+*  E2          C                                        OO*                   *\n\
 *                                                       OO*                   *\n\
 *             AAAAAA                  E2                  *                   *\n\
 *             AAAAAAAA                                    *                   *\n\
@@ -90,7 +90,7 @@ gerudo_map = ("\
 *OOOOOOOOOOOOOOOO                                   M     *                   *\n\
 *  OOOOO  OOOOO              TTT                          *                   *\n\
 *                              TT             S4?        O*                   *\n\
-*  E1          C                                        OO*                   *\n\
+*  E2          C                                        OO*                   *\n\
 *                                                       OO*                   *\n\
 *             AAAAAA                  E2                  *                   *\n\
 *             AAAAAAAA                                    *                   *\n\
@@ -102,7 +102,7 @@ gerudo_map = ("\
 necluda_map_original = ("\
 * Necluda * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
 *                     M                                   *                   *\n\
-* X       E1                         TT            M      *                   *\n\
+* X       E2                         TT            M      *                   *\n\
 *OO                C               TT                ~~~~~*                   *\n\
 *OOOOO                                           ~~~~~~~~~*                   *\n\
 *OOOO                                              ~~~~~~~*                   *\n\
@@ -116,7 +116,7 @@ necluda_map_original = ("\
 necluda_map = ("\
 * Necluda * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\
 *                     M                                   *                   *\n\
-* X       E1                         TT            M      *                   *\n\
+* X       E2                         TT            M      *                   *\n\
 *OO                C               TT                ~~~~~*                   *\n\
 *OOOOO                                           ~~~~~~~~~*                   *\n\
 *OOOO                                              ~~~~~~~*                   *\n\
@@ -178,18 +178,20 @@ show_map = ("\
 # eventos pre-partida
 
 def update_map_pre_start(matriz):
-    # Iterar sobre el diccionario
+    # Borramos las posiciones de todos los enemigos en el mapa original
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            if matriz[i][j][0] == "E":
+                matriz[i][j][0], matriz[i][j+1][0] = " ", " "
 
-    for key, value in getattr(diccionarios,funciones.map.current_map).items():
+
+
+
+    # Iterar sobre el diccionario
+    for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy_" in subsubkey:
-                    #antes de nada, borramos las posiciones del enemigo en el mapa original
-                    for i in range(len(matriz)):
-                        for j in range(len(matriz[0])):
-                            if matriz[i][j][0] == "E":
-                                matriz[i][j][0],matriz[i][j+1][0] = " "," "
-
                     # Cogemos las coordenadas y el número de vidas
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
@@ -197,17 +199,19 @@ def update_map_pre_start(matriz):
                     # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
                     matriz[coordenadas[0]][coordenadas[1]] = [vidas]
                     matriz[coordenadas[0]][coordenadas[1]-1] = ["E"]
+
+
                 if "chest_" in subsubkey:
                     # Cogemos las coordenadas
                     coordenadas = subsubvalue[1]
-                    if subsubvalue [2]["isopen"]:
+                    if subsubvalue[2]["isopen"]:
                         # Reemplazamos las coordenadas con el cofre abierto
                         matriz[coordenadas[0]][coordenadas[1]] = ["W"]
 
                 if "sanctuary_" in subsubkey:
                     # Cogemos las coordenadas
                     coordenadas = subsubvalue[2]
-                    if subsubvalue [3]["isopen"]:
+                    if subsubvalue[3]["isopen"]:
                         # Reemplazamos las coordenadas con el cofre abierto
                         matriz[coordenadas[0]][coordenadas[1]] = [" "]
 
@@ -219,6 +223,13 @@ def update_map_pre_start(matriz):
                         matriz[coordenadas[0]][coordenadas[1]] = [str(subsubvalue[2])]
 
 
+    # Devolvemos la matriz resultante después de las modificaciones
+    return matriz
+
+
+
+
+
 def agregar_inventario(matriz,inventario_1):
     map = ""
     for i in range(len(matriz)):
@@ -227,6 +238,7 @@ def agregar_inventario(matriz,inventario_1):
                 map += matriz[i][j][0]
             else:
                 map += matriz[i][j][0] + "\n"
+
 
     new_map = inventario.insertar_mapa(map, inventario_1)
     lineas = new_map.strip().split('\n')
@@ -238,6 +250,59 @@ def agregar_inventario(matriz,inventario_1):
 
 
 def actualizar_mapa(matriz):
+
+
+    diccionarios_mapa = {
+        "main_dict_hyrule": diccionarios.main_dict_hyrule,
+        "main_dict_death_mountain": diccionarios.main_dict_death_mountain,
+        "main_dict_gerudo": diccionarios.main_dict_gerudo,
+        "main_dict_necluda": diccionarios.main_dict_necluda
+    }
+    # actualizamos cofres si todos los del mundo estan abiertos y no se tienen armas
+    chests_open = True
+
+    for diccionario in diccionarios_mapa.values():
+        for mapa in diccionario.values():
+            for value in mapa.values():
+                for subsubkey, subsubvalue in value.items():
+                    if "chest_" in subsubkey:
+                        if isinstance(subsubvalue[2], dict) and not subsubvalue[2].get("isopen", False):
+                            chests_open = False
+                            break
+
+
+    if chests_open and diccionarios.player_dict['weapons_inventory'][1]["quantity"] == 0 and \
+            diccionarios.player_dict['weapons_inventory'][2]["quantity"] == 0:
+        # Realizar acciones cuando todas las condiciones se cumplen
+        for diccionario in diccionarios_mapa.values():
+            for mapa in diccionario.values():
+                for value in mapa.values():
+                    for subsubkey, subsubvalue in value.items():
+                        if "chest_" in subsubkey:
+                            if isinstance(subsubvalue[2], dict) and subsubvalue[2].get("isopen", False):
+                                subsubvalue[2]["isopen"] = False
+                                break
+
+    #actualizamos santuarios del mundo(cheats)
+
+    for nombre_mapa, diccionario in diccionarios_mapa.items():
+        if nombre_mapa == diccionarios.dades[2]['current_map']:
+
+            for key_outer, value_outer in diccionario.items():
+                for key_inner, value_inner in value_outer.items():
+                    for subkey, subvalue in value_inner.items():
+                        if "sanctuary_" in subkey:
+                            if subvalue[3]["isopen"]:
+                                y, x = subvalue[0][0], subvalue[0][1]
+                                # Realiza las operaciones con el santuario aquí
+                                if matriz[y][x][0] == "S":
+                                    matriz[y][x + 2][0] = " "
+                                elif str(matriz[y][x][0]).isdigit():
+                                    matriz[y][x + 1][0] = " "
+                                elif matriz[y][x][0] == "?":
+                                    matriz[y][x][0] = " "
+
+
     #actualizamos armas, si se gastan todos los usos de un arma, se sube un uso para la bdd y se suma 5 al nuevo numero de usos si hay otro arma
     if diccionarios.player_dict["weapons_equipped"][0][1]["uses_left_woodsword"] <= 0:
         if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] > 0:
@@ -252,34 +317,29 @@ def actualizar_mapa(matriz):
         else:
             if diccionarios.player_dict["weapons_inventory"][0][1]["quantity"] > 0:
                 diccionarios.player_dict["weapons_equipped"][0][1]["weapon_name"] = "Wood Sword"
-
-
         diccionarios.player_dict["weapons_inventory"][1][2]["uses"] += 1
 
-    #actualizamos vida enemigos en mapa
-    for key, value in getattr(diccionarios, funciones.map.current_map).items():
+        # Borramos las posiciones de todos los enemigos en el mapa original
+    for i in range(len(matriz)):
+        for j in range(len(matriz[0])):
+            #si las casillas e pertenecen al tablero y no fuera:
+            if i >=10 and j >=57:
+                if matriz[i][j][0] == "E":
+                    matriz[i][j][0], matriz[i][j + 1][0] = " ", " "
+
+        # Iterar sobre el diccionario
+    for key, value in getattr(diccionarios, diccionarios.dades[2]["current_map"]).items():
         for subkey, subvalue in value.items():
             for subsubkey, subsubvalue in subvalue.items():
                 if "enemy_" in subsubkey:
-                    # antes de nada, borramos las posiciones del enemigo en el mapa original
-                    for i in range(len(matriz)):
-                        for j in range(len(matriz[0])):
-                            if i < 11 and j < 58:
-                                if matriz[i][j][0] == "E":
-                                    matriz[i][j][0], matriz[i][j + 1][0] = " ", " "
-
                     # Cogemos las coordenadas y el número de vidas
                     coordenadas = subsubvalue[1]
                     vidas = str(subsubvalue[2]["current_hearts"])
-                    #si el numero de vidas es mayor a 0, se imprimira el enemigo en el mapa, si no, no
-                    if  int(vidas) <= 0:
-                        # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
-                        matriz[coordenadas[0]][coordenadas[1]] = [" "]
-                        matriz[coordenadas[0]][coordenadas[1] - 1] = [" "]
-                    else:
-                        # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
-                        matriz[coordenadas[0]][coordenadas[1]] = [vidas]
-                        matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
+
+                    # Reemplazamos las coordenadas en la matriz con el número de vidas en formato str y la E
+                    matriz[coordenadas[0]][coordenadas[1]] = [vidas]
+                    matriz[coordenadas[0]][coordenadas[1] - 1] = ["E"]
+
 
 
     # Desempaquetar la matriz e imprimir el mapa original
@@ -292,36 +352,74 @@ def actualizar_mapa(matriz):
 
 
 def change_map():
+
+
+    #cada vez que se cambie de mapa, se reinicia la posibilidad de pescar
+
+    diccionarios_mapa = {
+        "main_dict_hyrule": diccionarios.main_dict_hyrule,
+        "main_dict_death_mountain": diccionarios.main_dict_death_mountain,
+        "main_dict_gerudo": diccionarios.main_dict_gerudo,
+        "main_dict_necluda": diccionarios.main_dict_necluda
+    }
+
+
+
+
+
+    for nombre_mapa, diccionario in diccionarios_mapa.items():
+        if nombre_mapa == diccionarios.dades[2]['current_map']:
+            for key_outer, value_outer in diccionario.items():
+                for key_inner, value_inner in value_outer.items():
+                    for subkey, subvalue in value_inner.items():
+                        if "already_fished" in subkey:
+                            value_inner[subkey] = False
+
     matriz = []
-    if "gerudo" in funciones.map.current_map:
+    if "gerudo" in diccionarios.dades[2]["current_map"]:
         lineas = gerudo_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "necluda" in funciones.map.current_map:
+    elif "necluda" in diccionarios.dades[2]["current_map"]:
         lineas = necluda_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "death" in funciones.map.current_map:
+    elif "death" in diccionarios.dades[2]["current_map"]:
         lineas = death_mountain_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "hyrule" in funciones.map.current_map:
+    elif "hyrule" in diccionarios.dades[2]["current_map"]:
         lineas = hyrule_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    elif "castle" in funciones.map.current_map:
+    elif "castle" in diccionarios.dades[2]["current_map"]:
         lineas = castle_map.strip().split('\n')
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
+
+    return matriz
+
+
+
+
+    # evento Fox
+    # el 50% de las veces, fox desaparecerá del mapa
+    if random.randint(1, 2) == 1:
+        for i in range(len(matriz)):
+            for j in range(len(matriz[i])):
+                if matriz[i][j] == ["F"]:
+                    # Encontrado, actualiza la matriz
+                    matriz[i][j] = [" "]
+                    break
 
     return matriz
 
@@ -421,3 +519,4 @@ def sanctuariesOpened():
             sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
             count += 1
     return sanctuaries
+
