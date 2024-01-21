@@ -92,7 +92,7 @@ help_new_game_content = (("  "),("  "),("  When asked, type your name and press 
 # ABOUT
 about_top = "About "
 about_end = "Back  "
-about_content = (("  "), ("  Game developed by 'Nombre del equipo': Serpyro"),
+about_content = (("  "), ("  Game developed by 'Serpyro'"),
                 ("  "),
                 ("        Oriol Arribas"),
                 ("        Erik Pinto"),
