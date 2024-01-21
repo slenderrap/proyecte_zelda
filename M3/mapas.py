@@ -352,6 +352,28 @@ def actualizar_mapa(matriz):
 
 
 def change_map():
+
+    #cada vez que se cambie de mapa, se reinicia la posibilidad de pescar
+
+    diccionarios_mapa = {
+        "main_dict_hyrule": diccionarios.main_dict_hyrule,
+        "main_dict_death_mountain": diccionarios.main_dict_death_mountain,
+        "main_dict_gerudo": diccionarios.main_dict_gerudo,
+        "main_dict_necluda": diccionarios.main_dict_necluda
+    }
+
+
+
+
+
+    for nombre_mapa, diccionario in diccionarios_mapa.items():
+        if nombre_mapa == diccionarios.dades[2]['current_map']:
+            for key_outer, value_outer in diccionario.items():
+                for key_inner, value_inner in value_outer.items():
+                    for subkey, subvalue in value_inner.items():
+                        if "already_fished" in subkey:
+                            value_inner[subkey] = False
+
     matriz = []
     if "gerudo" in diccionarios.dades[2]["current_map"]:
         lineas = gerudo_map.strip().split('\n')
@@ -382,6 +404,8 @@ def change_map():
         for linea in lineas:
             fila = [[c] for c in linea]
             matriz.append(fila)
+    return matriz
+
 
 
     # evento Fox

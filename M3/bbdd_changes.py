@@ -685,7 +685,7 @@ def download_all_data_mysql(game_id, region):
             if 3 in value:
                 if isinstance(value[3], dict):
                     for sanctuary_key, sanctuary_value in value[3].items():
-                        if sanctuary_id ==  sanctuary_key:
+                        if sanctuary_id == sanctuary_key:
                             sanctuary_value[3]['isopen'] = is_open
 
 
