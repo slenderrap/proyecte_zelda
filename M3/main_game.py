@@ -972,8 +972,6 @@ while flag_0:
 
     while flag_00:
         game_id, region = prepartida.PantallaPrincipal()
-        diccionarios.player_dict["game_id"] = game_id
-        diccionarios.dades["current_map"] = str(bbdd_changes.region_selector(region))
         if not (game_id and region):
             print("Come back soon...")
             flag_00 = False
