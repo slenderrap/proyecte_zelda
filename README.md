@@ -51,12 +51,10 @@ To get started, clone this repository to your local machine. Open your terminal 
 
 bash
 
-git clone https://github.com/slenderrap/proyecte_zelda/project-zelda.git
+git clone https://github.com/slenderrap/proyecte_zelda.git
 
-cd project-zelda
+cd proyecte_zelda
 
-Next, install the required dependencies by executing:
-pip install -r requirements.txt
 
 This will install all the necessary libraries for the game to function correctly.
 
