@@ -1,0 +1,550 @@
+html{
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
+    background-size: 2.5rem, cover;
+    font-family: 'Bitter', serif;
+    margin: 0;   
+}
+
+
+
+/* HEADER - NAVBAR */
+
+
+#nav_menu {
+    /* Posicionamiento */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    /* Tamaño y colores */
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
+
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    width: 100%;
+    height: 75px;
+    
+    /* Alinear en una misma linea */
+    display: flex;
+    /* Centrar elementos eje X*/
+    justify-content: center;
+    /* Centrar elementos eje Y*/
+    align-items: center;
+}
+
+
+nav a {
+    /* margen de 100px entre cada opción */
+    margin: 0 100px;
+    font-family: 'Roboto Slab', serif;
+    color: rgb(243, 206, 104);
+    text-shadow: 1px 1px 10px rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: large;
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+
+    
+    background-color: rgb(70, 136, 230);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 0%; 
+}
+
+@keyframes nav_menuAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#nav_menu a:hover {
+    animation: nav_menuAnimation 1s ease-in-out infinite;
+}
+
+
+
+
+
+
+
+
+
+/* BODY */
+body{    
+    /* Margenes */
+    margin: 0;
+    /* Centrar todo horizontalmente */
+    justify-content: center;
+}
+
+/* BODY - HEADER */
+@font-face {
+    font-family: 'The Wild Breath of Zelda';
+    src: url('text-font/The Wild Breath of Zelda.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+#game_header {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    min-width: 700px;
+    padding-bottom: 60px;
+}
+
+#header_img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    z-index: -1;
+}
+
+#header_content {
+    text-align: center;
+    color: white;
+}
+
+#header_content h1 {
+    font-family: 'The Wild Breath of Zelda';
+    src: url('text-font/The Wild Breath of Zelda.otf') format('opentype');
+    color: #F3EFE6;
+    font-size: 44px;
+}
+
+#header_content p {
+    font-family: 'Bitter', serif;
+    color: #F4EFE5;
+    font-size: 20px;
+    font-style: italic;
+    text-shadow: 0 1px 2px #000;
+    margin-bottom: 50px;
+}
+
+#header_content h1, #header_content img {
+    margin-bottom: 20px;
+    filter: drop-shadow(1px 1px 8px #000);
+    
+}
+
+
+#background_video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 500px;
+    object-fit: cover; 
+    z-index: -1;
+    
+}
+
+
+
+
+#button-links {
+    margin-top: -40px;
+    display: flex;
+    justify-content:space-evenly;
+    text-shadow: 0 1px 2px #000;
+
+}
+
+.decorated-button {
+	color: white;
+	border: none;
+	outline: none;
+	display: block;
+	position: relative;
+	font-family: inherit;
+	text-decoration: none;
+	background-color: transparent;
+	transition: color 0.2s ease-in;
+	
+	&:hover {
+		color: #B99F65;
+		cursor: pointer;
+		
+		.button-text {
+			background-color: rgba(0,0,0,0.75);
+		}
+		
+		.left-decoration {
+			&:before {
+				transform: translate(3px, 3px);
+			}
+			
+			&:after {
+				transform: translate(3px, -3px) rotate(-90deg);
+			}
+		}
+		
+		.right-decoration {
+			&:before {
+				transform: translate(-3px, 3px) rotate(90deg);
+			}
+			
+			&:after {
+				transform: translate(-3px, -3px) rotate(180deg);
+			}
+		}
+	}
+	
+	.button-text {
+		margin: 13px;
+		display: block;
+    line-height: 1;
+		font-size: 26px;
+		text-align: center;
+		position: relative;
+		padding: 15px 25px;
+		letter-spacing: 2px;
+		background-color: rgba(0,0,0,0.45);
+		transition: background-color 0.2s ease-in;
+	}
+	
+	.left-decoration {
+		top: 0;
+		left: 0;
+		bottom: 0;
+		z-index: 1;
+		height: 100%;
+		display: block;
+		position: absolute;
+		
+		&:before {
+			top: 0;
+			left: 0;
+			content: '';
+			width: 27px;
+			height: 27px;
+			display: block;
+			position: absolute;
+			background: url(https://www.zelda.com/breath-of-the-wild/assets/img/decorations/decorated-button__decoration.svg);
+			transition: transform 0.2s ease-in;
+		}
+		
+		&:after {
+			left: 0;
+			bottom: 0;
+			content: '';
+			width: 27px;
+			height: 27px;
+			display: block;
+			position: absolute;
+			transform: rotate(-90deg);
+			background: url(https://www.zelda.com/breath-of-the-wild/assets/img/decorations/decorated-button__decoration.svg);
+			transition: transform 0.2s ease-in;
+		}
+	}
+	
+	.right-decoration {
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+		height: 100%;
+		display: block;
+		position: absolute;
+		
+		&:before {
+			top: 0;
+			right: 0;
+			content: '';
+			width: 27px;
+			height: 27px;
+			display: block;
+			position: absolute;
+			transform: rotate(90deg);
+			background: url(https://www.zelda.com/breath-of-the-wild/assets/img/decorations/decorated-button__decoration.svg);
+			transition: transform 0.2s ease-in;
+		}
+		
+		&:after {
+			right: 0;
+			bottom: 0;
+			content: '';
+			width: 27px;
+			height: 27px;
+			display: block;
+			position: absolute;
+			transform: rotate(180deg);
+			background: url(https://www.zelda.com/breath-of-the-wild/assets/img/decorations/decorated-button__decoration.svg);
+			transition: transform 0.2s ease-in;
+		}
+	}
+}
+
+
+
+
+
+/* BODY - DIV */
+#game_content {
+    /* Tamaño y margenes */
+    margin-top: 80px 0px;
+    padding: 50px 100px;
+    /* Propiedades para centrar */
+    display: flex;
+    align-items: center; 
+    align-items: flex-start;
+    justify-content: center;
+    /* Imagen de fondo */
+    background-image: url('assets_game/game_historia_background.jpeg');
+    background-repeat: repeat;
+}
+
+
+#game_content div h1{
+    color: #C7AC84;
+    text-align: center;
+    text-transform: uppercase;
+}
+#game_content div h3{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+    color: #C7AC84;
+    
+}
+#game_content div p{
+    text-align: justify;
+    line-height: 1.6em;
+    padding: 0 30px;
+    font-size: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* BODY - Carousel */
+.characters-carousel {
+    /* Centrar imagenes */
+    justify-content: center;
+    align-items: center;
+    /* Ajustar tamaño marcos */
+    width: 80%;
+    max-width: 500px; 
+    margin: 0 auto;
+    padding: 30px;
+    /* Bordes */
+    border-radius: 20px;
+    background-color: #F3EFE6;
+    /* Comportamiento */
+    display: flex;  
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* Scroll horizontal por divs */
+    
+}
+
+.characters-carousel div {
+
+    border-radius: 20px;
+    width: 500px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    margin: 0 20px;
+    white-space: normal;
+
+
+}
+.carousel {
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel img {
+    max-width: 100%;
+    margin-right: 20px; /* Espacio entre las imágenes */
+}
+
+.carousel p {
+    text-align: center;
+    margin-top: 10px; /* Espacio entre la imagen y el texto */
+}
+
+
+/* BODY - CONTROLES  */
+
+#img_controles {
+    display: flex;
+    margin: 0 auto;
+}
+
+
+/* BODY - Download */
+
+#game_download {
+    
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    text-decoration: justify;
+    width: 100%;
+    color: #b99f65;
+    background-image: url('assets_game/game_download_background.jpeg');
+    background-repeat: repeat;
+}
+
+#game_download h1{
+    text-align: center;
+}
+#download_content{
+    padding:50px 100px 50px 100px;
+    text-align: justify;
+}
+
+.button_download {
+    text-align: center;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.button_download img {
+    display: block;
+    max-width: 400px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.button_download p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin: 0; /* Agrega esta línea para eliminar cualquier margen predeterminado */
+}
+
+.button_download:hover p {
+    text-shadow: 0 0 10px yellow;
+}
+
+
+
+/* FOOTER */
+footer {
+    /* Tamaño y colores */
+    background-color: #141312;
+    color: #fff;
+    border: 1px solid #000000;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    /* Centrar elementos eje X*/
+    justify-content: center;
+    /* Centrar elementos eje Y*/
+    align-items: center;
+
+}
+
+footer img {
+    /* Tamaño logotipo */
+    max-width: 50px;
+    height: auto;
+    margin: 10px;
+    border-radius: 50%;
+    cursor: pointer; 
+}
+
+footer svg {
+    margin-left: 25%;
+    fill: white;
+    transition: fill 0.3s ease; 
+}
+
+footer a:hover svg {
+    fill: black; 
+}
+
+footer a:active svg {
+    fill: black; 
+}
+
+
+
+
+
+
+
+
+
+
+/* ANIMACIONES  HEADER */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#header_content {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+    animation-delay: 2s; 
+}
+
+#background_video {
+    opacity: 1;
+}
+
+
+
+
+  
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    #nav_menu {
+        justify-content: space-around;
+
+      }
+      #nav_menu a {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+
+    #game_content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    
+
+    
+
+}
