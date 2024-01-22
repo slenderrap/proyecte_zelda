@@ -8,7 +8,7 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-image: url(fondo_body.jpg);    
+    background-image: url(assets_principal/fondo_body.jpg);    
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -101,7 +101,7 @@ div{
     font-style: italic;
 }
 #contenedor_padre{
-    background-image: url(fondo_contenido.jpg);
+    background-image: url(assets_principal/fondo_contenido.jpg);
     background-repeat:round;
     opacity: 90%;
     padding-left: 2rem;
