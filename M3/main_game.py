@@ -1,11 +1,13 @@
+
 import inventario
 import bbdd_changes
 import mapas
 import os
 import diccionarios
 import eventos
-import funciones.dialogos
+import dialogos
 import prepartida
+
 
 
 
@@ -23,9 +25,11 @@ def addbottomline_update_map(matriz):
             show_inputs += input_variable[z] + ", "
         show_inputs = show_inputs[:-2] + " "
 
+
         new_map = inventario.insertar_mapa(map, current_inventory)
 
         if len(show_inputs) % 2 == 0:
+
             show_inputs += " "
 
         new_map = new_map[:882] + ("*  " + show_inputs + ("* " * ((76 - len(show_inputs)) // 2)))
@@ -44,6 +48,7 @@ def addbottomline_update_map(matriz):
             else:
                 map += matriz[i][j][0] + "\n"
     x, y = current_pos
+
 
     if "castle" in diccionarios.dades[2]["current_map"]:
         input_variable = [ "Attack", "Go", "Back"]
@@ -70,6 +75,7 @@ def addbottomline_update_map(matriz):
 
                 matriz = update_map_bl()
 
+
     return matriz
 
 
@@ -82,10 +88,10 @@ lineas = getattr(mapas,(diccionarios.dades[2]["current_map"][10:]+"_map")).strip
 
 # Procesamos cada línea y la agregamos a la matriz como una lista de caracteres
 
+
 for linea in lineas:
     fila = [[c] for c in linea]
     matriz.append(fila)
-
 
 prompt = []
 last_map = "main_dict_hyrule"
@@ -136,12 +142,15 @@ player_change_pos()
 
 while flag_0:
 
+
     while flag_01:
         #INICIO DE ACCION
 
 
+
         #verificamos si hay arboles muertos
         for key, value in getattr(diccionarios,diccionarios.dades[2]["current_map"]).items():
+
             if 1 in value:
                 for sub_key, sub_value in value[1].items():
                     if sub_key.startswith("tree_"):
@@ -158,6 +167,7 @@ while flag_0:
 
 
         #Variable que almacena el nombre del mapa actual, usando el nombre de diccionario como referencia
+
 
         LimpiarPantalla()
 
@@ -195,6 +205,7 @@ while flag_0:
 
 
 
+
         if len(prompt) != 0:
             for i in prompt:
                 print(i)
@@ -210,6 +221,7 @@ while flag_0:
         x = current_pos[1]
         # pedir input
         command = input("Give an Order:")
+
 
         if "cheat" in command.lower():
             if "rename player to" in command.lower():
@@ -304,6 +316,9 @@ while flag_0:
                     "Gerudo": diccionarios.main_dict_gerudo,
                     "Necluda": diccionarios.main_dict_necluda
                 }
+                # AGREGAR VIDA AL JUGADOR
+                diccionarios.player_dict["hearts_max"] = 9
+                diccionarios.player_dict["hearts"] = 9
 
                 for region_name, diccionario in diccionarios_mapa.items():
                     for mapa in diccionario.values():
@@ -320,10 +335,6 @@ while flag_0:
                                     diccionarios.player_dict["region"] = old_region
 
 
-                # AGREGAR VIDA AL JUGADOR
-                diccionarios.player_dict["hearts_max"] = 9
-                diccionarios.player_dict["hearts"] = 9
-
             elif "game over":
                 flag_02 = True
                 flag_01 = False
@@ -335,15 +346,18 @@ while flag_0:
                 eventos.historialPrompt(prompt, "That cheat don't exist")
 
 
+
         elif "go left" in command:
             command.replace(" ", "")
             if command[command.find(" ", 3) + 1:].isdigit():
                 x -= int(command[command.find(" ", 3) + 1:])
+
                 #si en el camino a esa casilla hay algun obstaculo, no lo atravesaremos
                 for i in range((current_pos[1] - x)):
                     if matriz[current_pos[0]][current_pos[1]-(i+1)] != [" "]:
                         x += int(command[command.find(" ", 3) + 1:])
                         break
+
 
 
         elif "go right" in command:
@@ -366,6 +380,7 @@ while flag_0:
                         y += int(command[command.find(" ", 3) + 1:])
                         break
 
+
         elif "go down" in command:
             command.replace(" ", "")
             if command[command.find(" ", 3) + 1:].isdigit():
@@ -377,9 +392,11 @@ while flag_0:
                         break
 
 
+
         elif "go by water" in command:
             new_pos = eventos.move_to_X(matriz, current_pos,["~"])
             y,x = new_pos[0],new_pos[1]
+
 
         elif "go by sanctuary" in command:
             new_pos = eventos.move_to_X(matriz, current_pos,["S"])
@@ -387,7 +404,6 @@ while flag_0:
 
         elif "go by tree" in command:
             new_pos = eventos.move_to_X(matriz, current_pos,["T"])
-            eventos.historialPrompt(prompt, str(new_pos))
             y,x = new_pos[0],new_pos[1]
 
         elif "go by chest" in command:
@@ -403,6 +419,7 @@ while flag_0:
 
         elif "show inventory weapons" in command:
             current_inventory = inventario.player_inventory_weapons
+
         elif "exit" in command:
             flag_00 = True
             flag_01 = False
@@ -411,10 +428,24 @@ while flag_0:
             eventos.historialPrompt(prompt, "show map")
             prompt_add = mapas.mostrarMapa(current_inventory)
             eventos.historialPrompt(prompt, prompt_add)
+        elif "show inventory help" in command:
+
+            flag_06 = True
+            while flag_06:
+                LimpiarPantalla()
+                dialogos.generador_menus(dialogos.help_inventory_top,dialogos.help_inventory_end, dialogos.help_inventory_content )
+                command1=input("Give an Order: ")
+                if command1.lower() == "back":
+                    flag_06 = False
 
         elif "back" in command and  "necluda" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_necluda"
             matriz = mapas.change_map()
+            # Borramos las posiciones de todos los enemigos en el mapa original
+            for i in range(len(matriz)):
+                for j in range(len(matriz[0])):
+                    if i >= 10 and j > 57 and (matriz[i][j][0] == "F"):
+                        eventos.historialPrompt(prompt,"You see a Fox")
             matriz = mapas.update_map_pre_start(matriz)
             current_pos = [2, 2]
             continue
@@ -546,6 +577,7 @@ while flag_0:
 
 
 
+
         #posicion actual del jugador
         matriz[current_pos[0]][current_pos[1]] = [" "]
 
@@ -564,6 +596,7 @@ while flag_0:
 
 
 
+
         #ponemos al jugador en el mapa
         try:
             assert matriz[current_pos[0]][current_pos[1]] == [" "]
@@ -574,12 +607,15 @@ while flag_0:
             current_pos = current_pos_original
             matriz[current_pos[0]][current_pos[1]] = ["X"]
 
+
         eventos.interactable_events(matriz,current_pos,prompt,command,getattr(diccionarios,diccionarios.dades[2]["current_map"]))
+
 
 
         #COMPROBAMOS LA VIDA DEL JUGADOR:
         if diccionarios.player_dict["hearts"] <= 0:
             eventos.historialPrompt(prompt, "You are dead!")
+
             # AQUI INVOCAMOS PANTALLA DE MUERTE
             flag_02 = True
             flag_01 = False
@@ -628,7 +664,6 @@ while flag_0:
         if len(prompt) != 0:
             for i in prompt:
                 print(i)
-        print(current_pos)
 
         current_pos_original = current_pos.copy()
 
@@ -728,6 +763,19 @@ while flag_0:
                 eventos.historialPrompt(prompt, "You Got a Sword!")
                 # AGREGAR SHIELD A PLAYER
                 diccionarios.player_dict["shields_inventory"][1][2]["quantity"] += 1
+
+            elif "show inventory help" in command:
+
+                flag_06 = True
+                while flag_06:
+                    LimpiarPantalla()
+                    dialogos.generador_menus(dialogos.help_inventory_top, dialogos.help_inventory_end,
+                                             dialogos.help_inventory_content)
+                    command1 = input("Give an Order: ")
+                    if command1.lower() == "back":
+                        flag_06 = False
+
+
             elif "open sanctuaries":
                 diccionarios_mapa = [diccionarios.main_dict_hyrule, diccionarios.main_dict_death_mountain,
                                      diccionarios.main_dict_gerudo, diccionarios.main_dict_necluda]
@@ -802,38 +850,41 @@ while flag_0:
 
         elif "back" in command and "hyrule" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_hyrule"
+            current_pos = [8, 10]
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
-            current_pos = [8, 10]
+
 
             flag_01 = True
             flag_03 = False
 
         elif "back" in command and "death" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_death_mountain"
+            current_pos = [9, 2]
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
-            current_pos = [9, 2]
+
 
             flag_01 = True
             flag_03 = False
 
         elif "back" in command and "gerudo" in last_map:
             diccionarios.dades[2]["current_map"] = "main_dict_gerudo"
+            current_pos = [9, 2]
             matriz = mapas.change_map()
             matriz = mapas.update_map_pre_start(matriz)
-            current_pos = [9, 2]
 
             flag_01 = True
             flag_03 = False
 
 
-        elif current_pos[0] == 9 and current_pos[1] == 20:
+        elif current_pos[0] == 9 and current_pos[1] == 20 and not diccionarios.main_dict_castle[2][11]["isdead"]:
             if command.lower() == "attack":
                 #si tenemos un arma equipada, podremos atacar
                 if diccionarios.player_dict['weapons_equipped'][0][1]["weapon_name"] != "" :
                     if diccionarios.main_dict_castle[2][11]["ganon_hearts"] >= 0:
                         #si atacamos, quitaremos un corazon a ganon
+
                         diccionarios.main_dict_castle[2][11]["ganon_hearts"] -= 1
                         for i in range(len(matriz)):
                             for j in range(len(matriz[i])):
@@ -845,6 +896,7 @@ while flag_0:
                             diccionarios.main_dict_castle[2][11]["isdead"] = True
                             flag_04 = True
                             flag_03 = False
+
 
                         #bajamos tambien los corazones del jugador
                         diccionarios.player_dict["hearts"] -= 1
@@ -893,7 +945,8 @@ while flag_0:
 
                 LimpiarPantalla()
 
-                funciones.dialogos.generador_menus(funciones.dialogos.death_top, funciones.dialogos.death_end,funciones.dialogos.death_content)
+                M3.dialogos.generador_menus(M3.dialogos.death_top, M3.dialogos.death_end, M3.dialogos.death_content)
+
                 for i in prompt:
                     print(i)
                 prompt = input("Type 'Continue' to continue: ").capitalize()
@@ -910,11 +963,12 @@ while flag_0:
 
     while flag_04:#pantalla de win
         LimpiarPantalla()
-        funciones.dialogos.generador_menus(funciones.dialogos.zelda_saved_top, funciones.dialogos.zelda_saved_end, funciones.dialogos.zelda_saved_content)
-        prompt = input("Give an Order:")
+        dialogos.generador_menus(dialogos.zelda_saved_top, dialogos.zelda_saved_end, dialogos.zelda_saved_content)
+        prompt = input("Give an Order:").lower()
+        LimpiarPantalla()
         if prompt == "continue":
             flag_00 = True
-            flag04 = False
+            flag_04 = False
 
     while flag_00:
         game_id, region = prepartida.PantallaPrincipal()
@@ -931,13 +985,15 @@ while flag_0:
             bbdd_changes.load_all_data(game_id)
             player_change_pos()
             matriz = mapas.update_map_pre_start(mapas.change_map())
-            eventos.historialPrompt(prompt,str(diccionarios.player_dict["region"]))
+            prompt = []
+
             if "castle" in diccionarios.dades[2]["current_map"]:
                 flag_00 = False
                 flag_03 = True
             else:
                 flag_00 = False
                 flag_01 = True
+
 
 
 

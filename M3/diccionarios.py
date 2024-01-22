@@ -1,4 +1,3 @@
-import os
 import mysql.connector
 
 
@@ -164,6 +163,7 @@ main_dict_necluda = {
 main_dict_castle = {
     1: {1: {"tree_1": [4,[9, 3],10]}},
     2: { 11 : {"ganon_hearts": 8, "isdead" : False}},
+
 
 }
 

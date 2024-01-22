@@ -89,7 +89,7 @@ def PantallaPrincipal():
                 len(lista)):  # agreagamos los resultados de la query anterior en un diccionario con el id de partida
             diccionari_jugadors[i] = {"id": lista[i][0], "data_partida": lista[i][3], "player": lista[i][1],
                                       "region": lista[i][2], "corazones_actuales": lista[i][4],
-                                      "corazones_maximos": corazones_maximos[i][0] + 2}
+                                      "corazones_maximos": corazones_maximos[i][0] + 1}
 
         for i in range(len(diccionari_jugadors.keys())):
             for j in range(len(diccionari_jugadors.keys()) - 1):  # ordenamos con bubble sort
@@ -258,7 +258,7 @@ def PantallaPrincipal():
     import os
     import diccionarios
     import mysql.connector
-    from funciones import dialogos
+    import dialogos
     connection = mysql.connector.connect(
         host="4.231.10.226",
         user="zelda",
@@ -385,6 +385,7 @@ def PantallaPrincipal():
                             cursor.execute(sql)
                             connection.commit()
 
+
                             cursor.execute("select game_id from game where game_id = (select max(game_id) from game)")
                             partida = cursor.fetchone()
                             for i in partida:
@@ -393,12 +394,12 @@ def PantallaPrincipal():
                             # Insertar datos en tablas para comenzar partida
 
 
-                            region_create = ('Castle', 'Death mountain', 'Gerudo', 'Necluda', 'Hyrule')
+                            region_create = ('Castle', 'Death mountain', 'Gerudo', 'Necluda')
 
-                            for i in range(5):
+                            for i in range(4):
                                 bbdd_changes.region_selector(region_create[i])
                                 bbdd_changes.guardar_datos_new_game(game_id, region_create[i])
-
+                            diccionarios.player_dict["hearts_max"] = 3
                             # Insertar armas
                             for i in range(2):
                                 if i == 0:

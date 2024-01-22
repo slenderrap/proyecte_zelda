@@ -171,6 +171,16 @@ show_map = ("\
 *                                                         *                   *\n\
 * Back  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
 
+
+
+
+
+
+
+
+
+
+
 #Ancho mapa:57
 #Ancho inventario:19
 
@@ -185,6 +195,30 @@ def update_map_pre_start(matriz):
                 matriz[i][j][0], matriz[i][j+1][0] = " ", " "
 
 
+    diccionarios_mapa = {
+        "main_dict_hyrule": diccionarios.main_dict_hyrule,
+        "main_dict_death_mountain": diccionarios.main_dict_death_mountain,
+        "main_dict_gerudo": diccionarios.main_dict_gerudo,
+        "main_dict_necluda": diccionarios.main_dict_necluda
+    }
+
+    for diccionario in diccionarios_mapa.values():
+        for mapa in diccionario.values():
+            for value in mapa.values():
+                for subsubkey, subsubvalue in value.items():
+                    if "sanctuary_" in subsubkey:
+                        if diccionarios.player_dict["hearts_max"] == 9:
+                            # Cogemos las coordenadas
+                            coordenadas = subsubvalue[2]
+                            subsubvalue[3]["isopen"] = True
+                            # Reemplazamos las coordenadas con el cofre abierto
+                            matriz[coordenadas[0]][coordenadas[1]] = [" "]
+
+                        # Cogemos las coordenadas
+                        coordenadas = subsubvalue[2]
+                        if subsubvalue[3]["isopen"]:
+                            # Reemplazamos las coordenadas con el cofre abierto
+                            matriz[coordenadas[0]][coordenadas[1]] = [" "]
 
 
     # Iterar sobre el diccionario
@@ -406,11 +440,6 @@ def change_map():
             fila = [[c] for c in linea]
             matriz.append(fila)
 
-    return matriz
-
-
-
-
     # evento Fox
     # el 50% de las veces, fox desaparecerá del mapa
     if random.randint(1, 2) == 1:
@@ -519,3 +548,4 @@ def sanctuariesOpened():
             sanctuaries.append(valor.get(3)["sanctuary_{}".format(count)][3].get("isopen"))
             count += 1
     return sanctuaries
+
