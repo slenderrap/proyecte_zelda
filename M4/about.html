@@ -3,31 +3,39 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/png" href="icono_zelda.webp"/>
+        <link rel="icon" type="image/png" href="assets_common/icono_zelda.ico"/>
         <title>Legend of Zelda</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Bitter&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="style_about.css">
     </head>
-    <header>
-        <nav>
-            <a href="index.html">About us</a>
-            <a href="index.html">View a tutorial</a>
-            <a href="index.html">About us</a>
-            <a href="index.html">about</a>
-        </nav>
-    </header>
     <body>
+        <nav id="nav_menu">
+            <a href="principal.html">Home</a>
+            <a href="about.html">About us</a>
+            <a href="tutorial.html">View a tutorial</a>
+            <a href="game.html">Download Game</a>
+        </nav>
 
         <div id="about_header">
             <img id ="header_img" src="assets_about/about_header.jpeg" alt="Imagen de fondo">
             <div id="header_content">
                 <h1>SERPYRO</h1>
                 <img src="assets_common/header_logo.png" alt="Logotipo Zelda">
-                <br/>
-                <br/>
-                <a href="#about_content">Sobre nosotros</a>
-                <a href="#dev_selector">Conócenos</a>
+                <p>Conoce un poco más a los creadores de este videojuego. Cada uno ha aportado su granito de arena al proyecto! </p>
+                <div id ="button-links">
+                    <a class="decorated-button" href="#about_content">
+                        <div class="button-text">¿Quiénes somos?</div>
+                        <div class="left-decoration"></div>
+                        <div class="right-decoration"></div>
+                    </a>
+                    <a class="decorated-button" href="#dev_selector">
+                        <div class="button-text">Sobre nosotros</div>
+                        <div class="left-decoration"></div>
+                        <div class="right-decoration"></div>
+                    </a>
+                </div>
             </div>
-            <img id="header_separator"src="assets_about/about_header_separator.png" alt="Imagen de fondo">
         </div>
         
         
@@ -35,12 +43,9 @@
             <img src="assets_about/about_animated_background.png" alt="Imagen de los programadores">
             <h1>¿Quiénes somos?</h1>
             <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores vitae assumenda incidunt repellat mollitia repellendus aperiam accusamus consequatur ratione iure totam animi rem veritatis placeat hic blanditiis commodi, omnis eum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores vitae assumenda incidunt repellat mollitia repellendus aperiam accusamus consequatur ratione iure totam animi rem veritatis placeat hic blanditiis commodi, omnis eum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores vitae assumenda incidunt repellat mollitia repellendus aperiam accusamus consequatur ratione iure totam animi rem veritatis placeat hic blanditiis commodi, omnis eum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores vitae assumenda incidunt repellat mollitia repellendus aperiam accusamus consequatur ratione iure totam animi rem veritatis placeat hic blanditiis commodi, omnis eum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores vitae assumenda incidunt repellat mollitia repellendus aperiam accusamus consequatur ratione iure totam animi rem veritatis placeat hic blanditiis commodi, omnis eum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores vitae assumenda incidunt repellat mollitia repellendus aperiam accusamus consequatur ratione iure totam animi rem veritatis placeat hic blanditiis commodi, omnis eum.
+                Somos, SERPYRO , Grupo 8 del proyecto de DAW/DAM 23/24, del Instituto IES Esteve Terradas i Illa, nuestro grupo consta de 3 participantes
+                Erik Pinto, Sergio Fernández y Oriol Arribas. Somos un grupo apasionado por los videojuegos y tras dos semanas de duro trabajo y esfuerzo, hemos desarrollado el
+                videojuego Zelda, Breath Of The Wild, usando Python.
             </p>
         </div>
     
@@ -48,18 +53,25 @@
         <div id="dev_selector">
             <div class="developer" id="oriol">
                 <h1>Oriol Arribas</h1>
-                <img src="assets_about/character_1.png" alt="Programador Oriol">
-                <div class="overlay">Texto personalizado para Oriol</div>
+                <img src="assets_about/character_2.png" alt="Programador Oriol">
+                <p class="developer-info">Me he encargado de github, el menú principal del juego y la el movimiento basico del juego.
+                    También he implemen-tado los dialogos, la creación de los mapas y la conexión con la base de datos al mostrar las partidas guardadas y cargarlas.
+                    Por ultimo, he participado en la creación de la pagina web y la hoja de estilos en cascada.</p>
             </div>
             <div class="developer" id="sergio">
                 <h1>Sergio Fernández</h1>
-                <img src="assets_about/character_1.png" alt="Programador Sergio">
-                <div class="overlay">Texto personalizado para Sergio</div>
+                <img src="assets_about/character_3.png" alt="Programador Sergio">
+                <p class="developer-info">
+                Me he encargado en la creación del servidor Azure y la base de datos SQL.
+                También he desarrollado la creación de dialogos, gestión de inventario y la conexión con la base de datos para el guardado y cargado de partidas.<br>
+                Por último, he participado en la mayoria de la creación de la página web. Tanto de su escritura en HTML como la personalizacion en CSS.</p>
             </div>
             <div class="developer" id="erik">
                 <h1>Erik Pinto</h1>
                 <img src="assets_about/character_1.png" alt="Programador Erik">
-                <div class="overlay">Texto personalizado para Erik</div>
+                <p class="developer-info">Me he encargado de las funciones principales del juego y de la gestion de estas. Funciones de movimiento, eventos de enemigos, y sistemas esenciales del gameplay.
+                    Tambien me he encargado de coordinar al grupo en ciertas partes del proyecto, ayudar con la resolucion de problemas, y proponer ideas para el desarrollo de multiples areas
+                    del desarrollo del videojuego.</p>
             </div>
         </div>
         
@@ -70,7 +82,15 @@
     </body>
 
     <footer>
-
+        <a href="https://www.iesesteveterradas.cat/">
+            <img src="assets_common/footer_icon.jpeg" alt="Esteve Terradas">
+        </a>
+        <p>&copy; Copyrigth 2024 - SERPYRO</p>
+        <a href="https://github.com/slenderrap/proyecte_zelda/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+        </a>
     </footer>
     
 </html>
